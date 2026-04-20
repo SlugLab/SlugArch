@@ -11,5 +11,5 @@ pub mod passes;
 
 pub use error::IrError;
 pub use module::{Context, Function, Module};
-pub use op::{ArithKind, Op, StateKind, TileKind};
+pub use op::{ArithKind, Op, OpMeta, OperandRef, StateKind, TileKind};
 pub use types::{Addr, BackendChoice, Dtype, IpId, OpId, Shape, TokenId};
