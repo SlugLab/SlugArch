@@ -4,6 +4,8 @@ version = "0.1.0"
 edition.workspace = true
 license.workspace = true
 
-# Minimal stub to satisfy workspace manifest loading while Task 2 verifies
-# the vendored ptx_parser builds. Task 3 overwrites this file with the real
-# slugarch-ptx-frontend crate manifest.
+[dependencies]
+ptx_parser = { path = "../../vendor/concordia-ptx/ptx_parser" }
+thiserror.workspace = true
+
+[dev-dependencies]
