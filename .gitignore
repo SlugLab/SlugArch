@@ -4,3 +4,9 @@
 .vscode/
 .idea/
 /docs/scratch/
+# Plan 2 artifacts (Verilator + simulation outputs)
+**/obj_dir/
+**/*.vcd
+**/*.log
+**/*.o
+**/*.obj
