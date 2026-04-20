@@ -6,6 +6,8 @@ license.workspace = true
 
 [dependencies]
 ptx_parser = { path = "../../vendor/concordia-ptx/ptx_parser" }
+slugarch-ir = { path = "../slugarch-ir" }
 thiserror.workspace = true
 
 [dev-dependencies]
+insta.workspace = true
