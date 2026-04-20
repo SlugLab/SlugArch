@@ -1,0 +1,4 @@
+repo: concordia (local path: /root/Concordia at vendoring time)
+commit: c299ff38f34ca051cafb417d54a4685ba8ad1bf5
+path_in_upstream: ptx_parser, ptx_parser_macros, ptx_parser_macros_impl
+vendored_at: 2026-04-20
