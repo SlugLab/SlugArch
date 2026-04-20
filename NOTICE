@@ -1,0 +1,15 @@
+SlugArch
+Copyright (c) 2026 SlugArch contributors
+
+This product includes software developed at third parties, vendored under
+vendor/ subdirectories. Each vendored tree preserves its upstream LICENSE
+and, where applicable, MODEL_PROVENANCE.md. Specific provenance and the
+exact upstream commit shas are recorded in vendor/*/UPSTREAM_COMMIT files.
+
+- vendor/concordia-ptx/  — PTX parser from the Concordia GPU compilation
+  framework. See vendor/concordia-ptx/UPSTREAM_COMMIT for the exact sha.
+
+- vendor/gemma-generated/ — Runtime and mapping JSON descriptors from the
+  Gemma FPGA artifact bundle. Preserves upstream LICENSE and
+  MODEL_PROVENANCE.md. See vendor/gemma-generated/UPSTREAM_COMMIT for the
+  exact sha.
