@@ -29,6 +29,6 @@ fn bit_ops_and_transcendentals_lower_to_emu_with_expected_opcodes() {
     assert!(opcodes.contains(&2),  "and => opcode 2");
     assert!(opcodes.contains(&4),  "xor => opcode 4");
     assert!(opcodes.contains(&17), "sqrt => opcode 17");
-    // `ret` is still unknown and gets Emu 255.
-    assert!(opcodes.contains(&255));
+    // `ret` is now recognized as control flow -> Emu 254.
+    assert!(opcodes.contains(&254));
 }

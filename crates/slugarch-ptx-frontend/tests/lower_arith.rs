@@ -24,5 +24,5 @@ fn add_instruction_lowers_to_op_arith_add() {
     // Expect 2 ops: Arith(Add), and the Emu(255) for `ret`.
     assert_eq!(ops.len(), 2);
     assert!(matches!(ops[0], Op::Arith { kind: ArithKind::Add, .. }));
-    assert!(matches!(ops[1], Op::Emu { opcode: 255, .. }));
+    assert!(matches!(ops[1], Op::Emu { opcode: 254, .. }));
 }
