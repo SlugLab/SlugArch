@@ -52,6 +52,9 @@ pub fn lower_to_slugir<'a>(
             for (idx, inst) in entry.instructions.iter().enumerate() {
                 let hint = format!("{}[{}]", entry.name, idx);
                 let mut handled = false;
+                // `inst` is `&&Instruction` (Vec of references); deref once
+                // for the `&Instruction` the Lowerer trait expects.
+                let inst: &ptx_parser::Instruction<ptx_parser::ParsedOperand<&str>> = *inst;
                 for l in &lowerers {
                     if l.try_lower(inst, &mut b, &hint)? {
                         handled = true;
@@ -72,16 +75,60 @@ pub fn lower_to_slugir<'a>(
     Ok(out)
 }
 
+/// A pared-down view of a `.entry` kernel extracted from the ptx_parser AST.
+///
+/// AST shape notes (ptx_parser 0.x, vendored at
+/// `vendor/concordia-ptx/ptx_parser/src/ast.rs`):
+/// - `Directive` has two variants: `Variable(LinkingDirective, ...)` for
+///   module-level globals and `Method(LinkingDirective, Function<...>)` for
+///   functions/kernels.
+/// - `Function { func_directive: MethodDeclaration, tuning, body: Option<Vec<S>> }`
+///   where for the parsed module `S = Statement<ParsedOperand<&str>>`.
+/// - `MethodDeclaration.name: MethodName<'input, ID>` discriminates kernel vs
+///   function: `MethodName::Kernel(&str)` is a `.entry`, `MethodName::Func(ID)`
+///   is a `.func` (internal, non-kernel).
+/// - `Statement` is an enum — only `Statement::Instruction(_, Instruction)`
+///   carries an actual instruction; other variants (`Label`, `Variable`,
+///   `Block`) are skipped here.
+///
+/// Because the body is a `Vec<Statement>` (not a `Vec<Instruction>`), we can't
+/// return a `&[Instruction]` slice without materializing a new collection —
+/// so `EntryView::instructions` owns a `Vec<&'a Instruction<...>>` (option (a)
+/// from the Task 18 plan). The dispatcher in `lower_to_slugir` iterates this
+/// vec of references.
 struct EntryView<'a> {
     name: &'a str,
-    instructions: &'a [ptx_parser::Instruction<ptx_parser::ParsedOperand<&'a str>>],
+    instructions: Vec<&'a ptx_parser::Instruction<ptx_parser::ParsedOperand<&'a str>>>,
 }
 
 fn extract_entry<'a>(
-    _dir: &'a ptx_parser::Directive<'a, ptx_parser::ParsedOperand<&'a str>>,
+    dir: &'a ptx_parser::Directive<'a, ptx_parser::ParsedOperand<&'a str>>,
 ) -> Option<EntryView<'a>> {
-    // Actual pattern-matching on Directive enum variants depends on the
-    // exact ptx_parser ast shape; this helper is the single place to
-    // adapt to its structure. Task 18 fills this in against the real AST.
-    None
+    // Only `.entry` kernels produce a Function in v1; Variables and `.func`s
+    // are skipped. `Statement::Block` is flattened recursively so nested
+    // blocks still contribute instructions.
+    let ptx_parser::Directive::Method(_linkage, func) = dir else {
+        return None;
+    };
+    let name = match func.func_directive.name {
+        ptx_parser::MethodName::Kernel(n) => n,
+        ptx_parser::MethodName::Func(_) => return None,
+    };
+    let body = func.body.as_ref()?;
+    let mut instructions = Vec::new();
+    collect_instructions(body, &mut instructions);
+    Some(EntryView { name, instructions })
+}
+
+fn collect_instructions<'a>(
+    stmts: &'a [ptx_parser::Statement<ptx_parser::ParsedOperand<&'a str>>],
+    out: &mut Vec<&'a ptx_parser::Instruction<ptx_parser::ParsedOperand<&'a str>>>,
+) {
+    for stmt in stmts {
+        match stmt {
+            ptx_parser::Statement::Instruction(_pred, inst) => out.push(inst),
+            ptx_parser::Statement::Block(inner) => collect_instructions(inner, out),
+            ptx_parser::Statement::Label(_) | ptx_parser::Statement::Variable(_) => {}
+        }
+    }
 }
