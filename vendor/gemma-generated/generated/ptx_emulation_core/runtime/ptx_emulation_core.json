@@ -1,0 +1,45 @@
+{
+  "schema": "concordia.taalas_resource.v1",
+  "name": "ptx_emulation_core",
+  "kind": "cpu_backed_emulation",
+  "wrapper": "qwen_cpu_emulation_df",
+  "description": "Fallback dataflow resource for PTX/TMatmul operations not implemented by GEMM, ternary matmul, rowwise math, CXL DMA, or completion queue hardware.",
+  "execution_model": {
+    "command": "The CIRCT node carries cmd_valid, token_in, vector operands va/vb/vy, and an emulation opcode in ddr.",
+    "service": "The CXL runtime may service the node on CPU against coherent CXL-visible memory, update the affected vector/output state, then release token_out.",
+    "ordering": "The emulation node is in the same token chain as hardware resources, so following hardware nodes observe the CPU-emulated writeback."
+  },
+  "opcode_field": "ddr",
+  "operands": {
+    "va": "source vector A",
+    "vb": "source vector B or duplicated source for unary ops",
+    "vy": "destination vector",
+    "ddr": "emulation opcode"
+  },
+  "opcodes": {
+    "1": "not",
+    "2": "and",
+    "3": "or",
+    "4": "xor",
+    "5": "shl",
+    "6": "shr",
+    "7": "popc",
+    "8": "clz",
+    "9": "brev",
+    "10": "bfe",
+    "11": "bfi",
+    "12": "prmt",
+    "13": "shf",
+    "14": "abs",
+    "15": "min",
+    "16": "max",
+    "17": "sqrt",
+    "18": "rsqrt",
+    "19": "sin",
+    "20": "cos",
+    "21": "tanh",
+    "22": "lg2",
+    "23": "ex2",
+    "255": "unknown"
+  }
+}

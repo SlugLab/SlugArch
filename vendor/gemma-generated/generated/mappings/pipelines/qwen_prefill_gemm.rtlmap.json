@@ -1,0 +1,113 @@
+{
+  "edges": [
+    {
+      "channel": "token",
+      "from": "qwen_prefill_gemm.0.load_kv_cache",
+      "to": "qwen_prefill_gemm.1.gemm_qkv"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_prefill_gemm.1.gemm_qkv",
+      "to": "qwen_prefill_gemm.2.attention_scores"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_prefill_gemm.2.attention_scores",
+      "to": "qwen_prefill_gemm.3.softmax"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_prefill_gemm.3.softmax",
+      "to": "qwen_prefill_gemm.4.gemm_attention_value"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_prefill_gemm.4.gemm_attention_value",
+      "to": "qwen_prefill_gemm.5.store_kv_cache"
+    }
+  ],
+  "generated_catalog": "generated/mappings/rtl_mapping_catalog.json",
+  "kind": "qwen",
+  "name": "qwen_prefill_gemm",
+  "nodes": [
+    {
+      "candidate_ips": [
+        "systolic_array_32x32",
+        "npu_cluster_v4",
+        "noc_mesh"
+      ],
+      "node_id": "qwen_prefill_gemm.0.load_kv_cache",
+      "op": "load_kv_cache",
+      "rtl_mapping": "generated/mappings/ip/noc_mesh.rtlmap.json",
+      "runtime_descriptor": "generated/noc_mesh/runtime/noc_mesh.json",
+      "selected_ip": "noc_mesh",
+      "wrapper": "gemma_codegen_noc_mesh_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_32x32",
+        "npu_cluster_v4",
+        "noc_mesh"
+      ],
+      "node_id": "qwen_prefill_gemm.1.gemm_qkv",
+      "op": "gemm_qkv",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_32x32.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_32x32/runtime/systolic_array_32x32.json",
+      "selected_ip": "systolic_array_32x32",
+      "wrapper": "gemma_codegen_systolic_array_32x32_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_32x32",
+        "npu_cluster_v4",
+        "noc_mesh"
+      ],
+      "node_id": "qwen_prefill_gemm.2.attention_scores",
+      "op": "attention_scores",
+      "rtl_mapping": "generated/mappings/ip/npu_cluster_v4.rtlmap.json",
+      "runtime_descriptor": "generated/npu_cluster_v4/runtime/npu_cluster_v4.json",
+      "selected_ip": "npu_cluster_v4",
+      "wrapper": "gemma_codegen_npu_cluster_v4_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_32x32",
+        "npu_cluster_v4",
+        "noc_mesh"
+      ],
+      "node_id": "qwen_prefill_gemm.3.softmax",
+      "op": "softmax",
+      "rtl_mapping": "generated/mappings/ip/npu_cluster_v4.rtlmap.json",
+      "runtime_descriptor": "generated/npu_cluster_v4/runtime/npu_cluster_v4.json",
+      "selected_ip": "npu_cluster_v4",
+      "wrapper": "gemma_codegen_npu_cluster_v4_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_32x32",
+        "npu_cluster_v4",
+        "noc_mesh"
+      ],
+      "node_id": "qwen_prefill_gemm.4.gemm_attention_value",
+      "op": "gemm_attention_value",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_32x32.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_32x32/runtime/systolic_array_32x32.json",
+      "selected_ip": "systolic_array_32x32",
+      "wrapper": "gemma_codegen_systolic_array_32x32_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_32x32",
+        "npu_cluster_v4",
+        "noc_mesh"
+      ],
+      "node_id": "qwen_prefill_gemm.5.store_kv_cache",
+      "op": "store_kv_cache",
+      "rtl_mapping": "generated/mappings/ip/noc_mesh.rtlmap.json",
+      "runtime_descriptor": "generated/noc_mesh/runtime/noc_mesh.json",
+      "selected_ip": "noc_mesh",
+      "wrapper": "gemma_codegen_noc_mesh_df"
+    }
+  ],
+  "schema": "gemma-pipeline-rtl-mapping-v1"
+}

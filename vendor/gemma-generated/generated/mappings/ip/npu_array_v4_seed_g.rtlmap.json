@@ -1,0 +1,173 @@
+{
+  "backend_hooks": {
+    "hardware": {
+      "external_command": null,
+      "filelist": "generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g.f",
+      "tcl": "generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g_synth.tcl"
+    },
+    "runtime": {
+      "descriptor": "generated/npu_array_v4_seed_g/runtime/npu_array_v4_seed_g.json",
+      "external_runtime_python": null,
+      "launch_mode": "gemma_dataflow_wrapper"
+    },
+    "simulator": {
+      "command": "verilator --binary -f generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g.f --top gemma_codegen_npu_array_v4_seed_g_df_tb",
+      "external_command": null,
+      "filelist": "generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g.f",
+      "smoke_tb": "generated/npu_array_v4_seed_g/sim/npu_array_v4_seed_g_smoke_tb.sv"
+    }
+  },
+  "compiler": {
+    "contract": {
+      "input": "cmd_valid/cmd_ready/token_in",
+      "output": "done_valid/token_out",
+      "schedule_granularity": "single_ip_invocation",
+      "token_width": 256
+    },
+    "dataflow_role": "stateful_array",
+    "schedule_granularity": "single_ip_invocation",
+    "wrapper": "gemma_codegen_npu_array_v4_seed_g_df"
+  },
+  "dataflow_edges": {
+    "inputs": [
+      {
+        "kind": "control",
+        "name": "cmd_valid"
+      },
+      {
+        "kind": "backpressure",
+        "name": "cmd_ready"
+      },
+      {
+        "kind": "payload",
+        "name": "token_in",
+        "width": 256
+      }
+    ],
+    "outputs": [
+      {
+        "kind": "completion",
+        "name": "done_valid"
+      },
+      {
+        "kind": "payload",
+        "name": "token_out",
+        "width": 256
+      }
+    ]
+  },
+  "external": null,
+  "external_source": null,
+  "kind": "array",
+  "name": "npu_array_v4_seed_g",
+  "notes": [
+    "This file is the compiler-generated RTL mapping. Wrappers and runtime descriptors are derived from it."
+  ],
+  "port_bindings": [
+    {
+      "compiler_expression": "clk",
+      "compiler_signal": "clk",
+      "direction": "input",
+      "range": "",
+      "role": "clock",
+      "rtl_port": "clk",
+      "width": 1
+    },
+    {
+      "compiler_expression": "rst_n",
+      "compiler_signal": "rst_n",
+      "direction": "input",
+      "range": "",
+      "role": "reset",
+      "rtl_port": "rst_n",
+      "width": 1
+    },
+    {
+      "compiler_expression": "fire",
+      "compiler_signal": "cmd_valid_and_ready",
+      "direction": "input",
+      "range": "",
+      "role": "control",
+      "rtl_port": "advance_tick",
+      "width": 1
+    },
+    {
+      "compiler_expression": "u_read_valid",
+      "compiler_signal": "done_valid",
+      "direction": "output",
+      "range": "",
+      "role": "completion",
+      "rtl_port": "read_valid",
+      "width": 1
+    },
+    {
+      "compiler_expression": "{254'd0, u_read_row}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[1:0]",
+      "role": "payload",
+      "rtl_port": "read_row",
+      "width": 2
+    },
+    {
+      "compiler_expression": "{254'd0, u_read_col}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[1:0]",
+      "role": "payload",
+      "rtl_port": "read_col",
+      "width": 2
+    },
+    {
+      "compiler_expression": "{254'd0, u_read_addr}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[1:0]",
+      "role": "payload",
+      "rtl_port": "read_addr",
+      "width": 2
+    },
+    {
+      "compiler_expression": "{240'd0, u_read_data}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[15:0]",
+      "role": "payload",
+      "rtl_port": "read_data",
+      "width": 16
+    },
+    {
+      "compiler_expression": "{253'd0, u_array_rows}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[2:0]",
+      "role": "payload",
+      "rtl_port": "array_rows",
+      "width": 3
+    },
+    {
+      "compiler_expression": "{253'd0, u_array_cols}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[2:0]",
+      "role": "payload",
+      "rtl_port": "array_cols",
+      "width": 3
+    }
+  ],
+  "rtl": {
+    "formal": "npu_array_v4_seed_g",
+    "module": "sovryn_pan_stem_npu_array_v4_seed_g_top",
+    "source": "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_baseline.v",
+    "sources": [
+      "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_issue.v",
+      "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_state.v",
+      "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_tile.v",
+      "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_baseline.v"
+    ],
+    "top_for_build": "gemma_codegen_npu_array_v4_seed_g_df",
+    "wrapper_source": "generated/npu_array_v4_seed_g/rtl/npu_array_v4_seed_g_df_wrapper.sv"
+  },
+  "schema": "gemma-rtl-mapping-v1",
+  "status": "wrapped"
+}

@@ -1,0 +1,206 @@
+{
+  "backend_hooks": {
+    "hardware": {
+      "external_command": null,
+      "filelist": "generated/noc_mesh/hardware/noc_mesh.f",
+      "tcl": "generated/noc_mesh/hardware/noc_mesh_synth.tcl"
+    },
+    "runtime": {
+      "descriptor": "generated/noc_mesh/runtime/noc_mesh.json",
+      "external_runtime_python": null,
+      "launch_mode": "gemma_dataflow_wrapper"
+    },
+    "simulator": {
+      "command": "verilator --binary -f generated/noc_mesh/hardware/noc_mesh.f --top gemma_codegen_noc_mesh_df_tb",
+      "external_command": null,
+      "filelist": "generated/noc_mesh/hardware/noc_mesh.f",
+      "smoke_tb": "generated/noc_mesh/sim/noc_mesh_smoke_tb.sv"
+    }
+  },
+  "compiler": {
+    "contract": {
+      "input": "cmd_valid/cmd_ready/token_in",
+      "output": "done_valid/token_out",
+      "schedule_granularity": "single_ip_invocation",
+      "token_width": 256
+    },
+    "dataflow_role": "token_router",
+    "schedule_granularity": "single_ip_invocation",
+    "wrapper": "gemma_codegen_noc_mesh_df"
+  },
+  "dataflow_edges": {
+    "inputs": [
+      {
+        "kind": "control",
+        "name": "cmd_valid"
+      },
+      {
+        "kind": "backpressure",
+        "name": "cmd_ready"
+      },
+      {
+        "kind": "payload",
+        "name": "token_in",
+        "width": 256
+      }
+    ],
+    "outputs": [
+      {
+        "kind": "completion",
+        "name": "done_valid"
+      },
+      {
+        "kind": "payload",
+        "name": "token_out",
+        "width": 256
+      }
+    ]
+  },
+  "external": null,
+  "external_source": null,
+  "kind": "interconnect",
+  "name": "noc_mesh",
+  "notes": [
+    "This file is the compiler-generated RTL mapping. Wrappers and runtime descriptors are derived from it."
+  ],
+  "port_bindings": [
+    {
+      "compiler_expression": "clk",
+      "compiler_signal": "clk",
+      "direction": "input",
+      "range": "",
+      "role": "clock",
+      "rtl_port": "clk",
+      "width": 1
+    },
+    {
+      "compiler_expression": "rst_n",
+      "compiler_signal": "rst_n",
+      "direction": "input",
+      "range": "",
+      "role": "reset",
+      "rtl_port": "rst_n",
+      "width": 1
+    },
+    {
+      "compiler_expression": "fire",
+      "compiler_signal": "cmd_valid_and_ready",
+      "direction": "input",
+      "range": "",
+      "role": "control",
+      "rtl_port": "in_valid",
+      "width": 1
+    },
+    {
+      "compiler_expression": "token_in[3]",
+      "compiler_signal": "cmd_ready_or_memory_ready",
+      "direction": "input",
+      "range": "",
+      "role": "backpressure",
+      "rtl_port": "credit_ready",
+      "width": 1
+    },
+    {
+      "compiler_expression": "token_in[4 +: 2]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[1:0]",
+      "role": "payload",
+      "rtl_port": "current_x",
+      "width": 2
+    },
+    {
+      "compiler_expression": "token_in[6 +: 2]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[1:0]",
+      "role": "payload",
+      "rtl_port": "current_y",
+      "width": 2
+    },
+    {
+      "compiler_expression": "token_in[8 +: 2]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[1:0]",
+      "role": "payload",
+      "rtl_port": "dest_x",
+      "width": 2
+    },
+    {
+      "compiler_expression": "token_in[10 +: 2]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[1:0]",
+      "role": "payload",
+      "rtl_port": "dest_y",
+      "width": 2
+    },
+    {
+      "compiler_expression": "token_in[12 +: 32]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[31:0]",
+      "role": "payload",
+      "rtl_port": "data_in",
+      "width": 32
+    },
+    {
+      "compiler_expression": "u_out_valid",
+      "compiler_signal": "done_valid",
+      "direction": "output",
+      "range": "",
+      "role": "completion",
+      "rtl_port": "out_valid",
+      "width": 1
+    },
+    {
+      "compiler_expression": "{255'd0, u_delivered}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "",
+      "role": "payload",
+      "rtl_port": "delivered",
+      "width": 1
+    },
+    {
+      "compiler_expression": "{255'd0, u_blocked}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "",
+      "role": "payload",
+      "rtl_port": "blocked",
+      "width": 1
+    },
+    {
+      "compiler_expression": "{253'd0, u_next_port}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[2:0]",
+      "role": "payload",
+      "rtl_port": "next_port",
+      "width": 3
+    },
+    {
+      "compiler_expression": "{224'd0, u_data_out}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[31:0]",
+      "role": "payload",
+      "rtl_port": "data_out",
+      "width": 32
+    }
+  ],
+  "rtl": {
+    "formal": "noc_mesh",
+    "module": "sovryn_pan_stem_noc_mesh",
+    "source": "rtl/designs/sovryn_pan_stem_noc_mesh_baseline.v",
+    "sources": [
+      "rtl/designs/sovryn_pan_stem_noc_mesh_baseline.v"
+    ],
+    "top_for_build": "gemma_codegen_noc_mesh_df",
+    "wrapper_source": "generated/noc_mesh/rtl/noc_mesh_df_wrapper.sv"
+  },
+  "schema": "gemma-rtl-mapping-v1",
+  "status": "wrapped"
+}

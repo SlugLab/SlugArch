@@ -1,0 +1,77 @@
+{
+  "edges": [
+    {
+      "channel": "token",
+      "from": "generic_gemm.0.tile_load_a",
+      "to": "generic_gemm.1.tile_load_b"
+    },
+    {
+      "channel": "token",
+      "from": "generic_gemm.1.tile_load_b",
+      "to": "generic_gemm.2.systolic_mac"
+    },
+    {
+      "channel": "token",
+      "from": "generic_gemm.2.systolic_mac",
+      "to": "generic_gemm.3.tile_store_c"
+    }
+  ],
+  "generated_catalog": "generated/mappings/rtl_mapping_catalog.json",
+  "kind": "gemm",
+  "name": "generic_gemm",
+  "nodes": [
+    {
+      "candidate_ips": [
+        "systolic_array_4x4",
+        "systolic_array_16x16",
+        "systolic_array_32x32"
+      ],
+      "node_id": "generic_gemm.0.tile_load_a",
+      "op": "tile_load_a",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_4x4.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_4x4/runtime/systolic_array_4x4.json",
+      "selected_ip": "systolic_array_4x4",
+      "wrapper": "gemma_codegen_systolic_array_4x4_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_4x4",
+        "systolic_array_16x16",
+        "systolic_array_32x32"
+      ],
+      "node_id": "generic_gemm.1.tile_load_b",
+      "op": "tile_load_b",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_4x4.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_4x4/runtime/systolic_array_4x4.json",
+      "selected_ip": "systolic_array_4x4",
+      "wrapper": "gemma_codegen_systolic_array_4x4_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_4x4",
+        "systolic_array_16x16",
+        "systolic_array_32x32"
+      ],
+      "node_id": "generic_gemm.2.systolic_mac",
+      "op": "systolic_mac",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_4x4.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_4x4/runtime/systolic_array_4x4.json",
+      "selected_ip": "systolic_array_4x4",
+      "wrapper": "gemma_codegen_systolic_array_4x4_df"
+    },
+    {
+      "candidate_ips": [
+        "systolic_array_4x4",
+        "systolic_array_16x16",
+        "systolic_array_32x32"
+      ],
+      "node_id": "generic_gemm.3.tile_store_c",
+      "op": "tile_store_c",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_4x4.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_4x4/runtime/systolic_array_4x4.json",
+      "selected_ip": "systolic_array_4x4",
+      "wrapper": "gemma_codegen_systolic_array_4x4_df"
+    }
+  ],
+  "schema": "gemma-pipeline-rtl-mapping-v1"
+}

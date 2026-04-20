@@ -1,0 +1,209 @@
+{
+  "ip_mappings": [
+    {
+      "kind": "mac",
+      "name": "mac_unit",
+      "rtl_mapping": "generated/mappings/ip/mac_unit.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_mac_unit_df"
+    },
+    {
+      "kind": "systolic",
+      "name": "mini_systolic_tile",
+      "rtl_mapping": "generated/mappings/ip/mini_systolic_tile.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_mini_systolic_tile_df"
+    },
+    {
+      "kind": "interconnect",
+      "name": "noc_mesh",
+      "rtl_mapping": "generated/mappings/ip/noc_mesh.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_noc_mesh_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v1",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v1.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v1_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v2_innercore_a",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v2_innercore_a.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v2_innercore_a_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v3_seed_a",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v3_seed_a.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v3_seed_a_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v3_seed_b_min",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v3_seed_b_min.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v3_seed_b_min_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v4_seed_a",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_a.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_a_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v4_seed_b",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_b.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_b_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v4_seed_c",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_c.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_c_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v4_seed_d",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_d.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_d_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v4_seed_e",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_e.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_e_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v4_seed_f",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_f.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_f_df"
+    },
+    {
+      "kind": "array",
+      "name": "npu_array_v4_seed_g",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_g.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_g_df"
+    },
+    {
+      "kind": "cluster",
+      "name": "npu_cluster",
+      "rtl_mapping": "generated/mappings/ip/npu_cluster.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_cluster_df"
+    },
+    {
+      "kind": "cluster",
+      "name": "npu_cluster_v2",
+      "rtl_mapping": "generated/mappings/ip/npu_cluster_v2.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_cluster_v2_df"
+    },
+    {
+      "kind": "cluster",
+      "name": "npu_cluster_v3",
+      "rtl_mapping": "generated/mappings/ip/npu_cluster_v3.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_cluster_v3_df"
+    },
+    {
+      "kind": "cluster",
+      "name": "npu_cluster_v4",
+      "rtl_mapping": "generated/mappings/ip/npu_cluster_v4.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_npu_cluster_v4_df"
+    },
+    {
+      "kind": "pe",
+      "name": "pe_cell",
+      "rtl_mapping": "generated/mappings/ip/pe_cell.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_pe_cell_df"
+    },
+    {
+      "kind": "pe",
+      "name": "pe_node",
+      "rtl_mapping": "generated/mappings/ip/pe_node.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_pe_node_df"
+    },
+    {
+      "kind": "scale_out",
+      "name": "scale_out_candidate",
+      "rtl_mapping": "generated/mappings/ip/scale_out_candidate.rtlmap.json",
+      "status": "descriptor_only",
+      "wrapper": "gemma_codegen_scale_out_candidate_df"
+    },
+    {
+      "kind": "systolic",
+      "name": "systolic_array_16x16",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_16x16.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_systolic_array_16x16_df"
+    },
+    {
+      "kind": "systolic",
+      "name": "systolic_array_32x32",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_32x32.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_systolic_array_32x32_df"
+    },
+    {
+      "kind": "systolic",
+      "name": "systolic_array_4x4",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_4x4.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_systolic_array_4x4_df"
+    },
+    {
+      "kind": "ternary",
+      "name": "ternary_matmul_core",
+      "rtl_mapping": "generated/mappings/ip/ternary_matmul_core.rtlmap.json",
+      "status": "descriptor_only",
+      "wrapper": "gemma_codegen_ternary_matmul_core_df"
+    },
+    {
+      "kind": "gemm",
+      "name": "gemm_ip",
+      "rtl_mapping": "generated/mappings/ip/gemm_ip.rtlmap.json",
+      "status": "wrapped",
+      "wrapper": "gemma_codegen_gemm_ip_df"
+    }
+  ],
+  "pipeline_mappings": [
+    {
+      "kind": "qwen",
+      "name": "qwen_prefill_gemm",
+      "rtl_mapping": "generated/mappings/pipelines/qwen_prefill_gemm.rtlmap.json"
+    },
+    {
+      "kind": "qwen",
+      "name": "qwen_decode_token",
+      "rtl_mapping": "generated/mappings/pipelines/qwen_decode_token.rtlmap.json"
+    },
+    {
+      "kind": "ternary",
+      "name": "ternary_matmul",
+      "rtl_mapping": "generated/mappings/pipelines/ternary_matmul.rtlmap.json"
+    },
+    {
+      "kind": "gemm",
+      "name": "generic_gemm",
+      "rtl_mapping": "generated/mappings/pipelines/generic_gemm.rtlmap.json"
+    }
+  ],
+  "schema": "gemma-rtl-mapping-catalog-v1"
+}

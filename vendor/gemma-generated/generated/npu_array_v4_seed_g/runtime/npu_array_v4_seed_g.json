@@ -1,0 +1,40 @@
+{
+  "compiler_contract": {
+    "input": "cmd_valid/cmd_ready/token_in",
+    "output": "done_valid/token_out",
+    "schedule_granularity": "single_ip_invocation",
+    "token_width": 256
+  },
+  "dataflow_role": "stateful_array",
+  "external_source": null,
+  "formal": "npu_array_v4_seed_g",
+  "hardware": {
+    "external_command": null,
+    "filelist": "generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g.f",
+    "tcl": "generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g_synth.tcl"
+  },
+  "kind": "array",
+  "module": "sovryn_pan_stem_npu_array_v4_seed_g_top",
+  "name": "npu_array_v4_seed_g",
+  "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_g.rtlmap.json",
+  "runtime": {
+    "descriptor": "generated/npu_array_v4_seed_g/runtime/npu_array_v4_seed_g.json",
+    "external_runtime_python": null,
+    "launch_mode": "gemma_dataflow_wrapper"
+  },
+  "simulator": {
+    "command": "verilator --binary -f generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g.f --top gemma_codegen_npu_array_v4_seed_g_df_tb",
+    "external_command": null,
+    "filelist": "generated/npu_array_v4_seed_g/hardware/npu_array_v4_seed_g.f",
+    "smoke_tb": "generated/npu_array_v4_seed_g/sim/npu_array_v4_seed_g_smoke_tb.sv"
+  },
+  "source": "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_baseline.v",
+  "sources": [
+    "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_issue.v",
+    "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_state.v",
+    "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_tile.v",
+    "rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_baseline.v"
+  ],
+  "status": "wrapped",
+  "wrapper": "gemma_codegen_npu_array_v4_seed_g_df"
+}

@@ -1,0 +1,5 @@
+repo: concordia (local path: /root/Concordia at vendoring time)
+commit: 260d2dd9690741d79e48c97d0bc88b22ec5c123c
+path_in_upstream: ext/gemma/generated, ext/gemma/LICENSE, ext/gemma/MODEL_PROVENANCE.md
+vendored_at: 2026-04-20
+notes: JSON descriptors only; RTL Verilog will be vendored in Plan 2.

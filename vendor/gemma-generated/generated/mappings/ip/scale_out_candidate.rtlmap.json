@@ -1,0 +1,79 @@
+{
+  "backend_hooks": {
+    "hardware": {
+      "external_command": null,
+      "filelist": "generated/scale_out_candidate/hardware/scale_out_candidate.f",
+      "tcl": "generated/scale_out_candidate/hardware/scale_out_candidate_synth.tcl"
+    },
+    "runtime": {
+      "descriptor": "generated/scale_out_candidate/runtime/scale_out_candidate.json",
+      "external_runtime_python": null,
+      "launch_mode": "gemma_dataflow_wrapper"
+    },
+    "simulator": {
+      "command": "verilator --binary -f generated/scale_out_candidate/hardware/scale_out_candidate.f --top gemma_codegen_scale_out_candidate_df_tb",
+      "external_command": null,
+      "filelist": "generated/scale_out_candidate/hardware/scale_out_candidate.f",
+      "smoke_tb": "generated/scale_out_candidate/sim/scale_out_candidate_smoke_tb.sv"
+    }
+  },
+  "compiler": {
+    "contract": {
+      "input": "cmd_valid/cmd_ready/token_in",
+      "output": "done_valid/token_out",
+      "schedule_granularity": "single_ip_invocation",
+      "token_width": 256
+    },
+    "dataflow_role": "scale_out",
+    "schedule_granularity": "single_ip_invocation",
+    "wrapper": "gemma_codegen_scale_out_candidate_df"
+  },
+  "dataflow_edges": {
+    "inputs": [
+      {
+        "kind": "control",
+        "name": "cmd_valid"
+      },
+      {
+        "kind": "backpressure",
+        "name": "cmd_ready"
+      },
+      {
+        "kind": "payload",
+        "name": "token_in",
+        "width": 256
+      }
+    ],
+    "outputs": [
+      {
+        "kind": "completion",
+        "name": "done_valid"
+      },
+      {
+        "kind": "payload",
+        "name": "token_out",
+        "width": 256
+      }
+    ]
+  },
+  "external": null,
+  "external_source": null,
+  "kind": "scale_out",
+  "name": "scale_out_candidate",
+  "notes": [
+    "This file is the compiler-generated RTL mapping. Wrappers and runtime descriptors are derived from it."
+  ],
+  "port_bindings": [],
+  "rtl": {
+    "formal": "scale_out_candidate",
+    "module": "sovryn_pan_stem_scale_out_candidate",
+    "source": null,
+    "sources": [
+      "rtl/designs/sovryn_pan_stem_scale_out_candidate_baseline.v"
+    ],
+    "top_for_build": "gemma_codegen_scale_out_candidate_df",
+    "wrapper_source": "generated/scale_out_candidate/rtl/scale_out_candidate_df_wrapper.sv"
+  },
+  "schema": "gemma-rtl-mapping-v1",
+  "status": "descriptor_only"
+}

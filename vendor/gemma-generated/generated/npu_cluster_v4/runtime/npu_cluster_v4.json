@@ -1,0 +1,38 @@
+{
+  "compiler_contract": {
+    "input": "cmd_valid/cmd_ready/token_in",
+    "output": "done_valid/token_out",
+    "schedule_granularity": "single_ip_invocation",
+    "token_width": 256
+  },
+  "dataflow_role": "cluster_top",
+  "external_source": null,
+  "formal": "npu_cluster_v4",
+  "hardware": {
+    "external_command": null,
+    "filelist": "generated/npu_cluster_v4/hardware/npu_cluster_v4.f",
+    "tcl": "generated/npu_cluster_v4/hardware/npu_cluster_v4_synth.tcl"
+  },
+  "kind": "cluster",
+  "module": "sovryn_pan_stem_npu_cluster_v4_top",
+  "name": "npu_cluster_v4",
+  "rtl_mapping": "generated/mappings/ip/npu_cluster_v4.rtlmap.json",
+  "runtime": {
+    "descriptor": "generated/npu_cluster_v4/runtime/npu_cluster_v4.json",
+    "external_runtime_python": null,
+    "launch_mode": "gemma_dataflow_wrapper"
+  },
+  "simulator": {
+    "command": "verilator --binary -f generated/npu_cluster_v4/hardware/npu_cluster_v4.f --top gemma_codegen_npu_cluster_v4_df_tb",
+    "external_command": null,
+    "filelist": "generated/npu_cluster_v4/hardware/npu_cluster_v4.f",
+    "smoke_tb": "generated/npu_cluster_v4/sim/npu_cluster_v4_smoke_tb.sv"
+  },
+  "source": "rtl/designs/sovryn_pan_stem_npu_cluster_v4_baseline.v",
+  "sources": [
+    "rtl/designs/sovryn_pan_stem_npu_cluster_v4_baseline.v",
+    "rtl/designs/sovryn_pan_stem_npu_cluster_v4_top.v"
+  ],
+  "status": "wrapped",
+  "wrapper": "gemma_codegen_npu_cluster_v4_df"
+}

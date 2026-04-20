@@ -1,0 +1,131 @@
+{
+  "edges": [
+    {
+      "channel": "token",
+      "from": "qwen_decode_token.0.rms_norm",
+      "to": "qwen_decode_token.1.gemm_qkv"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_decode_token.1.gemm_qkv",
+      "to": "qwen_decode_token.2.rope"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_decode_token.2.rope",
+      "to": "qwen_decode_token.3.attention_decode"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_decode_token.3.attention_decode",
+      "to": "qwen_decode_token.4.gemm_mlp_gate_up"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_decode_token.4.gemm_mlp_gate_up",
+      "to": "qwen_decode_token.5.silu"
+    },
+    {
+      "channel": "token",
+      "from": "qwen_decode_token.5.silu",
+      "to": "qwen_decode_token.6.gemm_mlp_down"
+    }
+  ],
+  "generated_catalog": "generated/mappings/rtl_mapping_catalog.json",
+  "kind": "qwen",
+  "name": "qwen_decode_token",
+  "nodes": [
+    {
+      "candidate_ips": [
+        "npu_array_v4_seed_g",
+        "npu_cluster_v4",
+        "systolic_array_16x16"
+      ],
+      "node_id": "qwen_decode_token.0.rms_norm",
+      "op": "rms_norm",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_g.rtlmap.json",
+      "runtime_descriptor": "generated/npu_array_v4_seed_g/runtime/npu_array_v4_seed_g.json",
+      "selected_ip": "npu_array_v4_seed_g",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_g_df"
+    },
+    {
+      "candidate_ips": [
+        "npu_array_v4_seed_g",
+        "npu_cluster_v4",
+        "systolic_array_16x16"
+      ],
+      "node_id": "qwen_decode_token.1.gemm_qkv",
+      "op": "gemm_qkv",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_16x16.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_16x16/runtime/systolic_array_16x16.json",
+      "selected_ip": "systolic_array_16x16",
+      "wrapper": "gemma_codegen_systolic_array_16x16_df"
+    },
+    {
+      "candidate_ips": [
+        "npu_array_v4_seed_g",
+        "npu_cluster_v4",
+        "systolic_array_16x16"
+      ],
+      "node_id": "qwen_decode_token.2.rope",
+      "op": "rope",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_g.rtlmap.json",
+      "runtime_descriptor": "generated/npu_array_v4_seed_g/runtime/npu_array_v4_seed_g.json",
+      "selected_ip": "npu_array_v4_seed_g",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_g_df"
+    },
+    {
+      "candidate_ips": [
+        "npu_array_v4_seed_g",
+        "npu_cluster_v4",
+        "systolic_array_16x16"
+      ],
+      "node_id": "qwen_decode_token.3.attention_decode",
+      "op": "attention_decode",
+      "rtl_mapping": "generated/mappings/ip/npu_cluster_v4.rtlmap.json",
+      "runtime_descriptor": "generated/npu_cluster_v4/runtime/npu_cluster_v4.json",
+      "selected_ip": "npu_cluster_v4",
+      "wrapper": "gemma_codegen_npu_cluster_v4_df"
+    },
+    {
+      "candidate_ips": [
+        "npu_array_v4_seed_g",
+        "npu_cluster_v4",
+        "systolic_array_16x16"
+      ],
+      "node_id": "qwen_decode_token.4.gemm_mlp_gate_up",
+      "op": "gemm_mlp_gate_up",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_16x16.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_16x16/runtime/systolic_array_16x16.json",
+      "selected_ip": "systolic_array_16x16",
+      "wrapper": "gemma_codegen_systolic_array_16x16_df"
+    },
+    {
+      "candidate_ips": [
+        "npu_array_v4_seed_g",
+        "npu_cluster_v4",
+        "systolic_array_16x16"
+      ],
+      "node_id": "qwen_decode_token.5.silu",
+      "op": "silu",
+      "rtl_mapping": "generated/mappings/ip/npu_array_v4_seed_g.rtlmap.json",
+      "runtime_descriptor": "generated/npu_array_v4_seed_g/runtime/npu_array_v4_seed_g.json",
+      "selected_ip": "npu_array_v4_seed_g",
+      "wrapper": "gemma_codegen_npu_array_v4_seed_g_df"
+    },
+    {
+      "candidate_ips": [
+        "npu_array_v4_seed_g",
+        "npu_cluster_v4",
+        "systolic_array_16x16"
+      ],
+      "node_id": "qwen_decode_token.6.gemm_mlp_down",
+      "op": "gemm_mlp_down",
+      "rtl_mapping": "generated/mappings/ip/systolic_array_16x16.rtlmap.json",
+      "runtime_descriptor": "generated/systolic_array_16x16/runtime/systolic_array_16x16.json",
+      "selected_ip": "systolic_array_16x16",
+      "wrapper": "gemma_codegen_systolic_array_16x16_df"
+    }
+  ],
+  "schema": "gemma-pipeline-rtl-mapping-v1"
+}

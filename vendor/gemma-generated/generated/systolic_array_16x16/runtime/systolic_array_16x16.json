@@ -1,0 +1,37 @@
+{
+  "compiler_contract": {
+    "input": "cmd_valid/cmd_ready/token_in",
+    "output": "done_valid/token_out",
+    "schedule_granularity": "single_ip_invocation",
+    "token_width": 256
+  },
+  "dataflow_role": "gemm_tile",
+  "external_source": null,
+  "formal": "systolic_array_16x16",
+  "hardware": {
+    "external_command": null,
+    "filelist": "generated/systolic_array_16x16/hardware/systolic_array_16x16.f",
+    "tcl": "generated/systolic_array_16x16/hardware/systolic_array_16x16_synth.tcl"
+  },
+  "kind": "systolic",
+  "module": "sovryn_pan_stem_systolic_array_16x16",
+  "name": "systolic_array_16x16",
+  "rtl_mapping": "generated/mappings/ip/systolic_array_16x16.rtlmap.json",
+  "runtime": {
+    "descriptor": "generated/systolic_array_16x16/runtime/systolic_array_16x16.json",
+    "external_runtime_python": null,
+    "launch_mode": "gemma_dataflow_wrapper"
+  },
+  "simulator": {
+    "command": "verilator --binary -f generated/systolic_array_16x16/hardware/systolic_array_16x16.f --top gemma_codegen_systolic_array_16x16_df_tb",
+    "external_command": null,
+    "filelist": "generated/systolic_array_16x16/hardware/systolic_array_16x16.f",
+    "smoke_tb": "generated/systolic_array_16x16/sim/systolic_array_16x16_smoke_tb.sv"
+  },
+  "source": "rtl/designs/sovryn_pan_stem_systolic_array_16x16_baseline.v",
+  "sources": [
+    "rtl/designs/sovryn_pan_stem_systolic_array_16x16_baseline.v"
+  ],
+  "status": "wrapped",
+  "wrapper": "gemma_codegen_systolic_array_16x16_df"
+}

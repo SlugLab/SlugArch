@@ -1,0 +1,86 @@
+{
+  "backend_hooks": {
+    "hardware": {
+      "external_command": "cd /root/ternary_matmul && make vivado CONFIG=xcu250_D=1024_OneCore",
+      "filelist": "generated/ternary_matmul_core/hardware/ternary_matmul_core.f",
+      "tcl": "generated/ternary_matmul_core/hardware/ternary_matmul_core_synth.tcl"
+    },
+    "runtime": {
+      "descriptor": "generated/ternary_matmul_core/runtime/ternary_matmul_core.json",
+      "external_runtime_python": "/root/ternary_matmul/sw_utils",
+      "launch_mode": "external_ternary_matmul"
+    },
+    "simulator": {
+      "command": "verilator --binary -f generated/ternary_matmul_core/hardware/ternary_matmul_core.f --top gemma_codegen_ternary_matmul_core_df_tb",
+      "external_command": "cd /root/ternary_matmul && make sim TOP=tmatmul_tb",
+      "filelist": "generated/ternary_matmul_core/hardware/ternary_matmul_core.f",
+      "smoke_tb": "generated/ternary_matmul_core/sim/ternary_matmul_core_smoke_tb.sv"
+    }
+  },
+  "compiler": {
+    "contract": {
+      "input": "cmd_valid/cmd_ready/token_in",
+      "output": "done_valid/token_out",
+      "schedule_granularity": "single_ip_invocation",
+      "token_width": 256
+    },
+    "dataflow_role": "ternary_matmul",
+    "schedule_granularity": "single_ip_invocation",
+    "wrapper": "gemma_codegen_ternary_matmul_core_df"
+  },
+  "dataflow_edges": {
+    "inputs": [
+      {
+        "kind": "control",
+        "name": "cmd_valid"
+      },
+      {
+        "kind": "backpressure",
+        "name": "cmd_ready"
+      },
+      {
+        "kind": "payload",
+        "name": "token_in",
+        "width": 256
+      }
+    ],
+    "outputs": [
+      {
+        "kind": "completion",
+        "name": "done_valid"
+      },
+      {
+        "kind": "payload",
+        "name": "token_out",
+        "width": 256
+      }
+    ]
+  },
+  "external": {
+    "compiler_entry": "/root/ternary_matmul/sw_utils/lib/algorithm_tree.py",
+    "hardware_command": "cd /root/ternary_matmul && make vivado CONFIG=xcu250_D=1024_OneCore",
+    "root": "/root/ternary_matmul",
+    "rtl_filelist": "/root/ternary_matmul/rtl/rtl.f",
+    "runtime_python": "/root/ternary_matmul/sw_utils",
+    "sim_command": "cd /root/ternary_matmul && make sim TOP=tmatmul_tb"
+  },
+  "external_source": "ternary_matmul",
+  "kind": "ternary",
+  "name": "ternary_matmul_core",
+  "notes": [
+    "This file is the compiler-generated RTL mapping. Wrappers and runtime descriptors are derived from it."
+  ],
+  "port_bindings": [],
+  "rtl": {
+    "formal": null,
+    "module": "matrix_unit_core",
+    "source": null,
+    "sources": [
+      "/root/ternary_matmul/rtl/matrix_unit/matrix_unit_core.sv"
+    ],
+    "top_for_build": "gemma_codegen_ternary_matmul_core_df",
+    "wrapper_source": "generated/ternary_matmul_core/rtl/ternary_matmul_core_df_wrapper.sv"
+  },
+  "schema": "gemma-rtl-mapping-v1",
+  "status": "descriptor_only"
+}

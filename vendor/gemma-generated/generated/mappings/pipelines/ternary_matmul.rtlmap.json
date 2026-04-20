@@ -1,0 +1,53 @@
+{
+  "edges": [
+    {
+      "channel": "token",
+      "from": "ternary_matmul.0.tmatmul_import",
+      "to": "ternary_matmul.1.tmatmul_go"
+    },
+    {
+      "channel": "token",
+      "from": "ternary_matmul.1.tmatmul_go",
+      "to": "ternary_matmul.2.tmatmul_export"
+    }
+  ],
+  "generated_catalog": "generated/mappings/rtl_mapping_catalog.json",
+  "kind": "ternary",
+  "name": "ternary_matmul",
+  "nodes": [
+    {
+      "candidate_ips": [
+        "ternary_matmul_core"
+      ],
+      "node_id": "ternary_matmul.0.tmatmul_import",
+      "op": "tmatmul_import",
+      "rtl_mapping": "generated/mappings/ip/ternary_matmul_core.rtlmap.json",
+      "runtime_descriptor": "generated/ternary_matmul_core/runtime/ternary_matmul_core.json",
+      "selected_ip": "ternary_matmul_core",
+      "wrapper": "gemma_codegen_ternary_matmul_core_df"
+    },
+    {
+      "candidate_ips": [
+        "ternary_matmul_core"
+      ],
+      "node_id": "ternary_matmul.1.tmatmul_go",
+      "op": "tmatmul_go",
+      "rtl_mapping": "generated/mappings/ip/ternary_matmul_core.rtlmap.json",
+      "runtime_descriptor": "generated/ternary_matmul_core/runtime/ternary_matmul_core.json",
+      "selected_ip": "ternary_matmul_core",
+      "wrapper": "gemma_codegen_ternary_matmul_core_df"
+    },
+    {
+      "candidate_ips": [
+        "ternary_matmul_core"
+      ],
+      "node_id": "ternary_matmul.2.tmatmul_export",
+      "op": "tmatmul_export",
+      "rtl_mapping": "generated/mappings/ip/ternary_matmul_core.rtlmap.json",
+      "runtime_descriptor": "generated/ternary_matmul_core/runtime/ternary_matmul_core.json",
+      "selected_ip": "ternary_matmul_core",
+      "wrapper": "gemma_codegen_ternary_matmul_core_df"
+    }
+  ],
+  "schema": "gemma-pipeline-rtl-mapping-v1"
+}

@@ -1,0 +1,224 @@
+{
+  "backend_hooks": {
+    "hardware": {
+      "external_command": null,
+      "filelist": "generated/mini_systolic_tile/hardware/mini_systolic_tile.f",
+      "tcl": "generated/mini_systolic_tile/hardware/mini_systolic_tile_synth.tcl"
+    },
+    "runtime": {
+      "descriptor": "generated/mini_systolic_tile/runtime/mini_systolic_tile.json",
+      "external_runtime_python": null,
+      "launch_mode": "gemma_dataflow_wrapper"
+    },
+    "simulator": {
+      "command": "verilator --binary -f generated/mini_systolic_tile/hardware/mini_systolic_tile.f --top gemma_codegen_mini_systolic_tile_df_tb",
+      "external_command": null,
+      "filelist": "generated/mini_systolic_tile/hardware/mini_systolic_tile.f",
+      "smoke_tb": "generated/mini_systolic_tile/sim/mini_systolic_tile_smoke_tb.sv"
+    }
+  },
+  "compiler": {
+    "contract": {
+      "input": "cmd_valid/cmd_ready/token_in",
+      "output": "done_valid/token_out",
+      "schedule_granularity": "single_ip_invocation",
+      "token_width": 256
+    },
+    "dataflow_role": "tile_mac",
+    "schedule_granularity": "single_ip_invocation",
+    "wrapper": "gemma_codegen_mini_systolic_tile_df"
+  },
+  "dataflow_edges": {
+    "inputs": [
+      {
+        "kind": "control",
+        "name": "cmd_valid"
+      },
+      {
+        "kind": "backpressure",
+        "name": "cmd_ready"
+      },
+      {
+        "kind": "payload",
+        "name": "token_in",
+        "width": 256
+      }
+    ],
+    "outputs": [
+      {
+        "kind": "completion",
+        "name": "done_valid"
+      },
+      {
+        "kind": "payload",
+        "name": "token_out",
+        "width": 256
+      }
+    ]
+  },
+  "external": null,
+  "external_source": null,
+  "kind": "systolic",
+  "name": "mini_systolic_tile",
+  "notes": [
+    "This file is the compiler-generated RTL mapping. Wrappers and runtime descriptors are derived from it."
+  ],
+  "port_bindings": [
+    {
+      "compiler_expression": "clk",
+      "compiler_signal": "clk",
+      "direction": "input",
+      "range": "",
+      "role": "clock",
+      "rtl_port": "clk",
+      "width": 1
+    },
+    {
+      "compiler_expression": "rst_n",
+      "compiler_signal": "rst_n",
+      "direction": "input",
+      "range": "",
+      "role": "reset",
+      "rtl_port": "rst_n",
+      "width": 1
+    },
+    {
+      "compiler_expression": "fire",
+      "compiler_signal": "cmd_valid_and_ready",
+      "direction": "input",
+      "range": "",
+      "role": "control",
+      "rtl_port": "in_valid",
+      "width": 1
+    },
+    {
+      "compiler_expression": "token_in[3 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "a00",
+      "width": 8
+    },
+    {
+      "compiler_expression": "token_in[11 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "a01",
+      "width": 8
+    },
+    {
+      "compiler_expression": "token_in[19 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "a10",
+      "width": 8
+    },
+    {
+      "compiler_expression": "token_in[27 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "a11",
+      "width": 8
+    },
+    {
+      "compiler_expression": "token_in[35 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "b00",
+      "width": 8
+    },
+    {
+      "compiler_expression": "token_in[43 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "b01",
+      "width": 8
+    },
+    {
+      "compiler_expression": "token_in[51 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "b10",
+      "width": 8
+    },
+    {
+      "compiler_expression": "token_in[59 +: 8]",
+      "compiler_signal": "token_in",
+      "direction": "input",
+      "range": "[7:0]",
+      "role": "payload",
+      "rtl_port": "b11",
+      "width": 8
+    },
+    {
+      "compiler_expression": "u_out_valid",
+      "compiler_signal": "done_valid",
+      "direction": "output",
+      "range": "",
+      "role": "completion",
+      "rtl_port": "out_valid",
+      "width": 1
+    },
+    {
+      "compiler_expression": "{239'd0, u_c00}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[16:0]",
+      "role": "payload",
+      "rtl_port": "c00",
+      "width": 17
+    },
+    {
+      "compiler_expression": "{239'd0, u_c01}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[16:0]",
+      "role": "payload",
+      "rtl_port": "c01",
+      "width": 17
+    },
+    {
+      "compiler_expression": "{239'd0, u_c10}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[16:0]",
+      "role": "payload",
+      "rtl_port": "c10",
+      "width": 17
+    },
+    {
+      "compiler_expression": "{239'd0, u_c11}",
+      "compiler_signal": "token_out",
+      "direction": "output",
+      "range": "[16:0]",
+      "role": "payload",
+      "rtl_port": "c11",
+      "width": 17
+    }
+  ],
+  "rtl": {
+    "formal": "mini_systolic_tile",
+    "module": "sovryn_pan_stem_mini_systolic_tile",
+    "source": "rtl/designs/sovryn_pan_stem_mini_systolic_tile_baseline.v",
+    "sources": [
+      "rtl/designs/sovryn_pan_stem_mini_systolic_tile_baseline.v"
+    ],
+    "top_for_build": "gemma_codegen_mini_systolic_tile_df",
+    "wrapper_source": "generated/mini_systolic_tile/rtl/mini_systolic_tile_df_wrapper.sv"
+  },
+  "schema": "gemma-rtl-mapping-v1",
+  "status": "wrapped"
+}
