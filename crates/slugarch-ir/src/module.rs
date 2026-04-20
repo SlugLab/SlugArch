@@ -75,6 +75,12 @@ impl<'ctx> FunctionBuilder<'ctx> {
         self.f.edges.push(edge);
     }
 
+    /// Replace the OpMeta for an op. Used by frontends that know the source-hint
+    /// at op creation time but can't set it inside the single-arg `add_op` call.
+    pub fn finish_meta(&mut self, id: OpId, meta: OpMeta) {
+        self.f.meta.insert(id, meta);
+    }
+
     pub fn finish(self) -> Function { self.f }
 }
 
