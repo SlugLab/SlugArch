@@ -14,5 +14,5 @@ pub use msg::{
     M2SReqOp, M2SRwDOp, S2MDRSOp, S2MNDROp,
     D2HReqOp, D2HRespOp, H2DReqOp, H2DRespOp,
 };
-pub use encode::encode;
-pub use decode::decode;
+// pub use encode::encode;   // Task 3
+// pub use decode::decode;   // Task 4
