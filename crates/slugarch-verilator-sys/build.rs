@@ -7,13 +7,18 @@ fn main() {
     println!("cargo:rerun-if-changed=shim/ip_shim.cpp");
 
     let crate_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let vendor_root = crate_dir.join("..").join("..").join("vendor").join("gemma-generated");
+    let vendor_root = crate_dir
+        .join("..")
+        .join("..")
+        .join("vendor")
+        .join("gemma-generated");
     let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
 
-    let verilator_bin = std::env::var("VERILATOR").unwrap_or_else(|_|
-        "/home/victoryang00/tools/verilator/bin/verilator".to_string());
-    let verilator_include = std::env::var("VERILATOR_INCLUDE").unwrap_or_else(|_|
-        "/home/victoryang00/tools/verilator/share/verilator/include".to_string());
+    let verilator_bin = std::env::var("VERILATOR")
+        .unwrap_or_else(|_| "/home/victoryang00/tools/verilator/bin/verilator".to_string());
+    let verilator_include = std::env::var("VERILATOR_INCLUDE").unwrap_or_else(|_| {
+        "/home/victoryang00/tools/verilator/share/verilator/include".to_string()
+    });
 
     for ip in IPS {
         verilate_ip(&verilator_bin, &vendor_root, &out_dir, ip);
@@ -42,8 +47,13 @@ fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str
     println!("cargo:rerun-if-changed={}", original_path.display());
     for line in original.lines() {
         let line = line.trim();
-        if line.is_empty() || line.starts_with('#') { continue; }
-        println!("cargo:rerun-if-changed={}", vendor_root.join(line).display());
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
+        println!(
+            "cargo:rerun-if-changed={}",
+            vendor_root.join(line).display()
+        );
     }
 
     let filtered: String = original
@@ -56,14 +66,25 @@ fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str
 
     let status = Command::new(verilator_bin)
         .args([
-            "--cc", "--build", "--no-timing", "-O1",
-            "--Mdir", obj_dir.to_str().unwrap(),
-            "-Irtl/designs",  // NPU baseline uses `include of companion files (no space after -I)
-            "-f", filelist_path.to_str().unwrap(),
-            "--top-module", &wrapper_top,
-            "-Wno-UNUSED", "-Wno-UNUSEDSIGNAL", "-Wno-WIDTH", "-Wno-TIMESCALEMOD",
-            "-Wno-MODDUP",  // NPU baseline `includes companion files also listed in the .f
-            "-Wno-IMPORTSTAR", "-Wno-CASEINCOMPLETE", "-Wno-INITIALDLY",
+            "--cc",
+            "--build",
+            "--no-timing",
+            "-O1",
+            "--Mdir",
+            obj_dir.to_str().unwrap(),
+            "-Irtl/designs", // NPU baseline uses `include of companion files (no space after -I)
+            "-f",
+            filelist_path.to_str().unwrap(),
+            "--top-module",
+            &wrapper_top,
+            "-Wno-UNUSED",
+            "-Wno-UNUSEDSIGNAL",
+            "-Wno-WIDTH",
+            "-Wno-TIMESCALEMOD",
+            "-Wno-MODDUP", // NPU baseline `includes companion files also listed in the .f
+            "-Wno-IMPORTSTAR",
+            "-Wno-CASEINCOMPLETE",
+            "-Wno-INITIALDLY",
         ])
         .current_dir(vendor_root)
         .status()
@@ -86,7 +107,8 @@ fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str
 
 fn compile_shim(out_dir: &Path, verilator_include: &str) {
     let mut build = cc::Build::new();
-    build.cpp(true)
+    build
+        .cpp(true)
         .std("c++17")
         .file("shim/ip_shim.cpp")
         .include("shim")
@@ -106,6 +128,7 @@ fn generate_bindings(out_dir: &Path) {
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .generate()
         .expect("bindgen failed");
-    bindings.write_to_file(out_dir.join("bindings.rs"))
+    bindings
+        .write_to_file(out_dir.join("bindings.rs"))
         .expect("failed to write bindings.rs");
 }

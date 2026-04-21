@@ -6,8 +6,14 @@ use std::process::Command;
 
 const IPS: &[(&str, &str)] = &[
     ("systolic_array_4x4", env!("BENCH_BIN_SYSTOLIC_ARRAY_4X4")),
-    ("systolic_array_16x16", env!("BENCH_BIN_SYSTOLIC_ARRAY_16X16")),
-    ("systolic_array_32x32", env!("BENCH_BIN_SYSTOLIC_ARRAY_32X32")),
+    (
+        "systolic_array_16x16",
+        env!("BENCH_BIN_SYSTOLIC_ARRAY_16X16"),
+    ),
+    (
+        "systolic_array_32x32",
+        env!("BENCH_BIN_SYSTOLIC_ARRAY_32X32"),
+    ),
     ("npu_array_v4_seed_g", env!("BENCH_BIN_NPU_ARRAY_V4_SEED_G")),
     ("npu_cluster_v4", env!("BENCH_BIN_NPU_CLUSTER_V4")),
     ("noc_mesh", env!("BENCH_BIN_NOC_MESH")),
