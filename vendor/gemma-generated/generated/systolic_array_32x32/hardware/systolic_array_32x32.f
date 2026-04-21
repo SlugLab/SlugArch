@@ -1,0 +1,4 @@
+# Generated filelist
+rtl/designs/sovryn_pan_stem_systolic_array_32x32_baseline.v
+generated/systolic_array_32x32/rtl/systolic_array_32x32_df_wrapper.sv
+generated/systolic_array_32x32/sim/systolic_array_32x32_smoke_tb.sv

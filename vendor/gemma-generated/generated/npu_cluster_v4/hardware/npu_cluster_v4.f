@@ -1,0 +1,5 @@
+# Generated filelist
+rtl/designs/sovryn_pan_stem_npu_cluster_v4_baseline.v
+rtl/designs/sovryn_pan_stem_npu_cluster_v4_top.v
+generated/npu_cluster_v4/rtl/npu_cluster_v4_df_wrapper.sv
+generated/npu_cluster_v4/sim/npu_cluster_v4_smoke_tb.sv

@@ -1,0 +1,7 @@
+# Generated filelist
+rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_issue.v
+rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_state.v
+rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_tile.v
+rtl/designs/sovryn_pan_stem_npu_array_v4_seed_g_baseline.v
+generated/npu_array_v4_seed_g/rtl/npu_array_v4_seed_g_df_wrapper.sv
+generated/npu_array_v4_seed_g/sim/npu_array_v4_seed_g_smoke_tb.sv
