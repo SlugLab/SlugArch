@@ -893,6 +893,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "slugarch-cxl-wire"
+version = "0.1.0"
+dependencies = [
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "slugarch-fabric"
 version = "0.1.0"
 dependencies = [
@@ -943,6 +953,18 @@ version = "0.1.0"
 dependencies = [
  "bindgen",
  "cc",
+]
+
+[[package]]
+name = "slugcxl-gen"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "insta",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
 ]
 
 [[package]]

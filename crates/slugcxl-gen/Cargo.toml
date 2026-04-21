@@ -1,0 +1,19 @@
+[package]
+name = "slugcxl-gen"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "slugcxl-gen"
+path = "src/main.rs"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+insta.workspace = true

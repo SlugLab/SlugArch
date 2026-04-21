@@ -10,6 +10,7 @@ members = [
     "crates/slugarch-fabric",
     "crates/slugarch-verilator",
     "crates/slugarch-verilator-sys",
+    "crates/slugcxl-gen",
     "vendor/concordia-ptx/ptx_parser",
     "vendor/concordia-ptx/ptx_parser_macros",
     "vendor/concordia-ptx/ptx_parser_macros_impl",
