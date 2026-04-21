@@ -772,6 +772,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "slugarch-cli"
+version = "0.1.0"
+
+[[package]]
+name = "slugarch-fabric"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "serde",
+ "serde_json",
+ "slugarch-backend",
+ "slugarch-ir",
+ "slugarch-ptx-frontend",
+ "slugarch-verilator",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "slugarch-ir"
 version = "0.1.0"
 dependencies = [
