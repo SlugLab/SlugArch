@@ -4,6 +4,7 @@ members = [
     "crates/slugarch-ir",
     "crates/slugarch-ptx-frontend",
     "crates/slugarch-backend",
+    "crates/slugarch-bench",
     "crates/slugarch-verilator",
     "crates/slugarch-verilator-sys",
     "vendor/concordia-ptx/ptx_parser",

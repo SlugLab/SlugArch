@@ -765,6 +765,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "slugarch-bench"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+]
+
+[[package]]
 name = "slugarch-ir"
 version = "0.1.0"
 dependencies = [
