@@ -15,4 +15,4 @@ pub use msg::{
     D2HReqOp, D2HRespOp, H2DReqOp, H2DRespOp,
 };
 pub use encode::encode;
-// pub use decode::decode;   // Task 4
+pub use decode::decode;
