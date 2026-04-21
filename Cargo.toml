@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/slugarch-ir",
     "crates/slugarch-ptx-frontend",
+    "crates/slugarch-verilator",
     "crates/slugarch-verilator-sys",
     "vendor/concordia-ptx/ptx_parser",
     "vendor/concordia-ptx/ptx_parser_macros",

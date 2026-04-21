@@ -777,6 +777,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "slugarch-verilator"
+version = "0.1.0"
+dependencies = [
+ "slugarch-ir",
+ "slugarch-verilator-sys",
+]
+
+[[package]]
 name = "slugarch-verilator-sys"
 version = "0.1.0"
 dependencies = [
