@@ -1,5 +1,95 @@
+use std::path::{Path, PathBuf};
+use std::process::Command;
+
 fn main() {
-    // Task 3 adds the real Verilator invocation. For now build.rs is a no-op
-    // so the workspace compiles.
     println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=shim/ip_shim.h");
+    println!("cargo:rerun-if-changed=shim/ip_shim.cpp");
+
+    let crate_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let vendor_root = crate_dir.join("..").join("..").join("vendor").join("gemma-generated");
+    let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
+
+    let verilator_bin = std::env::var("VERILATOR").unwrap_or_else(|_|
+        "/home/victoryang00/tools/verilator/bin/verilator".to_string());
+    let verilator_include = std::env::var("VERILATOR_INCLUDE").unwrap_or_else(|_|
+        "/home/victoryang00/tools/verilator/share/verilator/include".to_string());
+
+    verilate_ip(&verilator_bin, &vendor_root, &out_dir, "systolic_array_4x4");
+    compile_shim(&out_dir, &verilator_include);
+    generate_bindings(&out_dir);
+}
+
+fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str) {
+    let obj_dir = out_dir.join(format!("obj_dir_{}", ip));
+    let wrapper_top = format!("gemma_codegen_{}_df", ip);
+
+    let original_path = vendor_root.join(format!("generated/{}/hardware/{}.f", ip, ip));
+    let original = std::fs::read_to_string(&original_path)
+        .unwrap_or_else(|e| panic!("reading {}: {}", original_path.display(), e));
+    println!("cargo:rerun-if-changed={}", original_path.display());
+    for line in original.lines() {
+        let line = line.trim();
+        if line.is_empty() || line.starts_with('#') { continue; }
+        println!("cargo:rerun-if-changed={}", vendor_root.join(line).display());
+    }
+
+    let filtered: String = original
+        .lines()
+        .filter(|line| !line.contains("smoke_tb"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let filelist_path = out_dir.join(format!("{}.verilator.f", ip));
+    std::fs::write(&filelist_path, &filtered).unwrap();
+
+    let status = Command::new(verilator_bin)
+        .args([
+            "--cc", "--build", "--no-timing", "-O1",
+            "--Mdir", obj_dir.to_str().unwrap(),
+            "-f", filelist_path.to_str().unwrap(),
+            "--top-module", &wrapper_top,
+            "-Wno-UNUSED", "-Wno-UNUSEDSIGNAL", "-Wno-WIDTH", "-Wno-TIMESCALEMOD",
+        ])
+        .current_dir(vendor_root)
+        .status()
+        .expect("failed to invoke verilator");
+    if !status.success() {
+        panic!("verilator failed on {}", ip);
+    }
+
+    // Verilator 5.x emits two archives in obj_dir:
+    //   libV<top>.a      — the model, lib-prefixed and Rust-linkable as `V<top>`
+    //   libverilated.a   — the Verilator runtime
+    let libpath = obj_dir.join(format!("libV{}.a", wrapper_top));
+    if !libpath.exists() {
+        panic!("expected Verilator output not found: {}", libpath.display());
+    }
+    println!("cargo:rustc-link-search=native={}", obj_dir.display());
+    println!("cargo:rustc-link-lib=static=V{}", wrapper_top);
+    println!("cargo:rustc-link-lib=static=verilated");
+}
+
+fn compile_shim(out_dir: &Path, verilator_include: &str) {
+    let obj_dir = out_dir.join("obj_dir_systolic_array_4x4");
+    cc::Build::new()
+        .cpp(true)
+        .std("c++17")
+        .file("shim/ip_shim.cpp")
+        .include("shim")
+        .include(verilator_include)
+        .include(&obj_dir)
+        .compile("slugarch_verilator_shim");
+    println!("cargo:rustc-link-lib=stdc++");
+}
+
+fn generate_bindings(out_dir: &Path) {
+    let bindings = bindgen::Builder::default()
+        .header("shim/ip_shim.h")
+        .clang_arg("-x")
+        .clang_arg("c")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .generate()
+        .expect("bindgen failed");
+    bindings.write_to_file(out_dir.join("bindings.rs"))
+        .expect("failed to write bindings.rs");
 }
