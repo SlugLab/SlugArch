@@ -15,9 +15,18 @@ pub enum OperandRef {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ArithKind {
-    Add, Sub, Mul, Mad, Div, Rem, Fma,
-    Min, Max, Abs,
-    Cvt, Mov,
+    Add,
+    Sub,
+    Mul,
+    Mad,
+    Div,
+    Rem,
+    Fma,
+    Min,
+    Max,
+    Abs,
+    Cvt,
+    Mov,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -66,7 +75,10 @@ pub enum Op {
     /// Fallback emulation op (lowers to ptx_emulation_core).
     /// Opcode values match those listed in
     /// `vendor/gemma-generated/generated/ptx_emulation_core/runtime/ptx_emulation_core.json`.
-    Emu { opcode: u32, operands: Vec<OperandRef> },
+    Emu {
+        opcode: u32,
+        operands: Vec<OperandRef>,
+    },
 }
 
 /// Metadata attached to an Op once passes have annotated it.

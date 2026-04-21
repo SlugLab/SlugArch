@@ -12,14 +12,20 @@ fn four_passes_run_end_to_end_on_synthetic_module() {
     // Build a tiny graph: RmsNorm -> Gemm(64x64) -> AttnDecode.
     let mut ctx = Context::new();
     let mut b = FunctionBuilder::new(&mut ctx, "tiny");
-    let rms = b.add_op(Op::StateStep { kind: StateKind::RmsNorm, operands: vec![] });
+    let rms = b.add_op(Op::StateStep {
+        kind: StateKind::RmsNorm,
+        operands: vec![],
+    });
     let gemm = b.add_op(Op::TensorTile {
         kind: TileKind::Gemm,
         shape: Shape(vec![64, 64]),
         dtype: Dtype::F16,
         operands: vec![],
     });
-    let attn = b.add_op(Op::StateStep { kind: StateKind::AttnDecode, operands: vec![] });
+    let attn = b.add_op(Op::StateStep {
+        kind: StateKind::AttnDecode,
+        operands: vec![],
+    });
     b.add_edge(Edge::Data(rms, gemm));
     b.add_edge(Edge::Data(gemm, attn));
     let mut m = Module::default();
@@ -34,7 +40,10 @@ fn four_passes_run_end_to_end_on_synthetic_module() {
     for id in &f.order {
         let meta = f.meta.get(id).unwrap();
         assert!(meta.backend.is_some(), "op {id:?} missing backend");
-        assert!(meta.token_in.is_some() && meta.token_out.is_some(), "op {id:?} missing tokens");
+        assert!(
+            meta.token_in.is_some() && meta.token_out.is_some(),
+            "op {id:?} missing tokens"
+        );
     }
     // Gemm must have landed on a systolic IP (64 -> 16x16 per DefaultPolicy).
     let gemm_ip = f.meta[&gemm].backend.unwrap().0;

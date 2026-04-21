@@ -18,8 +18,18 @@ impl Lowerer for LdStLowerer {
             Instruction::St { data, .. } => bytes_via_debug(data),
             _ => return Ok(false),
         };
-        let id = b.add_op(Op::Dma { src: 0, dst: 0, bytes });
-        b.finish_meta(id, OpMeta { source_hint: Some(hint.to_string()), ..OpMeta::default() });
+        let id = b.add_op(Op::Dma {
+            src: 0,
+            dst: 0,
+            bytes,
+        });
+        b.finish_meta(
+            id,
+            OpMeta {
+                source_hint: Some(hint.to_string()),
+                ..OpMeta::default()
+            },
+        );
         Ok(true)
     }
 }
@@ -29,9 +39,15 @@ impl Lowerer for LdStLowerer {
 /// we know which widths are actually used.
 fn bytes_via_debug<T: core::fmt::Debug>(data: &T) -> u64 {
     let s = format!("{:?}", data);
-    if s.contains("B64") || s.contains("64") { 8 }
-    else if s.contains("B32") || s.contains("32") { 4 }
-    else if s.contains("B16") || s.contains("16") { 2 }
-    else if s.contains("B8") || s.contains("8") { 1 }
-    else { 4 }
+    if s.contains("B64") || s.contains("64") {
+        8
+    } else if s.contains("B32") || s.contains("32") {
+        4
+    } else if s.contains("B16") || s.contains("16") {
+        2
+    } else if s.contains("B8") || s.contains("8") {
+        1
+    } else {
+        4
+    }
 }

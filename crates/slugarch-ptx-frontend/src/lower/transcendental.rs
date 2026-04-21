@@ -14,17 +14,26 @@ impl Lowerer for TranscendentalLowerer {
         hint: &str,
     ) -> Result<bool, FrontendError> {
         let opcode = match inst {
-            Instruction::Sqrt { .. }  => 17,
+            Instruction::Sqrt { .. } => 17,
             Instruction::Rsqrt { .. } => 18,
-            Instruction::Sin { .. }   => 19,
-            Instruction::Cos { .. }   => 20,
-            Instruction::Tanh { .. }  => 21,
-            Instruction::Lg2 { .. }   => 22,
-            Instruction::Ex2 { .. }   => 23,
+            Instruction::Sin { .. } => 19,
+            Instruction::Cos { .. } => 20,
+            Instruction::Tanh { .. } => 21,
+            Instruction::Lg2 { .. } => 22,
+            Instruction::Ex2 { .. } => 23,
             _ => return Ok(false),
         };
-        let id = b.add_op(Op::Emu { opcode, operands: vec![] });
-        b.finish_meta(id, OpMeta { source_hint: Some(hint.to_string()), ..OpMeta::default() });
+        let id = b.add_op(Op::Emu {
+            opcode,
+            operands: vec![],
+        });
+        b.finish_meta(
+            id,
+            OpMeta {
+                source_hint: Some(hint.to_string()),
+                ..OpMeta::default()
+            },
+        );
         Ok(true)
     }
 }

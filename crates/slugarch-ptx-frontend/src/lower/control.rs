@@ -13,17 +13,29 @@ impl Lowerer for ControlLowerer {
         b: &mut FunctionBuilder<'_>,
         hint: &str,
     ) -> Result<bool, FrontendError> {
-        let matched = matches!(inst,
+        let matched = matches!(
+            inst,
             Instruction::Bra { .. }
-            | Instruction::Call { .. }
-            | Instruction::Ret { .. }
-            | Instruction::Bar { .. }
-            | Instruction::BarWarp { .. }
-            | Instruction::BarRed { .. }
+                | Instruction::Call { .. }
+                | Instruction::Ret { .. }
+                | Instruction::Bar { .. }
+                | Instruction::BarWarp { .. }
+                | Instruction::BarRed { .. }
         );
-        if !matched { return Ok(false); }
-        let id = b.add_op(Op::Emu { opcode: 254, operands: vec![] });
-        b.finish_meta(id, OpMeta { source_hint: Some(hint.to_string()), ..OpMeta::default() });
+        if !matched {
+            return Ok(false);
+        }
+        let id = b.add_op(Op::Emu {
+            opcode: 254,
+            operands: vec![],
+        });
+        b.finish_meta(
+            id,
+            OpMeta {
+                source_hint: Some(hint.to_string()),
+                ..OpMeta::default()
+            },
+        );
         Ok(true)
     }
 }

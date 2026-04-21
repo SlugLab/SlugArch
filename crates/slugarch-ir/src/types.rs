@@ -63,8 +63,18 @@ pub type Addr = u64;
 /// Primitive data type of a tensor/operand.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Dtype {
-    U8, I8, U16, I16, U32, I32, U64, I64,
-    F16, BF16, F32, F64,
+    U8,
+    I8,
+    U16,
+    I16,
+    U32,
+    I32,
+    U64,
+    I64,
+    F16,
+    BF16,
+    F32,
+    F64,
 }
 
 /// Shape of a tensor tile, up to 4 dims in v1.
@@ -72,7 +82,9 @@ pub enum Dtype {
 pub struct Shape(pub Vec<u32>);
 
 impl Shape {
-    pub fn rank(&self) -> usize { self.0.len() }
+    pub fn rank(&self) -> usize {
+        self.0.len()
+    }
     pub fn num_elements(&self) -> u64 {
         self.0.iter().map(|d| *d as u64).product()
     }

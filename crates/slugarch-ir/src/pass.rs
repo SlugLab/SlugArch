@@ -26,7 +26,9 @@ mod tests {
 
     struct RenamerPass;
     impl Pass for RenamerPass {
-        fn name(&self) -> &'static str { "rename" }
+        fn name(&self) -> &'static str {
+            "rename"
+        }
         fn run(&mut self, module: &mut Module) -> Result<(), IrError> {
             for f in module.functions.iter_mut() {
                 f.name = format!("renamed_{}", f.name);
@@ -39,7 +41,11 @@ mod tests {
     fn run_passes_applies_each_pass_in_order() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "original");
-        b.add_op(Op::Arith { kind: ArithKind::Add, operands: vec![], dtype: Dtype::I32 });
+        b.add_op(Op::Arith {
+            kind: ArithKind::Add,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
         let mut m = Module::default();
         m.functions.push(b.finish());
 

@@ -10,8 +10,8 @@ const TRIVIAL_PTX: &str = r#"
 
 #[test]
 fn trivial_ptx_parses() {
-    let module = slugarch_ptx_frontend::parse_ptx_raw(TRIVIAL_PTX)
-        .expect("trivial PTX should parse");
+    let module =
+        slugarch_ptx_frontend::parse_ptx_raw(TRIVIAL_PTX).expect("trivial PTX should parse");
     assert_eq!(module.version, (7, 0));
     assert_eq!(module.invalid_directives, 0);
     assert!(!module.directives.is_empty());

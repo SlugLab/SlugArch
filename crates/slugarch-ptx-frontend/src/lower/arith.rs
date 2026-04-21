@@ -29,8 +29,18 @@ impl Lowerer for ArithLowerer {
             Instruction::Mov { data, .. } => (ArithKind::Mov, dtype_via_debug(data)),
             _ => return Ok(false),
         };
-        let id = b.add_op(Op::Arith { kind, operands: vec![], dtype });
-        b.finish_meta(id, OpMeta { source_hint: Some(hint.to_string()), ..OpMeta::default() });
+        let id = b.add_op(Op::Arith {
+            kind,
+            operands: vec![],
+            dtype,
+        });
+        b.finish_meta(
+            id,
+            OpMeta {
+                source_hint: Some(hint.to_string()),
+                ..OpMeta::default()
+            },
+        );
         Ok(true)
     }
 }
@@ -41,17 +51,31 @@ impl Lowerer for ArithLowerer {
 /// matches avoid coupling to the exact ptx_parser AST enum shape.
 fn dtype_via_debug<T: core::fmt::Debug>(data: &T) -> Dtype {
     let s = format!("{:?}", data);
-    if s.contains("F16") || s.contains("f16") { Dtype::F16 }
-    else if s.contains("BF16") || s.contains("bf16") { Dtype::BF16 }
-    else if s.contains("F32") || s.contains("f32") { Dtype::F32 }
-    else if s.contains("F64") || s.contains("f64") { Dtype::F64 }
-    else if s.contains("U8") || s.contains("u8") { Dtype::U8 }
-    else if s.contains("I8") || s.contains("i8") { Dtype::I8 }
-    else if s.contains("U16") || s.contains("u16") { Dtype::U16 }
-    else if s.contains("I16") || s.contains("i16") { Dtype::I16 }
-    else if s.contains("U32") || s.contains("u32") { Dtype::U32 }
-    else if s.contains("I32") || s.contains("i32") { Dtype::I32 }
-    else if s.contains("U64") || s.contains("u64") { Dtype::U64 }
-    else if s.contains("I64") || s.contains("i64") { Dtype::I64 }
-    else { Dtype::I32 }
+    if s.contains("F16") || s.contains("f16") {
+        Dtype::F16
+    } else if s.contains("BF16") || s.contains("bf16") {
+        Dtype::BF16
+    } else if s.contains("F32") || s.contains("f32") {
+        Dtype::F32
+    } else if s.contains("F64") || s.contains("f64") {
+        Dtype::F64
+    } else if s.contains("U8") || s.contains("u8") {
+        Dtype::U8
+    } else if s.contains("I8") || s.contains("i8") {
+        Dtype::I8
+    } else if s.contains("U16") || s.contains("u16") {
+        Dtype::U16
+    } else if s.contains("I16") || s.contains("i16") {
+        Dtype::I16
+    } else if s.contains("U32") || s.contains("u32") {
+        Dtype::U32
+    } else if s.contains("I32") || s.contains("i32") {
+        Dtype::I32
+    } else if s.contains("U64") || s.contains("u64") {
+        Dtype::U64
+    } else if s.contains("I64") || s.contains("i64") {
+        Dtype::I64
+    } else {
+        Dtype::I32
+    }
 }

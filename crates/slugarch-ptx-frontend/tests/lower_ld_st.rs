@@ -21,6 +21,10 @@ fn ld_and_st_lower_to_dma() {
     let mut ctx = Context::new();
     let m = slugarch_ptx_frontend::lower_to_slugir(&parsed, &mut ctx).expect("lower");
     let f = &m.functions[0];
-    let dmas: Vec<_> = f.order.iter().filter(|id| matches!(f.ops.get(id), Some(Op::Dma { .. }))).collect();
+    let dmas: Vec<_> = f
+        .order
+        .iter()
+        .filter(|id| matches!(f.ops.get(id), Some(Op::Dma { .. })))
+        .collect();
     assert_eq!(dmas.len(), 2, "expected one Dma per ld/st");
 }

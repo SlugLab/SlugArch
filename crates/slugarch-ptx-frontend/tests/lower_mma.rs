@@ -30,9 +30,15 @@ fn mma_lowers_to_tensor_tile_gemm() {
     let mut ctx = Context::new();
     let m = slugarch_ptx_frontend::lower_to_slugir(&parsed, &mut ctx).expect("lower");
     let f = &m.functions[0];
-    let tile = f.order.iter()
-        .map(|id| f.ops.get(id).unwrap())
-        .find(|op| matches!(op, Op::TensorTile { kind: TileKind::Gemm, .. }));
+    let tile = f.order.iter().map(|id| f.ops.get(id).unwrap()).find(|op| {
+        matches!(
+            op,
+            Op::TensorTile {
+                kind: TileKind::Gemm,
+                ..
+            }
+        )
+    });
     assert!(tile.is_some(), "expected exactly one TensorTile(Gemm)");
     if let Some(Op::TensorTile { shape, .. }) = tile {
         assert!(shape.0.len() >= 2, "shape should have at least 2 dims");

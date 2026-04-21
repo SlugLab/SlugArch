@@ -39,7 +39,10 @@ impl PipelineRtlmap {
 
 /// Maps a Gemma IP catalog name (e.g. "systolic_array_16x16") to the enum variant.
 pub fn parse_ip_id(name: &str) -> Option<IpId> {
-    IpId::all().iter().copied().find(|ip| ip.catalog_name() == name)
+    IpId::all()
+        .iter()
+        .copied()
+        .find(|ip| ip.catalog_name() == name)
 }
 
 pub struct ValidateAgainstRtlmap {
@@ -50,7 +53,9 @@ pub struct ValidateAgainstRtlmap {
 }
 
 impl Pass for ValidateAgainstRtlmap {
-    fn name(&self) -> &'static str { "validate_against_rtlmap" }
+    fn name(&self) -> &'static str {
+        "validate_against_rtlmap"
+    }
 
     fn run(&mut self, module: &mut Module) -> Result<(), IrError> {
         let f = module
@@ -105,7 +110,9 @@ fn diff_function(
 
     // Per-node IP correctness
     for node in &oracle.nodes {
-        let Some(op_id) = node_to_op.get(&node.node_id) else { continue; };
+        let Some(op_id) = node_to_op.get(&node.node_id) else {
+            continue;
+        };
         let actual_ip = f
             .meta
             .get(op_id)
@@ -113,31 +120,34 @@ fn diff_function(
             .map(|bc| bc.0.catalog_name().to_string())
             .unwrap_or_else(|| "<unassigned>".into());
         if actual_ip != node.selected_ip {
-            diff.wrong_ip.push((
-                node.node_id.clone(),
-                node.selected_ip.clone(),
-                actual_ip,
-            ));
+            diff.wrong_ip
+                .push((node.node_id.clone(), node.selected_ip.clone(), actual_ip));
         }
     }
 
     // Edge presence (token edges only)
-    let mut oracle_edges: std::collections::HashSet<(String, String)> = std::collections::HashSet::new();
+    let mut oracle_edges: std::collections::HashSet<(String, String)> =
+        std::collections::HashSet::new();
     for e in &oracle.edges {
         if e.channel == "token" {
             oracle_edges.insert((e.from.clone(), e.to.clone()));
         }
     }
-    let mut actual_edges: std::collections::HashSet<(String, String)> = std::collections::HashSet::new();
+    let mut actual_edges: std::collections::HashSet<(String, String)> =
+        std::collections::HashSet::new();
     for edge in &f.edges {
-        let (Some(s), Some(d)) = (op_to_node.get(&edge.src()), op_to_node.get(&edge.dst())) else { continue; };
+        let (Some(s), Some(d)) = (op_to_node.get(&edge.src()), op_to_node.get(&edge.dst())) else {
+            continue;
+        };
         actual_edges.insert((s.clone(), d.clone()));
     }
     for e in oracle_edges.difference(&actual_edges) {
-        diff.edge_diff.push(format!("missing token edge: {} -> {}", e.0, e.1));
+        diff.edge_diff
+            .push(format!("missing token edge: {} -> {}", e.0, e.1));
     }
     for e in actual_edges.difference(&oracle_edges) {
-        diff.edge_diff.push(format!("extra token edge: {} -> {}", e.0, e.1));
+        diff.edge_diff
+            .push(format!("extra token edge: {} -> {}", e.0, e.1));
     }
 
     diff
@@ -178,7 +188,10 @@ mod tests {
     fn matching_module_produces_empty_diff() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "test");
-        let a = b.add_op(Op::StateStep { kind: StateKind::RmsNorm, operands: vec![] });
+        let a = b.add_op(Op::StateStep {
+            kind: StateKind::RmsNorm,
+            operands: vec![],
+        });
         let c = b.add_op(Op::TensorTile {
             kind: crate::op::TileKind::Gemm,
             shape: crate::types::Shape(vec![64, 64]),
@@ -187,16 +200,22 @@ mod tests {
         });
         b.add_edge(Edge::Data(a, c));
         let mut f = b.finish();
-        f.meta.insert(a, OpMeta {
-            backend: Some(BackendChoice(IpId::NpuArrayV4SeedG)),
-            source_hint: Some("h0".into()),
-            ..Default::default()
-        });
-        f.meta.insert(c, OpMeta {
-            backend: Some(BackendChoice(IpId::SystolicArray16x16)),
-            source_hint: Some("h1".into()),
-            ..Default::default()
-        });
+        f.meta.insert(
+            a,
+            OpMeta {
+                backend: Some(BackendChoice(IpId::NpuArrayV4SeedG)),
+                source_hint: Some("h0".into()),
+                ..Default::default()
+            },
+        );
+        f.meta.insert(
+            c,
+            OpMeta {
+                backend: Some(BackendChoice(IpId::SystolicArray16x16)),
+                source_hint: Some("h1".into()),
+                ..Default::default()
+            },
+        );
         let mut m = Module::default();
         m.functions.push(f);
 
@@ -216,21 +235,33 @@ mod tests {
     fn wrong_ip_produces_error() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "test");
-        let a = b.add_op(Op::StateStep { kind: StateKind::RmsNorm, operands: vec![] });
-        let c = b.add_op(Op::StateStep { kind: StateKind::RmsNorm, operands: vec![] });
+        let a = b.add_op(Op::StateStep {
+            kind: StateKind::RmsNorm,
+            operands: vec![],
+        });
+        let c = b.add_op(Op::StateStep {
+            kind: StateKind::RmsNorm,
+            operands: vec![],
+        });
         b.add_edge(Edge::Data(a, c));
         let mut f = b.finish();
         // Intentionally wrong IP for n1
-        f.meta.insert(a, OpMeta {
-            backend: Some(BackendChoice(IpId::NpuArrayV4SeedG)),
-            source_hint: Some("h0".into()),
-            ..Default::default()
-        });
-        f.meta.insert(c, OpMeta {
-            backend: Some(BackendChoice(IpId::NoCMesh)), // should have been SystolicArray16x16
-            source_hint: Some("h1".into()),
-            ..Default::default()
-        });
+        f.meta.insert(
+            a,
+            OpMeta {
+                backend: Some(BackendChoice(IpId::NpuArrayV4SeedG)),
+                source_hint: Some("h0".into()),
+                ..Default::default()
+            },
+        );
+        f.meta.insert(
+            c,
+            OpMeta {
+                backend: Some(BackendChoice(IpId::NoCMesh)), // should have been SystolicArray16x16
+                source_hint: Some("h1".into()),
+                ..Default::default()
+            },
+        );
         let mut m = Module::default();
         m.functions.push(f);
 
@@ -256,7 +287,9 @@ mod tests {
         let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("..")
             .join("..")
-            .join("vendor/gemma-generated/generated/mappings/pipelines/qwen_decode_token.rtlmap.json");
+            .join(
+                "vendor/gemma-generated/generated/mappings/pipelines/qwen_decode_token.rtlmap.json",
+            );
         let oracle = PipelineRtlmap::from_json_file(&path).expect("load vendored pipeline");
         assert_eq!(oracle.name, "qwen_decode_token");
         // Sanity: the pipeline has >=3 nodes and references at least one NPU IP.

@@ -12,10 +12,14 @@ pub enum Edge {
 
 impl Edge {
     pub fn src(&self) -> OpId {
-        match self { Edge::Data(s, _) | Edge::Token(s, _) => *s }
+        match self {
+            Edge::Data(s, _) | Edge::Token(s, _) => *s,
+        }
     }
     pub fn dst(&self) -> OpId {
-        match self { Edge::Data(_, d) | Edge::Token(_, d) => *d }
+        match self {
+            Edge::Data(_, d) | Edge::Token(_, d) => *d,
+        }
     }
 }
 

@@ -25,12 +25,21 @@ pub trait BackendPolicy {
 pub struct DefaultPolicy;
 
 impl BackendPolicy for DefaultPolicy {
-    fn name(&self) -> &'static str { "default_v1" }
+    fn name(&self) -> &'static str {
+        "default_v1"
+    }
 
     fn pick(&self, op: &Op) -> BackendChoice {
         let ip = match op {
-            Op::TensorTile { kind: TileKind::Gemm, shape, .. } => gemm_tile_ip(shape),
-            Op::TensorTile { kind: TileKind::Elementwise, .. } => IpId::NpuArrayV4SeedG,
+            Op::TensorTile {
+                kind: TileKind::Gemm,
+                shape,
+                ..
+            } => gemm_tile_ip(shape),
+            Op::TensorTile {
+                kind: TileKind::Elementwise,
+                ..
+            } => IpId::NpuArrayV4SeedG,
             Op::StateStep { .. } => IpId::NpuArrayV4SeedG,
             Op::Dma { .. } => IpId::NoCMesh,
             Op::Emu { .. } => IpId::PtxEmulationCore,
@@ -42,17 +51,25 @@ impl BackendPolicy for DefaultPolicy {
 
 fn gemm_tile_ip(shape: &Shape) -> IpId {
     let max_dim = shape.0.iter().copied().max().unwrap_or(0);
-    if max_dim >= 128 { IpId::SystolicArray32x32 }
-    else if max_dim >= 32 { IpId::SystolicArray16x16 }
-    else { IpId::SystolicArray4x4 }
+    if max_dim >= 128 {
+        IpId::SystolicArray32x32
+    } else if max_dim >= 32 {
+        IpId::SystolicArray16x16
+    } else {
+        IpId::SystolicArray4x4
+    }
 }
 
 /// Force-override policy: every op maps to a fixed IP (used by value-preservation tests).
 pub struct ForceIp(pub IpId, pub &'static str);
 
 impl BackendPolicy for ForceIp {
-    fn name(&self) -> &'static str { self.1 }
-    fn pick(&self, _op: &Op) -> BackendChoice { BackendChoice(self.0) }
+    fn name(&self) -> &'static str {
+        self.1
+    }
+    fn pick(&self, _op: &Op) -> BackendChoice {
+        BackendChoice(self.0)
+    }
 }
 
 pub struct SelectBackend<P: BackendPolicy> {
@@ -60,15 +77,21 @@ pub struct SelectBackend<P: BackendPolicy> {
 }
 
 impl<P: BackendPolicy> SelectBackend<P> {
-    pub fn new(policy: P) -> Self { Self { policy } }
+    pub fn new(policy: P) -> Self {
+        Self { policy }
+    }
 }
 
 impl SelectBackend<DefaultPolicy> {
-    pub fn default_policy() -> Self { Self::new(DefaultPolicy) }
+    pub fn default_policy() -> Self {
+        Self::new(DefaultPolicy)
+    }
 }
 
 impl<P: BackendPolicy> Pass for SelectBackend<P> {
-    fn name(&self) -> &'static str { "select_backend" }
+    fn name(&self) -> &'static str {
+        "select_backend"
+    }
 
     fn run(&mut self, module: &mut Module) -> Result<(), IrError> {
         for f in module.functions.iter_mut() {
@@ -113,26 +136,40 @@ mod tests {
 
     #[test]
     fn state_step_picks_npu() {
-        let op = Op::StateStep { kind: StateKind::RmsNorm, operands: vec![] };
+        let op = Op::StateStep {
+            kind: StateKind::RmsNorm,
+            operands: vec![],
+        };
         assert_eq!(DefaultPolicy.pick(&op).0, IpId::NpuArrayV4SeedG);
     }
 
     #[test]
     fn dma_picks_noc() {
-        let op = Op::Dma { src: 0, dst: 64, bytes: 32 };
+        let op = Op::Dma {
+            src: 0,
+            dst: 64,
+            bytes: 32,
+        };
         assert_eq!(DefaultPolicy.pick(&op).0, IpId::NoCMesh);
     }
 
     #[test]
     fn emu_picks_ptx_emulation() {
-        let op = Op::Emu { opcode: 1, operands: vec![OperandRef::ImmU64(0)] };
+        let op = Op::Emu {
+            opcode: 1,
+            operands: vec![OperandRef::ImmU64(0)],
+        };
         assert_eq!(DefaultPolicy.pick(&op).0, IpId::PtxEmulationCore);
     }
 
     #[test]
     fn force_ip_policy_overrides_everything() {
         let force = ForceIp(IpId::SystolicArray16x16, "all_16x16");
-        let op = Op::Dma { src: 0, dst: 8, bytes: 8 };
+        let op = Op::Dma {
+            src: 0,
+            dst: 8,
+            bytes: 8,
+        };
         assert_eq!(force.pick(&op).0, IpId::SystolicArray16x16);
     }
 
@@ -146,7 +183,11 @@ mod tests {
             dtype: Dtype::F16,
             operands: vec![],
         });
-        b.add_op(Op::Dma { src: 0, dst: 8, bytes: 8 });
+        b.add_op(Op::Dma {
+            src: 0,
+            dst: 8,
+            bytes: 8,
+        });
         let mut m = Module::default();
         m.functions.push(b.finish());
         SelectBackend::default_policy().run(&mut m).unwrap();

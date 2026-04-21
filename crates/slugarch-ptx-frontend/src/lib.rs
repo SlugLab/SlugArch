@@ -34,8 +34,8 @@ pub fn lower_to_slugir<'a>(
     ctx: &mut Context,
 ) -> Result<Module, FrontendError> {
     use lower::{
-        arith::ArithLowerer, bit_ops::BitOpsLowerer, control::ControlLowerer,
-        ld_st::LdStLowerer, mma::MmaLowerer, transcendental::TranscendentalLowerer, Lowerer,
+        arith::ArithLowerer, bit_ops::BitOpsLowerer, control::ControlLowerer, ld_st::LdStLowerer,
+        mma::MmaLowerer, transcendental::TranscendentalLowerer, Lowerer,
     };
     let lowerers: Vec<Box<dyn Lowerer>> = vec![
         Box::new(ArithLowerer),
@@ -52,9 +52,8 @@ pub fn lower_to_slugir<'a>(
             for (idx, inst) in entry.instructions.iter().enumerate() {
                 let hint = format!("{}[{}]", entry.name, idx);
                 let mut handled = false;
-                // `inst` is `&&Instruction` (Vec of references); deref once
-                // for the `&Instruction` the Lowerer trait expects.
-                let inst: &ptx_parser::Instruction<ptx_parser::ParsedOperand<&str>> = *inst;
+                // `inst` is `&&Instruction` (Vec of references); auto-deref
+                // to the `&Instruction` the Lowerer trait expects.
                 for l in &lowerers {
                     if l.try_lower(inst, &mut b, &hint)? {
                         handled = true;

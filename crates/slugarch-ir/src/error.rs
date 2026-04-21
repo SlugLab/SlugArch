@@ -10,7 +10,11 @@ pub enum IrError {
     Deserialize(String),
 
     #[error("pass {pass} failed on op {node:?}: {msg}")]
-    PassFailed { pass: &'static str, node: Option<crate::types::OpId>, msg: String },
+    PassFailed {
+        pass: &'static str,
+        node: Option<crate::types::OpId>,
+        msg: String,
+    },
 
     #[error("token graph has a cycle: {cycle:?}")]
     TokenGraphCycle { cycle: Vec<crate::types::OpId> },
@@ -25,7 +29,7 @@ pub enum IrError {
 pub struct RtlmapDiff {
     pub missing_nodes: Vec<String>,
     pub extra_nodes: Vec<String>,
-    pub wrong_ip: Vec<(String, String, String)>,  // (node_id, expected, actual)
+    pub wrong_ip: Vec<(String, String, String)>, // (node_id, expected, actual)
     pub edge_diff: Vec<String>,
 }
 

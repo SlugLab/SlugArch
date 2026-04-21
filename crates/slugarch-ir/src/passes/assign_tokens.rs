@@ -9,7 +9,9 @@ use std::collections::{HashMap, HashSet, VecDeque};
 pub struct AssignTokens;
 
 impl Pass for AssignTokens {
-    fn name(&self) -> &'static str { "assign_tokens" }
+    fn name(&self) -> &'static str {
+        "assign_tokens"
+    }
 
     fn run(&mut self, module: &mut Module) -> Result<(), IrError> {
         for f in module.functions.iter_mut() {
@@ -22,8 +24,11 @@ impl Pass for AssignTokens {
             }
             // Kahn's topo sort; if the graph has a cycle we will fail to
             // visit all ops.
-            let mut queue: VecDeque<OpId> =
-                indeg.iter().filter(|(_, d)| **d == 0).map(|(k, _)| *k).collect();
+            let mut queue: VecDeque<OpId> = indeg
+                .iter()
+                .filter(|(_, d)| **d == 0)
+                .map(|(k, _)| *k)
+                .collect();
             // Deterministic ordering: sort the initial queue and each expansion by OpId.
             let mut q_vec: Vec<_> = queue.drain(..).collect();
             q_vec.sort();
@@ -32,18 +37,27 @@ impl Pass for AssignTokens {
             let mut visited: HashSet<OpId> = HashSet::new();
             let mut topo: Vec<OpId> = Vec::new();
             while let Some(id) = queue.pop_front() {
-                if !visited.insert(id) { continue; }
+                if !visited.insert(id) {
+                    continue;
+                }
                 topo.push(id);
                 let mut succ = adj.remove(&id).unwrap_or_default();
                 succ.sort();
                 for s in succ {
                     let d = indeg.get_mut(&s).unwrap();
                     *d -= 1;
-                    if *d == 0 { queue.push_back(s); }
+                    if *d == 0 {
+                        queue.push_back(s);
+                    }
                 }
             }
             if topo.len() != f.ops.len() {
-                let cycle: Vec<_> = f.ops.keys().copied().filter(|id| !visited.contains(id)).collect();
+                let cycle: Vec<_> = f
+                    .ops
+                    .keys()
+                    .copied()
+                    .filter(|id| !visited.contains(id))
+                    .collect();
                 return Err(IrError::TokenGraphCycle { cycle });
             }
             f.order = topo.clone();
@@ -54,7 +68,9 @@ impl Pass for AssignTokens {
                 let mut max_pred_tok = 0u32;
                 for pred in f.predecessors(*id) {
                     if let Some(t) = tok_out.get(&pred) {
-                        if *t > max_pred_tok { max_pred_tok = *t; }
+                        if *t > max_pred_tok {
+                            max_pred_tok = *t;
+                        }
                     }
                 }
                 let this_tok = (i as u32) + 1;
@@ -80,9 +96,21 @@ mod tests {
     fn linear_chain_tokens_increase_monotonically() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "f");
-        let a = b.add_op(Op::Arith { kind: ArithKind::Add, operands: vec![], dtype: Dtype::I32 });
-        let c = b.add_op(Op::Arith { kind: ArithKind::Mul, operands: vec![], dtype: Dtype::I32 });
-        let d = b.add_op(Op::Arith { kind: ArithKind::Sub, operands: vec![], dtype: Dtype::I32 });
+        let a = b.add_op(Op::Arith {
+            kind: ArithKind::Add,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
+        let c = b.add_op(Op::Arith {
+            kind: ArithKind::Mul,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
+        let d = b.add_op(Op::Arith {
+            kind: ArithKind::Sub,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
         b.add_edge(Edge::Data(a, c));
         b.add_edge(Edge::Data(c, d));
         let mut m = Module::default();
@@ -104,8 +132,16 @@ mod tests {
     fn cycle_is_detected() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "f");
-        let a = b.add_op(Op::Arith { kind: ArithKind::Add, operands: vec![], dtype: Dtype::I32 });
-        let c = b.add_op(Op::Arith { kind: ArithKind::Mul, operands: vec![], dtype: Dtype::I32 });
+        let a = b.add_op(Op::Arith {
+            kind: ArithKind::Add,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
+        let c = b.add_op(Op::Arith {
+            kind: ArithKind::Mul,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
         b.add_edge(Edge::Data(a, c));
         b.add_edge(Edge::Data(c, a));
         let mut m = Module::default();
@@ -118,8 +154,16 @@ mod tests {
     fn independent_ops_get_distinct_tokens() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "f");
-        let a = b.add_op(Op::Arith { kind: ArithKind::Add, operands: vec![], dtype: Dtype::I32 });
-        let c = b.add_op(Op::Arith { kind: ArithKind::Mul, operands: vec![], dtype: Dtype::I32 });
+        let a = b.add_op(Op::Arith {
+            kind: ArithKind::Add,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
+        let c = b.add_op(Op::Arith {
+            kind: ArithKind::Mul,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
         let mut m = Module::default();
         m.functions.push(b.finish());
         AssignTokens.run(&mut m).unwrap();

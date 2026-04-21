@@ -12,7 +12,9 @@ use crate::IrError;
 pub struct FuseDecodeOps;
 
 impl Pass for FuseDecodeOps {
-    fn name(&self) -> &'static str { "fuse_decode_ops" }
+    fn name(&self) -> &'static str {
+        "fuse_decode_ops"
+    }
 
     fn run(&mut self, module: &mut Module) -> Result<(), IrError> {
         for f in module.functions.iter_mut() {
@@ -28,8 +30,20 @@ fn fuse_mlp_chain(f: &mut Function) -> Result<(), IrError> {
     while i + 1 < f.order.len() {
         let a = f.order[i];
         let b = f.order[i + 1];
-        let a_is_mlp = matches!(f.ops.get(&a), Some(Op::StateStep { kind: StateKind::MlpStep, .. }));
-        let b_is_mlp = matches!(f.ops.get(&b), Some(Op::StateStep { kind: StateKind::MlpStep, .. }));
+        let a_is_mlp = matches!(
+            f.ops.get(&a),
+            Some(Op::StateStep {
+                kind: StateKind::MlpStep,
+                ..
+            })
+        );
+        let b_is_mlp = matches!(
+            f.ops.get(&b),
+            Some(Op::StateStep {
+                kind: StateKind::MlpStep,
+                ..
+            })
+        );
         let b_depends_on_a = f.edges.iter().any(|e| e.src() == a && e.dst() == b);
         if a_is_mlp && b_is_mlp && b_depends_on_a {
             // Merge b's operands into a; mark b for removal.
@@ -49,7 +63,8 @@ fn fuse_mlp_chain(f: &mut Function) -> Result<(), IrError> {
     }
     if !to_remove.is_empty() {
         f.order.retain(|id| !to_remove.contains(id));
-        f.edges.retain(|e| !to_remove.contains(&e.src()) && !to_remove.contains(&e.dst()));
+        f.edges
+            .retain(|e| !to_remove.contains(&e.src()) && !to_remove.contains(&e.dst()));
     }
     Ok(())
 }
@@ -62,7 +77,10 @@ mod tests {
     use crate::op::StateKind;
 
     fn mlp(operands: Vec<crate::op::OperandRef>) -> Op {
-        Op::StateStep { kind: StateKind::MlpStep, operands }
+        Op::StateStep {
+            kind: StateKind::MlpStep,
+            operands,
+        }
     }
 
     #[test]
@@ -90,8 +108,14 @@ mod tests {
     fn non_mlp_steps_are_not_fused() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "f");
-        let a = b.add_op(Op::StateStep { kind: StateKind::RmsNorm, operands: vec![] });
-        let c = b.add_op(Op::StateStep { kind: StateKind::AttnDecode, operands: vec![] });
+        let a = b.add_op(Op::StateStep {
+            kind: StateKind::RmsNorm,
+            operands: vec![],
+        });
+        let c = b.add_op(Op::StateStep {
+            kind: StateKind::AttnDecode,
+            operands: vec![],
+        });
         b.add_edge(Edge::Data(a, c));
         let mut m = Module::default();
         m.functions.push(b.finish());

@@ -17,15 +17,24 @@ pub struct Function {
 
 impl Function {
     pub fn new(name: impl Into<String>) -> Self {
-        Self { name: name.into(), ..Default::default() }
+        Self {
+            name: name.into(),
+            ..Default::default()
+        }
     }
 
     pub fn successors(&self, id: OpId) -> impl Iterator<Item = OpId> + '_ {
-        self.edges.iter().filter(move |e| e.src() == id).map(|e| e.dst())
+        self.edges
+            .iter()
+            .filter(move |e| e.src() == id)
+            .map(|e| e.dst())
     }
 
     pub fn predecessors(&self, id: OpId) -> impl Iterator<Item = OpId> + '_ {
-        self.edges.iter().filter(move |e| e.dst() == id).map(|e| e.src())
+        self.edges
+            .iter()
+            .filter(move |e| e.dst() == id)
+            .map(|e| e.src())
     }
 }
 
@@ -43,7 +52,9 @@ pub struct Context {
 }
 
 impl Context {
-    pub fn new() -> Self { Self::default() }
+    pub fn new() -> Self {
+        Self::default()
+    }
     pub fn fresh_op(&mut self) -> OpId {
         let id = OpId(self.next_op);
         self.next_op += 1;
@@ -60,7 +71,10 @@ pub struct FunctionBuilder<'ctx> {
 
 impl<'ctx> FunctionBuilder<'ctx> {
     pub fn new(ctx: &'ctx mut Context, name: impl Into<String>) -> Self {
-        Self { ctx, f: Function::new(name) }
+        Self {
+            ctx,
+            f: Function::new(name),
+        }
     }
 
     pub fn add_op(&mut self, op: Op) -> OpId {
@@ -81,7 +95,9 @@ impl<'ctx> FunctionBuilder<'ctx> {
         self.f.meta.insert(id, meta);
     }
 
-    pub fn finish(self) -> Function { self.f }
+    pub fn finish(self) -> Function {
+        self.f
+    }
 }
 
 #[cfg(test)]
@@ -94,8 +110,16 @@ mod tests {
     fn builder_assigns_unique_ids_in_order() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "f");
-        let a = b.add_op(Op::Arith { kind: ArithKind::Add, operands: vec![], dtype: Dtype::I32 });
-        let c = b.add_op(Op::Arith { kind: ArithKind::Mul, operands: vec![], dtype: Dtype::I32 });
+        let a = b.add_op(Op::Arith {
+            kind: ArithKind::Add,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
+        let c = b.add_op(Op::Arith {
+            kind: ArithKind::Mul,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
         let f = b.finish();
         assert_eq!(f.order, vec![a, c]);
         assert!(a < c);
@@ -107,8 +131,16 @@ mod tests {
     fn edges_and_successors() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "f");
-        let a = b.add_op(Op::Arith { kind: ArithKind::Add, operands: vec![], dtype: Dtype::I32 });
-        let c = b.add_op(Op::Arith { kind: ArithKind::Mul, operands: vec![OperandRef::Op(a)], dtype: Dtype::I32 });
+        let a = b.add_op(Op::Arith {
+            kind: ArithKind::Add,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
+        let c = b.add_op(Op::Arith {
+            kind: ArithKind::Mul,
+            operands: vec![OperandRef::Op(a)],
+            dtype: Dtype::I32,
+        });
         b.add_edge(Edge::Data(a, c));
         let f = b.finish();
         let succs: Vec<_> = f.successors(a).collect();
@@ -121,7 +153,11 @@ mod tests {
     fn function_round_trips_through_json() {
         let mut ctx = Context::new();
         let mut b = FunctionBuilder::new(&mut ctx, "f");
-        b.add_op(Op::Arith { kind: ArithKind::Add, operands: vec![], dtype: Dtype::I32 });
+        b.add_op(Op::Arith {
+            kind: ArithKind::Add,
+            operands: vec![],
+            dtype: Dtype::I32,
+        });
         let original = b.finish();
         let s = serde_json::to_string(&original).unwrap();
         let back: Function = serde_json::from_str(&s).unwrap();

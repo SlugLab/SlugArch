@@ -1,13 +1,13 @@
 //! SlugArch intermediate representation.
 
-pub mod types;
-pub mod op;
+pub mod error;
 pub mod graph;
 pub mod module;
-pub mod error;
+pub mod op;
 pub mod pass;
-pub mod serialize;
 pub mod passes;
+pub mod serialize;
+pub mod types;
 
 pub use error::IrError;
 pub use module::{Context, Function, Module};
