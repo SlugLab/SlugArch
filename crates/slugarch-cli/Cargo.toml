@@ -9,4 +9,10 @@ name = "slugarch"
 path = "src/main.rs"
 
 [dependencies]
-# Task 9 populates real deps.
+slugarch-ir = { path = "../slugarch-ir" }
+slugarch-ptx-frontend = { path = "../slugarch-ptx-frontend" }
+slugarch-backend = { path = "../slugarch-backend" }
+slugarch-fabric = { path = "../slugarch-fabric" }
+clap.workspace = true
+anyhow.workspace = true
+serde_json.workspace = true
