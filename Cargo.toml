@@ -6,6 +6,7 @@ members = [
     "crates/slugarch-backend",
     "crates/slugarch-bench",
     "crates/slugarch-cli",
+    "crates/slugarch-cxl-wire",
     "crates/slugarch-fabric",
     "crates/slugarch-verilator",
     "crates/slugarch-verilator-sys",
