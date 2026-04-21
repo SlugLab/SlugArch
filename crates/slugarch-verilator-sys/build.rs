@@ -15,10 +15,22 @@ fn main() {
     let verilator_include = std::env::var("VERILATOR_INCLUDE").unwrap_or_else(|_|
         "/home/victoryang00/tools/verilator/share/verilator/include".to_string());
 
-    verilate_ip(&verilator_bin, &vendor_root, &out_dir, "systolic_array_4x4");
+    for ip in IPS {
+        verilate_ip(&verilator_bin, &vendor_root, &out_dir, ip);
+    }
     compile_shim(&out_dir, &verilator_include);
     generate_bindings(&out_dir);
 }
+
+const IPS: &[&str] = &[
+    "systolic_array_4x4",
+    "systolic_array_16x16",
+    "systolic_array_32x32",
+    "npu_array_v4_seed_g",
+    "npu_cluster_v4",
+    "noc_mesh",
+    "gemm_ip",
+];
 
 fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str) {
     let obj_dir = out_dir.join(format!("obj_dir_{}", ip));
@@ -46,9 +58,12 @@ fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str
         .args([
             "--cc", "--build", "--no-timing", "-O1",
             "--Mdir", obj_dir.to_str().unwrap(),
+            "-Irtl/designs",  // NPU baseline uses `include of companion files (no space after -I)
             "-f", filelist_path.to_str().unwrap(),
             "--top-module", &wrapper_top,
             "-Wno-UNUSED", "-Wno-UNUSEDSIGNAL", "-Wno-WIDTH", "-Wno-TIMESCALEMOD",
+            "-Wno-MODDUP",  // NPU baseline `includes companion files also listed in the .f
+            "-Wno-IMPORTSTAR", "-Wno-CASEINCOMPLETE", "-Wno-INITIALDLY",
         ])
         .current_dir(vendor_root)
         .status()
@@ -70,15 +85,16 @@ fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str
 }
 
 fn compile_shim(out_dir: &Path, verilator_include: &str) {
-    let obj_dir = out_dir.join("obj_dir_systolic_array_4x4");
-    cc::Build::new()
-        .cpp(true)
+    let mut build = cc::Build::new();
+    build.cpp(true)
         .std("c++17")
         .file("shim/ip_shim.cpp")
         .include("shim")
-        .include(verilator_include)
-        .include(&obj_dir)
-        .compile("slugarch_verilator_shim");
+        .include(verilator_include);
+    for ip in IPS {
+        build.include(out_dir.join(format!("obj_dir_{}", ip)));
+    }
+    build.compile("slugarch_verilator_shim");
     println!("cargo:rustc-link-lib=stdc++");
 }
 

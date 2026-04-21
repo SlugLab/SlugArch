@@ -13,8 +13,14 @@ extern "C" {
 // Opaque handle to a Verilated IP model.
 typedef struct SlugarchIp SlugarchIp;
 
-// POC: only systolic_4x4. Task 5 extends to the other 6 IPs.
+// Per-IP constructors (7 RTL-backed IPs).
 SlugarchIp* slugarch_ip_new_systolic_4x4(void);
+SlugarchIp* slugarch_ip_new_systolic_16x16(void);
+SlugarchIp* slugarch_ip_new_systolic_32x32(void);
+SlugarchIp* slugarch_ip_new_npu_seed_g(void);
+SlugarchIp* slugarch_ip_new_npu_cluster(void);
+SlugarchIp* slugarch_ip_new_noc_mesh(void);
+SlugarchIp* slugarch_ip_new_gemm_ip(void);
 
 // Lifecycle.
 void slugarch_ip_free(SlugarchIp* ip);
