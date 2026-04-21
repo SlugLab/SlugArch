@@ -1,0 +1,12 @@
+[package]
+name = "slugarch-backend"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+slugarch-ir = { path = "../slugarch-ir" }
+slugarch-verilator = { path = "../slugarch-verilator" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

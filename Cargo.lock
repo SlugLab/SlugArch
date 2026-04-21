@@ -754,6 +754,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbbb5d9659141646ae647b42fe094daf6c6192d1620870b449d9557f748b2daa"
 
 [[package]]
+name = "slugarch-backend"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "slugarch-ir",
+ "slugarch-verilator",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "slugarch-ir"
 version = "0.1.0"
 dependencies = [
