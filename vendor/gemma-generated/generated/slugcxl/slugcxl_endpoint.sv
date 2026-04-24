@@ -37,8 +37,18 @@ module slugcxl_endpoint #(
   wire [63:0]  in_addr    = flit_in_data[87:24];
   wire [255:0] in_data256 = flit_in_data[343:88];
 
-  // Extracted dispatch token (first 4 bytes of the 32-byte data field).
-  wire [31:0]  in_token32 = in_data256[31:0];
+  // Token extraction:
+  //   - M2SRwD (load/compute): first 4 bytes of the 32-byte data field
+  //                            = flit_in_data[119:88] = in_data256[31:0].
+  //   - M2SReq (read): high 32 bits of addr = flit_in_data[87:56] = in_addr[63:32].
+  //     (M2SReq has no data field; host packs the read-token into addr[63:32]
+  //     and sets addr[15:0] = DISPATCH_BASE[15:0] for routing.)
+  wire [31:0]  in_token_rwd = in_data256[31:0];
+  wire [31:0]  in_token_req = in_addr[63:32];
+
+  // Match on the low 16 bits of addr so reads can reuse the upper bits for
+  // the read-token payload.
+  wire         addr_matches_dispatch = (in_addr[15:0] == DISPATCH_BASE[15:0]);
 
   // State machine. EMIT states are split into SETUP (assert flit_out_valid
   // + drive flit_out_data) and HOLD (wait for flit_out_ready handshake),
@@ -80,16 +90,15 @@ module slugcxl_endpoint #(
           end
           if (flit_in_valid && flit_in_ready) begin
             pend_tag <= in_tag;
-            // Address match.
-            if (in_addr == DISPATCH_BASE && in_class == 4'h2) begin
-              // M2SRwD -> load/compute dispatch.
+            if (addr_matches_dispatch && in_class == 4'h2) begin
+              // M2SRwD -> load/compute dispatch. Token in data field.
               pend_is_read <= 1'b0;
-              token_in     <= {{(TOKEN_WIDTH-32){1'b0}}, in_token32};
+              token_in     <= {{(TOKEN_WIDTH-32){1'b0}}, in_token_rwd};
               state        <= S_DRIVE_CMD;
-            end else if (in_addr == DISPATCH_BASE && in_class == 4'h1) begin
-              // M2SReq -> read dispatch.
+            end else if (addr_matches_dispatch && in_class == 4'h1) begin
+              // M2SReq -> read dispatch. Token in addr[63:32].
               pend_is_read <= 1'b1;
-              token_in     <= {{(TOKEN_WIDTH-32){1'b0}}, in_token32};
+              token_in     <= {{(TOKEN_WIDTH-32){1'b0}}, in_token_req};
               state        <= S_DRIVE_CMD;
             end else begin
               // Unclaimed address.
