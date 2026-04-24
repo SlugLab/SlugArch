@@ -62,14 +62,20 @@ module slugcxl_endpoint #(
   // Extracted dispatch token (first 4 bytes of the 32-byte data field).
   wire [31:0]  in_token32 = in_data256[31:0];
 
-  // State machine.
-  localparam [2:0] S_IDLE          = 3'd0;
-  localparam [2:0] S_DRIVE_CMD     = 3'd1;
-  localparam [2:0] S_AWAIT_DONE    = 3'd2;
-  localparam [2:0] S_EMIT_CMP      = 3'd3;
-  localparam [2:0] S_EMIT_DATA     = 3'd4;
-  localparam [2:0] S_EMIT_FAIL     = 3'd5;
-  reg [2:0]  state;
+  // State machine. EMIT states are split into SETUP (assert flit_out_valid
+  // + drive flit_out_data) and HOLD (wait for flit_out_ready handshake),
+  // so the shim observes flit_out_valid=1 post-rising-edge for at least
+  // one full cycle.
+  localparam [3:0] S_IDLE            = 4'd0;
+  localparam [3:0] S_DRIVE_CMD       = 4'd1;
+  localparam [3:0] S_AWAIT_DONE      = 4'd2;
+  localparam [3:0] S_EMIT_CMP_SETUP  = 4'd3;
+  localparam [3:0] S_EMIT_CMP_HOLD   = 4'd4;
+  localparam [3:0] S_EMIT_DATA_SETUP = 4'd5;
+  localparam [3:0] S_EMIT_DATA_HOLD  = 4'd6;
+  localparam [3:0] S_EMIT_FAIL_SETUP = 4'd7;
+  localparam [3:0] S_EMIT_FAIL_HOLD  = 4'd8;
+  reg [3:0]  state;
   reg [15:0] pend_tag;
   reg        pend_is_read;   // 1 = M2SReq (expect DRS back), 0 = M2SRwD (NDR)
   reg [23:0] pend_read_data;
@@ -109,7 +115,7 @@ module slugcxl_endpoint #(
               state        <= S_DRIVE_CMD;
             end else begin
               // Unclaimed address.
-              state <= S_EMIT_FAIL;
+              state <= S_EMIT_FAIL_SETUP;
             end
           end
         end
@@ -126,46 +132,58 @@ module slugcxl_endpoint #(
           if (done_valid) begin
             if (pend_is_read) begin
               pend_read_data <= token_out[31:8];
-              state <= S_EMIT_DATA;
+              state <= S_EMIT_DATA_SETUP;
             end else begin
-              state <= S_EMIT_CMP;
+              state <= S_EMIT_CMP_SETUP;
             end
           end
         end
 
-        S_EMIT_CMP: begin
+        // ---- CMP (S2MNDR Cmp) emit ----
+        S_EMIT_CMP_SETUP: begin
           flit_out_data <= {{FLIT_BITS{{1'b0}}}};
           flit_out_data[7:0]   <= 8'h40;
           flit_out_data[23:8]  <= pend_tag;
-          flit_out_valid <= 1'b1;
+          flit_out_valid       <= 1'b1;
+          state                <= S_EMIT_CMP_HOLD;
+        end
+        S_EMIT_CMP_HOLD: begin
           if (flit_out_ready) begin
             flit_out_valid <= 1'b0;
-            state <= S_IDLE;
+            state          <= S_IDLE;
           end
         end
 
-        S_EMIT_DATA: begin
+        // ---- DATA (S2MDRS MemData) emit ----
+        S_EMIT_DATA_SETUP: begin
           flit_out_data <= {{FLIT_BITS{{1'b0}}}};
           flit_out_data[7:0]    <= 8'h30;
           flit_out_data[23:8]   <= pend_tag;
           flit_out_data[95:88]   <= pend_read_data[7:0];
           flit_out_data[103:96]  <= pend_read_data[15:8];
           flit_out_data[111:104] <= pend_read_data[23:16];
-          flit_out_valid <= 1'b1;
+          flit_out_valid         <= 1'b1;
+          state                  <= S_EMIT_DATA_HOLD;
+        end
+        S_EMIT_DATA_HOLD: begin
           if (flit_out_ready) begin
             flit_out_valid <= 1'b0;
-            state <= S_IDLE;
+            state          <= S_IDLE;
           end
         end
 
-        S_EMIT_FAIL: begin
+        // ---- FAIL (S2MNDR DispatchFailed) emit ----
+        S_EMIT_FAIL_SETUP: begin
           flit_out_data <= {{FLIT_BITS{{1'b0}}}};
           flit_out_data[7:0]   <= 8'h4F;
           flit_out_data[23:8]  <= pend_tag;
-          flit_out_valid <= 1'b1;
+          flit_out_valid       <= 1'b1;
+          state                <= S_EMIT_FAIL_HOLD;
+        end
+        S_EMIT_FAIL_HOLD: begin
           if (flit_out_ready) begin
             flit_out_valid <= 1'b0;
-            state <= S_IDLE;
+            state          <= S_IDLE;
           end
         end
 
