@@ -3,6 +3,7 @@
 //! Tasks 7-10 populate the emission. For now this is a compile-only stub.
 
 mod config;
+mod emit_endpoint;
 
 use anyhow::Result;
 use clap::Parser;
