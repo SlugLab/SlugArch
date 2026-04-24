@@ -27,6 +27,10 @@ fn slugcxl_4x4_dispatch_failed_for_bogus_addr() {
         }
     }
     let resp = response.expect("no response FLIT within 64 cycles");
-    assert_eq!(resp[0], 0x4F, "expected S2MNDR::DispatchFailed (byte 0 = 0x4F), got {:#x}", resp[0]);
+    assert_eq!(
+        resp[0], 0x4F,
+        "expected S2MNDR::DispatchFailed (byte 0 = 0x4F), got {:#x}",
+        resp[0]
+    );
     assert_eq!(&resp[1..3], &0x1234u16.to_le_bytes());
 }

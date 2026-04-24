@@ -91,9 +91,7 @@ fn run_cxl(job_path: &std::path::Path) -> Result<()> {
         .with_context(|| format!("reading {}", job_path.display()))?;
     let job: GemmJob = serde_json::from_str(&text).with_context(|| "parsing GemmJob JSON")?;
     let mut host = CxlHost::new();
-    let result = host
-        .run_gemm(&job)
-        .map_err(|e| anyhow!("cxl run: {}", e))?;
+    let result = host.run_gemm(&job).map_err(|e| anyhow!("cxl run: {}", e))?;
     println!("cycles: {}", result.cycles);
     println!("flits_sent: {}", result.flits_sent);
     println!("flits_received: {}", result.flits_received);
@@ -105,14 +103,16 @@ fn run_cxl(job_path: &std::path::Path) -> Result<()> {
 }
 
 fn lower(path: &std::path::Path) -> Result<Module> {
-    let text = std::fs::read_to_string(path)
-        .with_context(|| format!("reading {}", path.display()))?;
-    let parsed = slugarch_ptx_frontend::parse_ptx(&text)
-        .map_err(|e| anyhow!("parse failed: {:?}", e))?;
+    let text =
+        std::fs::read_to_string(path).with_context(|| format!("reading {}", path.display()))?;
+    let parsed =
+        slugarch_ptx_frontend::parse_ptx(&text).map_err(|e| anyhow!("parse failed: {:?}", e))?;
     let mut ctx = Context::new();
     let mut m = slugarch_ptx_frontend::lower_to_slugir(&parsed, &mut ctx)
         .map_err(|e| anyhow!("lower failed: {:?}", e))?;
-    FuseDecodeOps.run(&mut m).map_err(|e| anyhow!("fuse: {}", e))?;
+    FuseDecodeOps
+        .run(&mut m)
+        .map_err(|e| anyhow!("fuse: {}", e))?;
     SelectBackend::new(AllEmuPolicy)
         .run(&mut m)
         .map_err(|e| anyhow!("select: {}", e))?;
@@ -175,8 +175,8 @@ fn run(kernel: &std::path::Path, record: Option<&std::path::Path>, mem_size: usi
 }
 
 fn replay(artifact_path: &std::path::Path) -> Result<()> {
-    let art = ReplayArtifact::read_from(artifact_path)
-        .map_err(|e| anyhow!("read artifact: {}", e))?;
+    let art =
+        ReplayArtifact::read_from(artifact_path).map_err(|e| anyhow!("read artifact: {}", e))?;
     let stream = emit_dispatches(&art.slugir);
     let mut fabric = Fabric::new(art.host_mem.len());
     fabric.set_host_mem(&art.host_mem);
@@ -193,8 +193,8 @@ fn validate(
     hints: Option<&std::path::Path>,
 ) -> Result<()> {
     let mut m = lower(kernel)?;
-    let oracle_rtlmap = PipelineRtlmap::from_json_file(oracle)
-        .map_err(|e| anyhow!("load oracle: {}", e))?;
+    let oracle_rtlmap =
+        PipelineRtlmap::from_json_file(oracle).map_err(|e| anyhow!("load oracle: {}", e))?;
 
     let hint_map: std::collections::HashMap<String, String> = if let Some(h) = hints {
         let text = std::fs::read_to_string(h)?;

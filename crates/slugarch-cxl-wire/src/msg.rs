@@ -76,26 +76,57 @@ pub enum H2DRespOp {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CxlMsg {
-    M2SReq  { tag: u16, opcode: M2SReqOp,  addr: u64 },
-    M2SRwD  { tag: u16, opcode: M2SRwDOp,  addr: u64, data: [u8; 32] },
-    S2MDRS  { tag: u16, opcode: S2MDRSOp,  data: [u8; 32] },
-    S2MNDR  { tag: u16, opcode: S2MNDROp },
-    D2HReq  { tag: u16, opcode: D2HReqOp,  addr: u64 },
-    D2HResp { tag: u16, opcode: D2HRespOp, data: Option<[u8; 32]> },
-    H2DReq  { tag: u16, opcode: H2DReqOp,  addr: u64 },
-    H2DResp { tag: u16, opcode: H2DRespOp },
+    M2SReq {
+        tag: u16,
+        opcode: M2SReqOp,
+        addr: u64,
+    },
+    M2SRwD {
+        tag: u16,
+        opcode: M2SRwDOp,
+        addr: u64,
+        data: [u8; 32],
+    },
+    S2MDRS {
+        tag: u16,
+        opcode: S2MDRSOp,
+        data: [u8; 32],
+    },
+    S2MNDR {
+        tag: u16,
+        opcode: S2MNDROp,
+    },
+    D2HReq {
+        tag: u16,
+        opcode: D2HReqOp,
+        addr: u64,
+    },
+    D2HResp {
+        tag: u16,
+        opcode: D2HRespOp,
+        data: Option<[u8; 32]>,
+    },
+    H2DReq {
+        tag: u16,
+        opcode: H2DReqOp,
+        addr: u64,
+    },
+    H2DResp {
+        tag: u16,
+        opcode: H2DRespOp,
+    },
 }
 
 impl CxlMsg {
     pub fn class(&self) -> MsgClass {
         match self {
-            CxlMsg::M2SReq { .. }  => MsgClass::M2SReq,
-            CxlMsg::M2SRwD { .. }  => MsgClass::M2SRwD,
-            CxlMsg::S2MDRS { .. }  => MsgClass::S2MDRS,
-            CxlMsg::S2MNDR { .. }  => MsgClass::S2MNDR,
-            CxlMsg::D2HReq { .. }  => MsgClass::D2HReq,
+            CxlMsg::M2SReq { .. } => MsgClass::M2SReq,
+            CxlMsg::M2SRwD { .. } => MsgClass::M2SRwD,
+            CxlMsg::S2MDRS { .. } => MsgClass::S2MDRS,
+            CxlMsg::S2MNDR { .. } => MsgClass::S2MNDR,
+            CxlMsg::D2HReq { .. } => MsgClass::D2HReq,
             CxlMsg::D2HResp { .. } => MsgClass::D2HResp,
-            CxlMsg::H2DReq { .. }  => MsgClass::H2DReq,
+            CxlMsg::H2DReq { .. } => MsgClass::H2DReq,
             CxlMsg::H2DResp { .. } => MsgClass::H2DResp,
         }
     }

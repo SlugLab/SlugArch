@@ -9,7 +9,12 @@ pub fn encode(msg: &CxlMsg) -> FlitBytes {
 
     let (opcode, tag, addr, data): (u8, u16, u64, Option<[u8; 32]>) = match msg {
         CxlMsg::M2SReq { tag, opcode, addr } => (*opcode as u8, *tag, *addr, None),
-        CxlMsg::M2SRwD { tag, opcode, addr, data } => (*opcode as u8, *tag, *addr, Some(*data)),
+        CxlMsg::M2SRwD {
+            tag,
+            opcode,
+            addr,
+            data,
+        } => (*opcode as u8, *tag, *addr, Some(*data)),
         CxlMsg::S2MDRS { tag, opcode, data } => (*opcode as u8, *tag, 0, Some(*data)),
         CxlMsg::S2MNDR { tag, opcode } => (*opcode as u8, *tag, 0, None),
         CxlMsg::D2HReq { tag, opcode, addr } => (*opcode as u8, *tag, *addr, None),
@@ -52,7 +57,10 @@ mod tests {
 
     #[test]
     fn tag_encodes_little_endian_bytes_1_and_2() {
-        let msg = CxlMsg::S2MNDR { tag: 0xABCD, opcode: S2MNDROp::Cmp };
+        let msg = CxlMsg::S2MNDR {
+            tag: 0xABCD,
+            opcode: S2MNDROp::Cmp,
+        };
         let flit = encode(&msg);
         assert_eq!(flit[1], 0xCD);
         assert_eq!(flit[2], 0xAB);

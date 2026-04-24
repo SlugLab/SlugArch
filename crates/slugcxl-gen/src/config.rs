@@ -54,7 +54,10 @@ impl CxlEndpointConfig {
     pub fn slugcxl_4x4() -> Self {
         Self {
             name: "slugcxl_4x4".into(),
-            protocol: CxlProtocol { mem: true, cache: true },
+            protocol: CxlProtocol {
+                mem: true,
+                cache: true,
+            },
             address_spaces: vec![
                 AddressSpace {
                     name: "dispatch".into(),

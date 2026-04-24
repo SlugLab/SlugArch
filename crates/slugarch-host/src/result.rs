@@ -18,7 +18,11 @@ pub fn decode_results(responses: &[CxlMsg]) -> Result<[[u32; 4]; 4], HostError> 
         let row = i / 4;
         let col = i % 4;
         match r {
-            CxlMsg::S2MDRS { opcode: S2MDRSOp::MemData, data, .. } => {
+            CxlMsg::S2MDRS {
+                opcode: S2MDRSOp::MemData,
+                data,
+                ..
+            } => {
                 let b0 = data[0] as u32;
                 let b1 = data[1] as u32;
                 let b2 = data[2] as u32;
@@ -50,7 +54,11 @@ mod tests {
         data[0] = b0;
         data[1] = b1;
         data[2] = b2;
-        CxlMsg::S2MDRS { tag, opcode: S2MDRSOp::MemData, data }
+        CxlMsg::S2MDRS {
+            tag,
+            opcode: S2MDRSOp::MemData,
+            data,
+        }
     }
 
     #[test]
@@ -77,7 +85,10 @@ mod tests {
     #[test]
     fn non_drs_response_errors() {
         use slugarch_cxl_wire::S2MNDROp;
-        let mut responses = vec![CxlMsg::S2MNDR { tag: 0, opcode: S2MNDROp::DispatchFailed }];
+        let mut responses = vec![CxlMsg::S2MNDR {
+            tag: 0,
+            opcode: S2MNDROp::DispatchFailed,
+        }];
         for _ in 1..16 {
             responses.push(drs(0, 0, 0, 0));
         }

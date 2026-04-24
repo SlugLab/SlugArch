@@ -31,6 +31,13 @@ impl IpId {
     }
 
     pub fn all() -> &'static [IpId] {
+        // Canonical Gemma IPs only. SlugCxl4x4 is a Plan 4 CXL wrapper over
+        // systolic_array_16x16 — it's reachable via VerilatedIp::new
+        // directly but does not have its own runtime descriptor JSON and
+        // is not a "backend choice" that the slugarch-backend bindings
+        // produce. Keeping it out of all() preserves the invariant that
+        // every IpId in all() has a loadable descriptor under
+        // vendor/gemma-generated/generated/<catalog_name>/runtime/.
         &[
             IpId::SystolicArray4x4,
             IpId::SystolicArray16x16,
@@ -40,7 +47,6 @@ impl IpId {
             IpId::NoCMesh,
             IpId::GemmIp,
             IpId::PtxEmulationCore,
-            IpId::SlugCxl4x4,
         ]
     }
 

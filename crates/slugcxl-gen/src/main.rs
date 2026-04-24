@@ -19,15 +19,20 @@ struct Cli {
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    std::fs::create_dir_all(&cli.out)
-        .with_context(|| format!("creating {}", cli.out.display()))?;
+    std::fs::create_dir_all(&cli.out).with_context(|| format!("creating {}", cli.out.display()))?;
 
     let cfg = CxlEndpointConfig::slugcxl_4x4();
     cfg.validate()?;
 
-    write(&cli.out.join("slugcxl_endpoint.sv"), emit_endpoint::emit(&cfg))?;
+    write(
+        &cli.out.join("slugcxl_endpoint.sv"),
+        emit_endpoint::emit(&cfg),
+    )?;
     write(&cli.out.join("slugcxl_4x4_top.sv"), emit_top::emit(&cfg))?;
-    write(&cli.out.join("slugcxl_endpoint_runtime.json"), emit_runtime::emit(&cfg))?;
+    write(
+        &cli.out.join("slugcxl_endpoint_runtime.json"),
+        emit_runtime::emit(&cfg),
+    )?;
     println!("emitted 3 files to {}", cli.out.display());
     Ok(())
 }

@@ -13,6 +13,7 @@ pub const FLIT_BYTES: usize = 64;
 pub type FlitBytes = [u8; FLIT_BYTES];
 
 /// Byte offsets within a FLIT.
+#[allow(dead_code)]
 pub(crate) const OFFSET_CLASS_OPCODE: usize = 0;
 pub(crate) const OFFSET_TAG: usize = 1;
 pub(crate) const OFFSET_ADDR: usize = 3;

@@ -17,7 +17,9 @@ use slugarch_ir::types::{BackendChoice, IpId, TokenId};
 /// encodings land (post-v1).
 struct AllEmuPolicy;
 impl BackendPolicy for AllEmuPolicy {
-    fn name(&self) -> &'static str { "all_emu_v1" }
+    fn name(&self) -> &'static str {
+        "all_emu_v1"
+    }
     fn pick(&self, _op: &Op) -> BackendChoice {
         BackendChoice(IpId::PtxEmulationCore)
     }

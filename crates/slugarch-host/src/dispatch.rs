@@ -113,7 +113,12 @@ mod tests {
 
     fn sample_job() -> GemmJob {
         GemmJob {
-            a: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]],
+            a: [
+                [1, 2, 3, 4],
+                [5, 6, 7, 8],
+                [9, 10, 11, 12],
+                [13, 14, 15, 16],
+            ],
             b: [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
         }
     }
@@ -129,7 +134,12 @@ mod tests {
         let s = build_gemm_dispatch_stream(&sample_job(), 100);
         for (i, m) in s[..16].iter().enumerate() {
             match m {
-                CxlMsg::M2SRwD { tag, opcode, addr, data } => {
+                CxlMsg::M2SRwD {
+                    tag,
+                    opcode,
+                    addr,
+                    data,
+                } => {
                     assert_eq!(*tag, 100 + i as u16);
                     assert_eq!(*opcode, M2SRwDOp::MemWr);
                     assert_eq!(*addr, DISPATCH_ADDR);
@@ -183,7 +193,11 @@ mod tests {
                     let row = (i / 4) as u32;
                     let col = (i % 4) as u32;
                     assert_eq!((token >> 21) & 1, 1, "read_valid");
-                    assert_eq!((token >> 22) & 0xFF, row * 16 + col, "read_addr = row*16+col");
+                    assert_eq!(
+                        (token >> 22) & 0xFF,
+                        row * 16 + col,
+                        "read_addr = row*16+col"
+                    );
                 }
                 _ => panic!("expected M2SReq for read"),
             }

@@ -130,7 +130,10 @@ fn verilate_slugcxl(verilator_bin: &str, vendor_root: &Path, out_dir: &Path) {
         if line.is_empty() {
             continue;
         }
-        println!("cargo:rerun-if-changed={}", vendor_root.join(line).display());
+        println!(
+            "cargo:rerun-if-changed={}",
+            vendor_root.join(line).display()
+        );
     }
 
     let status = Command::new(verilator_bin)

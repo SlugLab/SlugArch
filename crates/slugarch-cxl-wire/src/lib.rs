@@ -4,15 +4,14 @@ pub mod error;
 pub mod flit;
 pub mod msg;
 
-pub mod encode;
 pub mod decode;
+pub mod encode;
 
+pub use decode::decode;
+pub use encode::encode;
 pub use error::WireError;
 pub use flit::{FlitBytes, FLIT_BYTES};
 pub use msg::{
-    CxlMsg, MsgClass,
-    M2SReqOp, M2SRwDOp, S2MDRSOp, S2MNDROp,
-    D2HReqOp, D2HRespOp, H2DReqOp, H2DRespOp,
+    CxlMsg, D2HReqOp, D2HRespOp, H2DReqOp, H2DRespOp, M2SReqOp, M2SRwDOp, MsgClass, S2MDRSOp,
+    S2MNDROp,
 };
-pub use encode::encode;
-pub use decode::decode;

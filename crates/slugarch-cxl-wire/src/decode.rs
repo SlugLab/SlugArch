@@ -3,8 +3,8 @@
 use crate::error::WireError;
 use crate::flit::{FlitBytes, DATA_BYTES, OFFSET_ADDR, OFFSET_DATA, OFFSET_RESERVED, OFFSET_TAG};
 use crate::msg::{
-    CxlMsg, D2HReqOp, D2HRespOp, H2DReqOp, H2DRespOp, M2SReqOp, M2SRwDOp, MsgClass,
-    S2MDRSOp, S2MNDROp,
+    CxlMsg, D2HReqOp, D2HRespOp, H2DReqOp, H2DRespOp, M2SReqOp, M2SRwDOp, MsgClass, S2MDRSOp,
+    S2MNDROp,
 };
 
 pub fn decode(flit: &FlitBytes) -> Result<CxlMsg, WireError> {
@@ -17,8 +17,7 @@ pub fn decode(flit: &FlitBytes) -> Result<CxlMsg, WireError> {
 
     let class_nibble = flit[0] >> 4;
     let opcode_nibble = flit[0] & 0x0F;
-    let class = MsgClass::from_nibble(class_nibble)
-        .ok_or(WireError::UnknownClass(class_nibble))?;
+    let class = MsgClass::from_nibble(class_nibble).ok_or(WireError::UnknownClass(class_nibble))?;
 
     let mut tag_bytes = [0u8; 2];
     tag_bytes.copy_from_slice(&flit[OFFSET_TAG..OFFSET_TAG + 2]);
@@ -48,7 +47,12 @@ pub fn decode(flit: &FlitBytes) -> Result<CxlMsg, WireError> {
                 0x2 => M2SRwDOp::MemClnEvct,
                 op => return Err(WireError::UnknownOpcode(op, class)),
             };
-            Ok(CxlMsg::M2SRwD { tag, opcode, addr, data })
+            Ok(CxlMsg::M2SRwD {
+                tag,
+                opcode,
+                addr,
+                data,
+            })
         }
         MsgClass::S2MDRS => {
             let opcode = match opcode_nibble {
@@ -89,7 +93,11 @@ pub fn decode(flit: &FlitBytes) -> Result<CxlMsg, WireError> {
             // v1 quirk: we can't cleanly detect "data present" from a flat
             // byte layout, so D2HResp always decodes with Some(data). Caller
             // consults the opcode semantics.
-            Ok(CxlMsg::D2HResp { tag, opcode, data: Some(data) })
+            Ok(CxlMsg::D2HResp {
+                tag,
+                opcode,
+                data: Some(data),
+            })
         }
         MsgClass::H2DReq => {
             let opcode = match opcode_nibble {
@@ -120,35 +128,59 @@ mod tests {
 
     #[test]
     fn round_trip_m2s_req() {
-        let msg = CxlMsg::M2SReq { tag: 0x1234, opcode: M2SReqOp::MemRd, addr: 0x2000 };
+        let msg = CxlMsg::M2SReq {
+            tag: 0x1234,
+            opcode: M2SReqOp::MemRd,
+            addr: 0x2000,
+        };
         assert_eq!(decode(&encode(&msg)).unwrap(), msg);
     }
 
     #[test]
     fn round_trip_m2s_rwd() {
         let mut data = [0u8; 32];
-        data[0] = 0xDE; data[1] = 0xAD; data[2] = 0xBE; data[3] = 0xEF;
-        let msg = CxlMsg::M2SRwD { tag: 0xABCD, opcode: M2SRwDOp::MemWr, addr: 0x2000, data };
+        data[0] = 0xDE;
+        data[1] = 0xAD;
+        data[2] = 0xBE;
+        data[3] = 0xEF;
+        let msg = CxlMsg::M2SRwD {
+            tag: 0xABCD,
+            opcode: M2SRwDOp::MemWr,
+            addr: 0x2000,
+            data,
+        };
         assert_eq!(decode(&encode(&msg)).unwrap(), msg);
     }
 
     #[test]
     fn round_trip_s2m_drs() {
         let mut data = [0u8; 32];
-        data[0] = 0x11; data[1] = 0x22; data[2] = 0x33;
-        let msg = CxlMsg::S2MDRS { tag: 0x5555, opcode: S2MDRSOp::MemData, data };
+        data[0] = 0x11;
+        data[1] = 0x22;
+        data[2] = 0x33;
+        let msg = CxlMsg::S2MDRS {
+            tag: 0x5555,
+            opcode: S2MDRSOp::MemData,
+            data,
+        };
         assert_eq!(decode(&encode(&msg)).unwrap(), msg);
     }
 
     #[test]
     fn round_trip_s2m_ndr_dispatch_failed() {
-        let msg = CxlMsg::S2MNDR { tag: 0x42, opcode: S2MNDROp::DispatchFailed };
+        let msg = CxlMsg::S2MNDR {
+            tag: 0x42,
+            opcode: S2MNDROp::DispatchFailed,
+        };
         assert_eq!(decode(&encode(&msg)).unwrap(), msg);
     }
 
     #[test]
     fn reserved_bits_rejected() {
-        let msg = CxlMsg::S2MNDR { tag: 0, opcode: S2MNDROp::Cmp };
+        let msg = CxlMsg::S2MNDR {
+            tag: 0,
+            opcode: S2MNDROp::Cmp,
+        };
         let mut flit = encode(&msg);
         flit[50] = 0xFF;
         assert_eq!(decode(&flit), Err(WireError::ReservedBitsSet));

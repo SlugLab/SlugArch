@@ -68,8 +68,14 @@ impl CxlHost {
             }
 
             match &resp_msg {
-                CxlMsg::S2MNDR { opcode: S2MNDROp::Cmp, .. } => {}
-                CxlMsg::S2MNDR { opcode: S2MNDROp::DispatchFailed, tag } => {
+                CxlMsg::S2MNDR {
+                    opcode: S2MNDROp::Cmp,
+                    ..
+                } => {}
+                CxlMsg::S2MNDR {
+                    opcode: S2MNDROp::DispatchFailed,
+                    tag,
+                } => {
                     return Err(HostError::DispatchFailed {
                         tag: *tag,
                         reason: format!("endpoint rejected dispatch #{i}"),
