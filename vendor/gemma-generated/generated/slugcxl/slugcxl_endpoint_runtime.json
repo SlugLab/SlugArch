@@ -120,7 +120,7 @@
     }
   ],
   "attached_wrapper": {
-    "module": "gemma_codegen_systolic_array_4x4_df",
+    "module": "gemma_codegen_systolic_array_16x16_df",
     "token_width": 256,
     "dispatch_base": 8192,
     "result_base": 12288

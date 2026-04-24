@@ -46,10 +46,11 @@ pub fn build_gemm_dispatch_stream(job: &GemmJob, first_tag: u16) -> Vec<CxlMsg> 
     let mut out = Vec::with_capacity(49);
     let mut tag = first_tag;
 
-    // Phase 1: load A.
+    // Phase 1: load A. 16x16 systolic uses row*16+col addressing; we use
+    // the top-left 4x4 sub-region so positions beyond 4x4 stay zero.
     for row in 0..4 {
         for col in 0..4 {
-            let addr = (row * 4 + col) as u8;
+            let addr = (row * 16 + col) as u8;
             let token = make_load_token(0, addr, job.a[row][col]);
             out.push(CxlMsg::M2SRwD {
                 tag,
@@ -64,7 +65,7 @@ pub fn build_gemm_dispatch_stream(job: &GemmJob, first_tag: u16) -> Vec<CxlMsg> 
     // Phase 2: load B.
     for row in 0..4 {
         for col in 0..4 {
-            let addr = (row * 4 + col) as u8;
+            let addr = (row * 16 + col) as u8;
             let token = make_load_token(1, addr, job.b[row][col]);
             out.push(CxlMsg::M2SRwD {
                 tag,
@@ -85,18 +86,21 @@ pub fn build_gemm_dispatch_stream(job: &GemmJob, first_tag: u16) -> Vec<CxlMsg> 
     });
     tag = tag.wrapping_add(1);
 
-    // Phase 4: reads. v1 host encodes reads as M2SReq; the read token is
-    // packed into the high 32 bits of the addr field (bits [63:32]).
-    // Endpoint extracts from flit_in_data[87:56] for reads.
-    for addr in 0..16 {
-        let token = make_read_token(addr);
-        let combined_addr = DISPATCH_ADDR | ((token as u64) << 32);
-        out.push(CxlMsg::M2SReq {
-            tag,
-            opcode: M2SReqOp::MemRd,
-            addr: combined_addr,
-        });
-        tag = tag.wrapping_add(1);
+    // Phase 4: reads of the 4x4 sub-region (positions row*16+col for
+    // row,col in 0..4). Host encodes reads as M2SReq with the read-token
+    // packed into addr[63:32].
+    for row in 0..4u8 {
+        for col in 0..4u8 {
+            let read_addr = row * 16 + col;
+            let token = make_read_token(read_addr);
+            let combined_addr = DISPATCH_ADDR | ((token as u64) << 32);
+            out.push(CxlMsg::M2SReq {
+                tag,
+                opcode: M2SReqOp::MemRd,
+                addr: combined_addr,
+            });
+            tag = tag.wrapping_add(1);
+        }
     }
 
     assert_eq!(out.len(), 49);
@@ -130,9 +134,11 @@ mod tests {
                     assert_eq!(*opcode, M2SRwDOp::MemWr);
                     assert_eq!(*addr, DISPATCH_ADDR);
                     let token = u32::from_le_bytes(data[..4].try_into().unwrap());
+                    let row = (i / 4) as u32;
+                    let col = (i % 4) as u32;
                     assert_eq!((token >> 2) & 1, 1, "load_valid bit");
                     assert_eq!((token >> 3) & 1, 0, "load_matrix_sel = 0 (A)");
-                    assert_eq!((token >> 4) & 0xFF, i as u32, "load_addr");
+                    assert_eq!((token >> 4) & 0xFF, row * 16 + col, "load_addr row*16+col");
                 }
                 _ => panic!("expected M2SRwD for load A"),
             }
@@ -174,8 +180,10 @@ mod tests {
                     assert_eq!(*opcode, M2SReqOp::MemRd);
                     assert_eq!(*addr & 0xFFFF, DISPATCH_ADDR & 0xFFFF);
                     let token = (*addr >> 32) as u32;
+                    let row = (i / 4) as u32;
+                    let col = (i % 4) as u32;
                     assert_eq!((token >> 21) & 1, 1, "read_valid");
-                    assert_eq!((token >> 22) & 0xFF, i as u32, "read_addr = {}", i);
+                    assert_eq!((token >> 22) & 0xFF, row * 16 + col, "read_addr = row*16+col");
                 }
                 _ => panic!("expected M2SReq for read"),
             }

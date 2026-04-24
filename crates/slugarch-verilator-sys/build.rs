@@ -112,10 +112,14 @@ fn verilate_slugcxl(verilator_bin: &str, vendor_root: &Path, out_dir: &Path) {
     let obj_dir = out_dir.join(format!("obj_dir_{}", SLUGCXL_TOP));
     let wrapper_top = SLUGCXL_TOP;
 
-    // Filelist: the existing systolic_array_4x4 Verilog + the generated
+    // Filelist: the existing systolic_array_16x16 Verilog + the generated
     // slugcxl endpoint + slugcxl_4x4_top. Paths are relative to vendor_root.
-    let filelist_content = "rtl/designs/sovryn_pan_stem_systolic_array_4x4_baseline.v\n\
-         generated/systolic_array_4x4/rtl/systolic_array_4x4_df_wrapper.sv\n\
+    // Note: "slugcxl_4x4" in the name refers to the 4x4 GEMM matrix size
+    // the host runtime operates on; internally the attached IP is the 16x16
+    // systolic because its df_wrapper uses the per-cell load/compute/read
+    // protocol the endpoint drives.
+    let filelist_content = "rtl/designs/sovryn_pan_stem_systolic_array_16x16_baseline.v\n\
+         generated/systolic_array_16x16/rtl/systolic_array_16x16_df_wrapper.sv\n\
          generated/slugcxl/slugcxl_endpoint.sv\n\
          generated/slugcxl/slugcxl_4x4_top.sv\n";
     let filelist_path = out_dir.join(format!("{}.verilator.f", SLUGCXL_TOP));

@@ -72,7 +72,11 @@ impl CxlEndpointConfig {
                 },
             ],
             attached_wrapper: AttachedWrapper {
-                module: "gemma_codegen_systolic_array_4x4_df".into(),
+                // Target the 16x16 wrapper — the 4x4 df_wrapper packs all
+                // 32 input bytes in one token_in and XOR-folds outputs,
+                // incompatible with our per-cell load/compute/read dispatch.
+                // Host runs 4x4 GEMMs as a sub-region of the 16x16 grid.
+                module: "gemma_codegen_systolic_array_16x16_df".into(),
                 token_width: 256,
                 dispatch_base: 0x2000,
                 result_base: 0x3000,
@@ -87,7 +91,12 @@ impl CxlEndpointConfig {
     }
 
     pub fn validate(&self) -> Result<(), GenError> {
-        if self.attached_wrapper.module != "gemma_codegen_systolic_array_4x4_df" {
+        const KNOWN_WRAPPERS: &[&str] = &[
+            "gemma_codegen_systolic_array_4x4_df",
+            "gemma_codegen_systolic_array_16x16_df",
+            "gemma_codegen_systolic_array_32x32_df",
+        ];
+        if !KNOWN_WRAPPERS.contains(&self.attached_wrapper.module.as_str()) {
             return Err(GenError::UnknownWrapper(
                 self.attached_wrapper.module.clone(),
             ));
