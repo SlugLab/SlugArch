@@ -39,6 +39,20 @@ int slugarch_ip_peek_done(SlugarchIp* ip, uint8_t token_out[SLUGARCH_TOKEN_BYTES
 // Returns the current value of cmd_ready. All Gemma wrappers tie cmd_ready = 1.
 int slugarch_ip_peek_cmd_ready(const SlugarchIp* ip);
 
+// --- Plan 4: CXL FLIT FFI ---
+
+#define SLUGARCH_FLIT_BYTES 64
+
+SlugarchIp* slugarch_ip_new_slugcxl_4x4(void);
+
+// Enqueue one FLIT for the RTL to consume on the next successful
+// flit_in handshake. Safe to call multiple times; FLITs are queued.
+void slugarch_cxl_send_flit(SlugarchIp* ip, const uint8_t flit[SLUGARCH_FLIT_BYTES]);
+
+// Try to pop one FLIT from the RTL's output queue. Returns 1 if a FLIT
+// was written to flit_out, 0 if the queue is empty.
+int  slugarch_cxl_recv_flit(SlugarchIp* ip, uint8_t flit_out[SLUGARCH_FLIT_BYTES]);
+
 #ifdef __cplusplus
 }
 #endif
