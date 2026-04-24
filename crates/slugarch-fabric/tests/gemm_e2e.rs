@@ -74,6 +74,8 @@ fn emit_dispatches(m: &slugarch_ir::module::Module) -> Vec<DispatchCmd> {
                 IpId::NpuArrayV4SeedG => NpuSeedGBinding.bind(op, &ctx),
                 IpId::NpuClusterV4 => NpuClusterBinding.bind(op, &ctx),
                 IpId::GemmIp => GemmIpBinding.bind(op, &ctx),
+                // Plan 4 added SlugCxl4x4 — fabric tests don't route there.
+                IpId::SlugCxl4x4 => unreachable!("AllEmuPolicy never routes to SlugCxl4x4"),
             }
             .expect("bind");
             out.extend(cmds);

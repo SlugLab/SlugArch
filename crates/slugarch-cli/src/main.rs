@@ -60,6 +60,11 @@ enum Cmd {
         #[arg(long)]
         hints: Option<PathBuf>,
     },
+    /// Run a 4x4 GEMM over real CXL FLITs through the slugcxl_4x4 endpoint.
+    RunCxl {
+        /// Path to a GemmJob JSON file: { "a": [[..]], "b": [[..]] }
+        job: PathBuf,
+    },
 }
 
 fn main() -> Result<()> {
@@ -76,7 +81,27 @@ fn main() -> Result<()> {
             oracle,
             hints,
         } => validate(&kernel, &oracle, hints.as_deref()),
+        Cmd::RunCxl { job } => run_cxl(&job),
     }
+}
+
+fn run_cxl(job_path: &std::path::Path) -> Result<()> {
+    use slugarch_host::{CxlHost, GemmJob};
+    let text = std::fs::read_to_string(job_path)
+        .with_context(|| format!("reading {}", job_path.display()))?;
+    let job: GemmJob = serde_json::from_str(&text).with_context(|| "parsing GemmJob JSON")?;
+    let mut host = CxlHost::new();
+    let result = host
+        .run_gemm(&job)
+        .map_err(|e| anyhow!("cxl run: {}", e))?;
+    println!("cycles: {}", result.cycles);
+    println!("flits_sent: {}", result.flits_sent);
+    println!("flits_received: {}", result.flits_received);
+    println!("result:");
+    for row in &result.c {
+        println!("  {:?}", row);
+    }
+    Ok(())
 }
 
 fn lower(path: &std::path::Path) -> Result<Module> {

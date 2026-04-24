@@ -192,3 +192,71 @@
 6. **`emit_dispatches` duplication.** The helper appears in the CLI
    and three Tier 2 tests — if it stabilizes, promoting it to a
    shared crate is worth doing.
+
+
+## Plan 4 — CXL RTL generation + host runtime: **COMPLETE**
+
+- Three new crates: `slugarch-cxl-wire` (FLIT encode/decode, 13 tests),
+  `slugcxl-gen` (SystemVerilog generator, snapshot-tested, 6 tests),
+  `slugarch-host` (GemmJob / dispatch / result / CxlHost::run_gemm, 8 unit +
+  3 integration tests).
+- Modified: `slugarch-verilator-sys` (new Verilator compile unit
+  `slugcxl_4x4_top` + C++ shim FLIT queues + FLIT FFI), `slugarch-verilator`
+  (IpId::SlugCxl4x4 + send_flit/try_recv_flit), `slugarch-cli`
+  (`slugarch run-cxl`), `slugarch-ir` (IpId::SlugCxl4x4).
+- Generated RTL in `vendor/gemma-generated/generated/slugcxl/`:
+  `slugcxl_endpoint.sv` (11-state CXL Type-2 endpoint FSM) +
+  `slugcxl_4x4_top.sv` (endpoint + systolic_array_16x16 wrapper instantiation)
+  + `slugcxl_endpoint_runtime.json`. Idempotent; snapshot-tested.
+- **Demo:** `slugarch run-cxl tests/fixtures/identity_times_const.json`
+  sends 49 real 64-byte FLITs through Verilator; systolic_array_16x16
+  computes 4x4 GEMM in a sub-region; 212 cycles; I×B=B verified byte-
+  for-byte. Tier 2 Path A PASSES.
+- Determinism + wire-level tag-match tests pass.
+
+### Plan 4 scope deviations from the written plan
+
+1. **Target IP is systolic_array_16x16, not 4x4.** The 4x4 df_wrapper
+   packs all 32 inputs in one token_in and XOR-folds the outputs across
+   all 16 c cells — incompatible with per-cell load/compute/read
+   dispatch. The 16x16 wrapper uses the documented protocol. Host runs
+   4x4 GEMMs as the top-left sub-region of the 16x16 grid (addrs
+   row*16+col).
+2. **Endpoint state machine grew to 10 states** (originally 6 planned).
+   Added: S_DRIVE_CMD_NO_DONE (loads don't assert out_valid in the
+   16x16 baseline, so pure-load dispatches skip await-done). Split
+   EMIT_* into SETUP+HOLD pairs (non-blocking-assignment gotcha: a
+   single-cycle assert→deassert of flit_out_valid is invisible to the
+   shim; SETUP holds the assert for at least one full cycle).
+3. **Token extraction diverges for RwD vs Req.** RwD dispatches carry
+   the token in data[0..4] (flit_in_data[119:88]); Req dispatches carry
+   it in addr[63:32] (flit_in_data[87:56]) because M2SReq has no data
+   field in the v1 FLIT layout. Endpoint addr-match uses low-16 bits
+   only, leaving high bits free for read-token payload.
+4. **Read-data location in token_out is [23:0]**, not [31:8] as the
+   plan spec'd. The 16x16 wrapper pads as `{232'd0, u_read_data}` with
+   the 24-bit value in the low bits.
+5. **Tier 2 tag-mismatch test is wire-layer only**, per plan caveat.
+
+### Plan 4 caveats for post-v1
+
+1. **CXL.cache RTL unused.** `.cache` wire types exist in slugarch-cxl-
+   wire but the v1 host doesn't emit D2H/H2D. Endpoint state machine
+   doesn't decode them either; that's v2 work.
+2. **Single-in-flight dispatch.** Endpoint deasserts flit_in_ready
+   while a dispatch is pending. Multi-in-flight needs a tag-indexed
+   response queue.
+3. **v1 FLIT layout is documented, not CXL 2.0/3.0 spec-compliant.**
+   The 64-byte packet structure + class/opcode table is v1-local. Real
+   CXL spec compliance is post-v1.
+4. **PTX-over-CXL still not connected.** `slugarch run <ptx>` uses
+   Plan 3 fabric (AllEmuPolicy); `slugarch run-cxl` accepts a GemmJob
+   JSON, not a PTX file. Routing PTX dispatches through CXL would
+   require more IPs with real token encodings.
+5. **5-state → 10-state endpoint refactor implies regenerating** the
+   vendor/generated/slugcxl/slugcxl_endpoint.sv from slugcxl-gen — the
+   file is checked-in, and the build.rs verifies it's present but
+   doesn't rerun the generator. If the generator source diverges from
+   the checked-in SV, `cargo test -p slugcxl-gen` catches it via
+   insta snapshots.
+6. Plans 1-3 caveats still apply.

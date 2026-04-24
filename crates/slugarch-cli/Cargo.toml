@@ -13,6 +13,7 @@ slugarch-ir = { path = "../slugarch-ir" }
 slugarch-ptx-frontend = { path = "../slugarch-ptx-frontend" }
 slugarch-backend = { path = "../slugarch-backend" }
 slugarch-fabric = { path = "../slugarch-fabric" }
+slugarch-host = { path = "../slugarch-host" }
 clap.workspace = true
 anyhow.workspace = true
 serde_json.workspace = true

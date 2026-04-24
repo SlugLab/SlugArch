@@ -888,6 +888,7 @@ dependencies = [
  "serde_json",
  "slugarch-backend",
  "slugarch-fabric",
+ "slugarch-host",
  "slugarch-ir",
  "slugarch-ptx-frontend",
 ]
