@@ -4,6 +4,7 @@
 
 mod config;
 mod emit_endpoint;
+mod emit_runtime;
 mod emit_top;
 
 use anyhow::Result;
