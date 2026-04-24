@@ -8,6 +8,7 @@ members = [
     "crates/slugarch-cli",
     "crates/slugarch-cxl-wire",
     "crates/slugarch-fabric",
+    "crates/slugarch-host",
     "crates/slugarch-verilator",
     "crates/slugarch-verilator-sys",
     "crates/slugcxl-gen",

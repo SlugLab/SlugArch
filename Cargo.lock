@@ -917,6 +917,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "slugarch-host"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "slugarch-cxl-wire",
+ "slugarch-ir",
+ "slugarch-verilator",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "slugarch-ir"
 version = "0.1.0"
 dependencies = [
