@@ -1,0 +1,128 @@
+{
+  "schema": "slugcxl.runtime.v1",
+  "name": "slugcxl_4x4",
+  "flit_bytes": 64,
+  "flit_layout": {
+    "class_opcode_byte": 0,
+    "tag_bytes": [
+      1,
+      2
+    ],
+    "addr_bytes": [
+      3,
+      10
+    ],
+    "data_bytes": [
+      11,
+      42
+    ],
+    "reserved_bytes": [
+      43,
+      63
+    ]
+  },
+  "classes": [
+    {
+      "name": "M2SReq",
+      "value": 1,
+      "opcodes": [
+        {
+          "name": "MemRd",
+          "value": 0
+        },
+        {
+          "name": "MemRdData",
+          "value": 1
+        },
+        {
+          "name": "MemInv",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "name": "M2SRwD",
+      "value": 2,
+      "opcodes": [
+        {
+          "name": "MemWr",
+          "value": 0
+        },
+        {
+          "name": "MemWrPtl",
+          "value": 1
+        },
+        {
+          "name": "MemClnEvct",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "name": "S2MDRS",
+      "value": 3,
+      "opcodes": [
+        {
+          "name": "MemData",
+          "value": 0
+        },
+        {
+          "name": "MemDataNxm",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "name": "S2MNDR",
+      "value": 4,
+      "opcodes": [
+        {
+          "name": "Cmp",
+          "value": 0
+        },
+        {
+          "name": "CmpS",
+          "value": 1
+        },
+        {
+          "name": "CmpE",
+          "value": 2
+        },
+        {
+          "name": "CmpI",
+          "value": 3
+        },
+        {
+          "name": "MemPassDirty",
+          "value": 4
+        },
+        {
+          "name": "DispatchFailed",
+          "value": 15
+        }
+      ]
+    }
+  ],
+  "address_spaces": [
+    {
+      "name": "dispatch",
+      "base": 8192,
+      "length": 4096,
+      "readable": true,
+      "writable": true
+    },
+    {
+      "name": "result",
+      "base": 12288,
+      "length": 4096,
+      "readable": true,
+      "writable": false
+    }
+  ],
+  "attached_wrapper": {
+    "module": "gemma_codegen_systolic_array_4x4_df",
+    "token_width": 256,
+    "dispatch_base": 8192,
+    "result_base": 12288
+  }
+}
