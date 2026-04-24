@@ -23,6 +23,7 @@ fn main() {
     for ip in IPS {
         verilate_ip(&verilator_bin, &vendor_root, &out_dir, ip);
     }
+    verilate_slugcxl(&verilator_bin, &vendor_root, &out_dir);
     compile_shim(&out_dir, &verilator_include);
     generate_bindings(&out_dir);
 }
@@ -36,6 +37,8 @@ const IPS: &[&str] = &[
     "noc_mesh",
     "gemm_ip",
 ];
+
+const SLUGCXL_TOP: &str = "slugcxl_4x4_top";
 
 fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str) {
     let obj_dir = out_dir.join(format!("obj_dir_{}", ip));
@@ -105,6 +108,65 @@ fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str
     println!("cargo:rustc-link-lib=static=verilated");
 }
 
+fn verilate_slugcxl(verilator_bin: &str, vendor_root: &Path, out_dir: &Path) {
+    let obj_dir = out_dir.join(format!("obj_dir_{}", SLUGCXL_TOP));
+    let wrapper_top = SLUGCXL_TOP;
+
+    // Filelist: the existing systolic_array_4x4 Verilog + the generated
+    // slugcxl endpoint + slugcxl_4x4_top. Paths are relative to vendor_root.
+    let filelist_content = "rtl/designs/sovryn_pan_stem_systolic_array_4x4_baseline.v\n\
+         generated/systolic_array_4x4/rtl/systolic_array_4x4_df_wrapper.sv\n\
+         generated/slugcxl/slugcxl_endpoint.sv\n\
+         generated/slugcxl/slugcxl_4x4_top.sv\n";
+    let filelist_path = out_dir.join(format!("{}.verilator.f", SLUGCXL_TOP));
+    std::fs::write(&filelist_path, filelist_content).unwrap();
+
+    for line in filelist_content.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        println!("cargo:rerun-if-changed={}", vendor_root.join(line).display());
+    }
+
+    let status = Command::new(verilator_bin)
+        .args([
+            "--cc",
+            "--build",
+            "--no-timing",
+            "-O1",
+            "--Mdir",
+            obj_dir.to_str().unwrap(),
+            "-Irtl/designs",
+            "-f",
+            filelist_path.to_str().unwrap(),
+            "--top-module",
+            wrapper_top,
+            "-Wno-UNUSED",
+            "-Wno-UNUSEDSIGNAL",
+            "-Wno-WIDTH",
+            "-Wno-TIMESCALEMOD",
+            "-Wno-MODDUP",
+            "-Wno-IMPORTSTAR",
+            "-Wno-CASEINCOMPLETE",
+            "-Wno-INITIALDLY",
+        ])
+        .current_dir(vendor_root)
+        .status()
+        .expect("failed to invoke verilator");
+    if !status.success() {
+        panic!("verilator failed on {}", wrapper_top);
+    }
+
+    let libpath = obj_dir.join(format!("libV{}.a", wrapper_top));
+    if !libpath.exists() {
+        panic!("expected Verilator output not found: {}", libpath.display());
+    }
+    println!("cargo:rustc-link-search=native={}", obj_dir.display());
+    println!("cargo:rustc-link-lib=static=V{}", wrapper_top);
+    // libverilated.a is already linked by the Gemma IPs above.
+}
+
 fn compile_shim(out_dir: &Path, verilator_include: &str) {
     let mut build = cc::Build::new();
     build
@@ -116,6 +178,7 @@ fn compile_shim(out_dir: &Path, verilator_include: &str) {
     for ip in IPS {
         build.include(out_dir.join(format!("obj_dir_{}", ip)));
     }
+    build.include(out_dir.join(format!("obj_dir_{}", SLUGCXL_TOP)));
     build.compile("slugarch_verilator_shim");
     println!("cargo:rustc-link-lib=stdc++");
 }
