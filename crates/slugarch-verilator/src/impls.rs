@@ -21,6 +21,7 @@ impl VerilatedIp {
                 IpId::PtxEmulationCore => {
                     panic!("ptx_emulation_core is CPU-backed; use the slugarch-backend CPU impl")
                 }
+                IpId::SlugCxl4x4 => sys::slugarch_ip_new_slugcxl_4x4(),
             }
         };
         assert!(!raw.is_null(), "null IP constructor for {:?}", ip_id);
@@ -66,6 +67,30 @@ impl VerilatedIp {
 
     pub fn cmd_ready(&self) -> bool {
         unsafe { sys::slugarch_ip_peek_cmd_ready(self.raw) != 0 }
+    }
+
+    /// Send a 64-byte FLIT into the RTL. Only valid for IpId::SlugCxl4x4.
+    pub fn send_flit(&mut self, flit: &[u8; 64]) {
+        if !matches!(self.ip_id, IpId::SlugCxl4x4) {
+            panic!("send_flit only valid for SlugCxl4x4, not {:?}", self.ip_id);
+        }
+        unsafe {
+            sys::slugarch_cxl_send_flit(self.raw, flit.as_ptr());
+        }
+    }
+
+    /// Try to receive one FLIT from the RTL. Returns None if none available.
+    pub fn try_recv_flit(&mut self) -> Option<[u8; 64]> {
+        if !matches!(self.ip_id, IpId::SlugCxl4x4) {
+            return None;
+        }
+        let mut out = [0u8; 64];
+        let got = unsafe { sys::slugarch_cxl_recv_flit(self.raw, out.as_mut_ptr()) };
+        if got != 0 {
+            Some(out)
+        } else {
+            None
+        }
     }
 }
 

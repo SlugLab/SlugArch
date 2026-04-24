@@ -11,6 +11,8 @@ pub enum IpId {
     NoCMesh,
     GemmIp,
     PtxEmulationCore,
+    /// Plan 4: CXL-Type-2 endpoint wrapping systolic_array_4x4.
+    SlugCxl4x4,
 }
 
 impl IpId {
@@ -24,6 +26,7 @@ impl IpId {
             IpId::NoCMesh => "noc_mesh",
             IpId::GemmIp => "gemm_ip",
             IpId::PtxEmulationCore => "ptx_emulation_core",
+            IpId::SlugCxl4x4 => "slugcxl_4x4",
         }
     }
 
@@ -37,6 +40,7 @@ impl IpId {
             IpId::NoCMesh,
             IpId::GemmIp,
             IpId::PtxEmulationCore,
+            IpId::SlugCxl4x4,
         ]
     }
 
