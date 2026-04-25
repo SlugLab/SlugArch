@@ -1,6 +1,6 @@
 use super::Lowerer;
 use crate::error::FrontendError;
-use ptx_parser::Instruction;
+use ptx_parser::{Instruction, MmaDetails, ScalarType};
 use slugarch_ir::module::FunctionBuilder;
 use slugarch_ir::op::{Op, OpMeta, TileKind};
 use slugarch_ir::types::{Dtype, Shape};
@@ -16,12 +16,10 @@ impl Lowerer for MmaLowerer {
     ) -> Result<bool, FrontendError> {
         match inst {
             Instruction::Mma { data, .. } => {
-                let shape = parse_mma_shape_via_debug(data);
-                let dtype = parse_mma_dtype_via_debug(data);
                 let id = b.add_op(Op::TensorTile {
                     kind: TileKind::Gemm,
-                    shape,
-                    dtype,
+                    shape: mma_shape(),
+                    dtype: mma_dtype(data),
                     operands: vec![],
                 });
                 b.finish_meta(
@@ -38,46 +36,18 @@ impl Lowerer for MmaLowerer {
     }
 }
 
-/// Extract up to 3 positive integers from the Debug rendering of the mma data
-/// field. The typical render includes "Shape16x8x16" or "m16n8k16" — either
-/// way, consecutive decimal runs give the three dims.
-fn parse_mma_shape_via_debug<T: core::fmt::Debug>(data: &T) -> Shape {
-    let s = format!("{:?}", data);
-    let mut dims = Vec::new();
-    let mut cur = String::new();
-    for c in s.chars() {
-        if c.is_ascii_digit() {
-            cur.push(c);
-        } else if !cur.is_empty() {
-            if let Ok(n) = cur.parse::<u32>() {
-                dims.push(n);
-            }
-            cur.clear();
-            if dims.len() >= 3 {
-                break;
-            }
-        }
-    }
-    if !cur.is_empty() && dims.len() < 3 {
-        if let Ok(n) = cur.parse::<u32>() {
-            dims.push(n);
-        }
-    }
-    if dims.is_empty() {
-        dims = vec![16, 16, 16];
-    } // fallback
-    Shape(dims)
+// ptx_parser's grammar (vendor/concordia-ptx/ptx_parser/src/lib.rs ~3979) only
+// accepts `mma.sync.aligned.m16n8k16` today, and MmaDetails discards the
+// shape dims. The canonical SM 80 MMA tile is M=16, N=8, K=16.
+fn mma_shape() -> Shape {
+    Shape(vec![16, 8, 16])
 }
 
-fn parse_mma_dtype_via_debug<T: core::fmt::Debug>(data: &T) -> Dtype {
-    let s = format!("{:?}", data);
-    if s.contains("F16") {
-        Dtype::F16
-    } else if s.contains("BF16") {
-        Dtype::BF16
-    } else if s.contains("F32") {
-        Dtype::F32
-    } else {
-        Dtype::F16
+fn mma_dtype(data: &MmaDetails) -> Dtype {
+    match data.dtype_scalar {
+        ScalarType::F16 => Dtype::F16,
+        ScalarType::BF16 => Dtype::BF16,
+        ScalarType::F32 => Dtype::F32,
+        _ => Dtype::F16,
     }
 }
