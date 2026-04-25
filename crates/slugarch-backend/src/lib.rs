@@ -2,6 +2,9 @@
 
 pub mod bindings;
 pub mod descriptor;
+mod emit;
+
+pub use emit::emit_dispatches;
 
 use serde::{Deserialize, Serialize};
 use slugarch_ir::op::Op;

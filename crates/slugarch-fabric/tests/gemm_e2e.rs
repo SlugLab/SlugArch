@@ -1,14 +1,13 @@
 //! Tier 2 Path A: gemm.ptx end-to-end through the full SlugArch pipeline.
 
-use slugarch_backend::bindings::*;
-use slugarch_backend::{BackendBinding, BindCtx, DispatchCmd};
+use slugarch_backend::emit_dispatches;
 use slugarch_fabric::Fabric;
 use slugarch_ir::module::Context;
 use slugarch_ir::op::Op;
 use slugarch_ir::pass::Pass;
 use slugarch_ir::passes::select_backend::BackendPolicy;
 use slugarch_ir::passes::{AssignTokens, FuseDecodeOps, SelectBackend};
-use slugarch_ir::types::{BackendChoice, IpId, TokenId};
+use slugarch_ir::types::{BackendChoice, IpId};
 
 /// Test-only policy: routes everything to PtxEmulationCore.
 /// v1's NoC Verilator model doesn't retire our placeholder Dma token
@@ -37,59 +36,10 @@ fn lower_gemm() -> slugarch_ir::module::Module {
     m
 }
 
-fn opcode_from_op(op: &Op) -> u32 {
-    match op {
-        Op::Emu { opcode, .. } => *opcode,
-        _ => 253, // v1 catchall for Arith-on-emu dispatches
-    }
-}
-
-fn emit_dispatches(m: &slugarch_ir::module::Module) -> Vec<DispatchCmd> {
-    let mut out: Vec<DispatchCmd> = Vec::new();
-    for f in &m.functions {
-        for id in &f.order {
-            let op = f.ops.get(id).unwrap();
-            let meta = f.meta.get(id).unwrap();
-            let ip = meta.backend.expect("select_backend assigns every op").0;
-            let ctx = BindCtx {
-                token_in: meta.token_in.unwrap_or(TokenId(0)),
-                token_out: meta.token_out.unwrap_or(TokenId(0)),
-                source_hint: meta.source_hint.as_deref(),
-                policy: Some("default_v1"),
-            };
-            let cmds = match ip {
-                IpId::PtxEmulationCore => PtxEmulationBinding.bind(
-                    &Op::Emu {
-                        opcode: opcode_from_op(op),
-                        operands: vec![],
-                    },
-                    &ctx,
-                ),
-                IpId::NoCMesh => NoCMeshBinding.bind(op, &ctx),
-                IpId::SystolicArray4x4 => SystolicBinding(IpId::SystolicArray4x4).bind(op, &ctx),
-                IpId::SystolicArray16x16 => {
-                    SystolicBinding(IpId::SystolicArray16x16).bind(op, &ctx)
-                }
-                IpId::SystolicArray32x32 => {
-                    SystolicBinding(IpId::SystolicArray32x32).bind(op, &ctx)
-                }
-                IpId::NpuArrayV4SeedG => NpuSeedGBinding.bind(op, &ctx),
-                IpId::NpuClusterV4 => NpuClusterBinding.bind(op, &ctx),
-                IpId::GemmIp => GemmIpBinding.bind(op, &ctx),
-                // Plan 4 added SlugCxl4x4 — fabric tests don't route there.
-                IpId::SlugCxl4x4 => unreachable!("AllEmuPolicy never routes to SlugCxl4x4"),
-            }
-            .expect("bind");
-            out.extend(cmds);
-        }
-    }
-    out
-}
-
 #[test]
 fn gemm_runs_end_to_end() {
     let m = lower_gemm();
-    let stream = emit_dispatches(&m);
+    let stream = emit_dispatches(&m, "default_v1").expect("bind");
     assert!(
         stream.len() >= 50,
         "expected >=50 dispatches, got {}",

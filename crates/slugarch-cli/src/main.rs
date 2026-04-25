@@ -2,8 +2,7 @@
 
 use anyhow::{anyhow, Context as _, Result};
 use clap::{Parser, Subcommand};
-use slugarch_backend::bindings::PtxEmulationBinding;
-use slugarch_backend::{BackendBinding, BindCtx, DispatchCmd};
+use slugarch_backend::emit_dispatches;
 use slugarch_fabric::{Fabric, ReplayArtifact};
 use slugarch_ir::module::{Context, Module};
 use slugarch_ir::op::Op;
@@ -11,7 +10,7 @@ use slugarch_ir::pass::Pass;
 use slugarch_ir::passes::select_backend::BackendPolicy;
 use slugarch_ir::passes::validate_against_rtlmap::{PipelineRtlmap, ValidateAgainstRtlmap};
 use slugarch_ir::passes::{AssignTokens, FuseDecodeOps, SelectBackend};
-use slugarch_ir::types::{BackendChoice, IpId, TokenId};
+use slugarch_ir::types::{BackendChoice, IpId};
 use std::path::PathBuf;
 
 /// v1 policy: route everything to PtxEmulationCore. Real per-IP routing
@@ -122,40 +121,9 @@ fn lower(path: &std::path::Path) -> Result<Module> {
     Ok(m)
 }
 
-fn emit_dispatches(m: &Module) -> Vec<DispatchCmd> {
-    let mut out: Vec<DispatchCmd> = Vec::new();
-    for f in &m.functions {
-        for id in &f.order {
-            let op = f.ops.get(id).unwrap();
-            let meta = f.meta.get(id).unwrap();
-            let ctx = BindCtx {
-                token_in: meta.token_in.unwrap_or(TokenId(0)),
-                token_out: meta.token_out.unwrap_or(TokenId(0)),
-                source_hint: meta.source_hint.as_deref(),
-                policy: Some("all_emu_v1"),
-            };
-            let opcode = match op {
-                Op::Emu { opcode, .. } => *opcode,
-                _ => 253,
-            };
-            let cmds = PtxEmulationBinding
-                .bind(
-                    &Op::Emu {
-                        opcode,
-                        operands: vec![],
-                    },
-                    &ctx,
-                )
-                .unwrap();
-            out.extend(cmds);
-        }
-    }
-    out
-}
-
 fn run(kernel: &std::path::Path, record: Option<&std::path::Path>, mem_size: usize) -> Result<()> {
     let m = lower(kernel)?;
-    let stream = emit_dispatches(&m);
+    let stream = emit_dispatches(&m, "all_emu_v1").map_err(|e| anyhow!("bind: {}", e))?;
     let initial_mem = vec![0u8; mem_size];
     let mut fabric = Fabric::new(mem_size);
     fabric.set_host_mem(&initial_mem);
@@ -177,7 +145,8 @@ fn run(kernel: &std::path::Path, record: Option<&std::path::Path>, mem_size: usi
 fn replay(artifact_path: &std::path::Path) -> Result<()> {
     let art =
         ReplayArtifact::read_from(artifact_path).map_err(|e| anyhow!("read artifact: {}", e))?;
-    let stream = emit_dispatches(&art.slugir);
+    let stream = emit_dispatches(&art.slugir, &art.policy_name)
+        .map_err(|e| anyhow!("bind: {}", e))?;
     let mut fabric = Fabric::new(art.host_mem.len());
     fabric.set_host_mem(&art.host_mem);
     let report = fabric.run(stream).map_err(|e| anyhow!("fabric: {}", e))?;

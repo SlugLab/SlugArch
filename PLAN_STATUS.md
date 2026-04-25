@@ -189,9 +189,10 @@
 5. **Multi-threaded fabric.** v1 is single-threaded; the
    `VerilatedIp` wrapper is `Send + !Sync` so per-IP threading is
    plausible once the event loop needs to drive cores in parallel.
-6. **`emit_dispatches` duplication.** The helper appears in the CLI
-   and three Tier 2 tests — if it stabilizes, promoting it to a
-   shared crate is worth doing.
+6. ~~**`emit_dispatches` duplication.**~~ **Resolved post-v1**:
+   promoted to `slugarch_backend::emit_dispatches(m, policy_name)`,
+   which routes per `meta.backend` through the per-IP `BackendBinding`.
+   CLI + 3 Tier 2 tests now share the helper.
 
 
 ## Plan 4 — CXL RTL generation + host runtime: **COMPLETE**

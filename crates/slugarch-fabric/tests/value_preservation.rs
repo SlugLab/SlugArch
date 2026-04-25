@@ -8,15 +8,14 @@
 //! up similar. Host memory is unchanged by CPU-emu stubs in v1, so the
 //! hash comparison is a weak-but-real invariant.
 
-use slugarch_backend::bindings::*;
-use slugarch_backend::{BackendBinding, BindCtx, DispatchCmd};
+use slugarch_backend::{emit_dispatches, DispatchCmd};
 use slugarch_fabric::Fabric;
 use slugarch_ir::module::Context;
 use slugarch_ir::op::Op;
 use slugarch_ir::pass::Pass;
 use slugarch_ir::passes::select_backend::BackendPolicy;
 use slugarch_ir::passes::{AssignTokens, FuseDecodeOps, SelectBackend};
-use slugarch_ir::types::{BackendChoice, IpId, TokenId};
+use slugarch_ir::types::{BackendChoice, IpId};
 
 struct AllEmuPolicy;
 impl BackendPolicy for AllEmuPolicy {
@@ -50,35 +49,7 @@ fn lower_and_bind(policy: impl BackendPolicy + 'static) -> Vec<DispatchCmd> {
     FuseDecodeOps.run(&mut m).unwrap();
     SelectBackend::new(policy).run(&mut m).unwrap();
     AssignTokens.run(&mut m).unwrap();
-
-    let mut out: Vec<DispatchCmd> = Vec::new();
-    for f in &m.functions {
-        for id in &f.order {
-            let op = f.ops.get(id).unwrap();
-            let meta = f.meta.get(id).unwrap();
-            let ctx = BindCtx {
-                token_in: meta.token_in.unwrap_or(TokenId(0)),
-                token_out: meta.token_out.unwrap_or(TokenId(0)),
-                source_hint: meta.source_hint.as_deref(),
-                policy: Some("value_preservation_test"),
-            };
-            let opcode = match op {
-                Op::Emu { opcode, .. } => *opcode,
-                _ => 253,
-            };
-            let cmds = PtxEmulationBinding
-                .bind(
-                    &Op::Emu {
-                        opcode,
-                        operands: vec![],
-                    },
-                    &ctx,
-                )
-                .unwrap();
-            out.extend(cmds);
-        }
-    }
-    out
+    emit_dispatches(&m, "value_preservation_test").unwrap()
 }
 
 fn hash_host_mem(bytes: &[u8]) -> u64 {
