@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/slugarch-ir",
     "crates/slugarch-ptx-frontend",
+    "crates/slugarch-path",
     "crates/slugarch-backend",
     "crates/slugarch-bench",
     "crates/slugarch-cli",

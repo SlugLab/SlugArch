@@ -10,6 +10,7 @@ pub struct CxlEndpointConfig {
     pub attached_wrapper: AttachedWrapper,
     pub outstanding_reqs: u32,
     pub dispatch_table: Vec<DispatchRoute>,
+    pub hardware_jit: HardwareJitConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -47,6 +48,29 @@ pub enum RouteTarget {
     AttachedIp,
     Dram,
     Drop,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HardwareJitConfig {
+    pub enabled: bool,
+    pub record_mode: HardwareJitRecordMode,
+    pub epoch_policy: EpochPolicy,
+    pub sample_stride: u32,
+    pub metadata_fifo_depth: u32,
+    pub metadata_record_bytes: u32,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+pub enum HardwareJitRecordMode {
+    Validation,
+    Delta,
+    Full,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum EpochPolicy {
+    GemmPhase,
+    FixedFlits { flits_per_epoch: u32 },
 }
 
 impl CxlEndpointConfig {
@@ -90,6 +114,7 @@ impl CxlEndpointConfig {
                 match_value: 0x0000_2000,
                 target: RouteTarget::AttachedIp,
             }],
+            hardware_jit: HardwareJitConfig::validation_gemm(),
         }
     }
 
@@ -104,6 +129,7 @@ impl CxlEndpointConfig {
                 self.attached_wrapper.module.clone(),
             ));
         }
+        self.hardware_jit.validate()?;
         for (i, a) in self.address_spaces.iter().enumerate() {
             for b in &self.address_spaces[i + 1..] {
                 let a_end = a.base.saturating_add(a.length);
@@ -120,12 +146,61 @@ impl CxlEndpointConfig {
     }
 }
 
+impl HardwareJitConfig {
+    pub fn validation_gemm() -> Self {
+        Self {
+            enabled: true,
+            record_mode: HardwareJitRecordMode::Validation,
+            epoch_policy: EpochPolicy::GemmPhase,
+            sample_stride: 1,
+            metadata_fifo_depth: 512,
+            metadata_record_bytes: 32,
+        }
+    }
+
+    pub fn validate(&self) -> Result<(), GenError> {
+        if self.sample_stride == 0 {
+            return Err(GenError::InvalidHardwareJit(
+                "sample_stride must be nonzero".into(),
+            ));
+        }
+        if self.metadata_fifo_depth == 0 {
+            return Err(GenError::InvalidHardwareJit(
+                "metadata_fifo_depth must be nonzero".into(),
+            ));
+        }
+        if self.metadata_record_bytes < 16 {
+            return Err(GenError::InvalidHardwareJit(
+                "metadata_record_bytes must be at least 16".into(),
+            ));
+        }
+        if let EpochPolicy::FixedFlits { flits_per_epoch } = self.epoch_policy {
+            if flits_per_epoch == 0 {
+                return Err(GenError::InvalidHardwareJit(
+                    "fixed epoch length must be nonzero".into(),
+                ));
+            }
+        }
+        Ok(())
+    }
+
+    pub fn record_mode_code(&self) -> u32 {
+        match self.record_mode {
+            HardwareJitRecordMode::Validation => 0,
+            HardwareJitRecordMode::Delta => 1,
+            HardwareJitRecordMode::Full => 2,
+        }
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum GenError {
     #[error("unknown attached wrapper: {0}")]
     UnknownWrapper(String),
     #[error("overlapping address spaces: {a:?} vs {b:?}")]
     OverlappingAddressSpace { a: AddressSpace, b: AddressSpace },
+    #[error("invalid hardware JIT config: {0}")]
+    InvalidHardwareJit(String),
     #[error("i/o: {0}")]
     Io(#[from] std::io::Error),
 }

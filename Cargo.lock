@@ -868,6 +868,7 @@ dependencies = [
  "serde",
  "serde_json",
  "slugarch-ir",
+ "slugarch-path",
  "slugarch-verilator",
  "thiserror 2.0.18",
 ]
@@ -877,6 +878,7 @@ name = "slugarch-bench"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "slugarch-path",
 ]
 
 [[package]]
@@ -912,6 +914,7 @@ dependencies = [
  "serde_json",
  "slugarch-backend",
  "slugarch-ir",
+ "slugarch-path",
  "slugarch-ptx-frontend",
  "slugarch-verilator",
  "thiserror 2.0.18",
@@ -921,6 +924,7 @@ dependencies = [
 name = "slugarch-host"
 version = "0.1.0"
 dependencies = [
+ "bincode",
  "serde",
  "serde_json",
  "slugarch-cxl-wire",
@@ -939,8 +943,13 @@ dependencies = [
  "proptest",
  "serde",
  "serde_json",
+ "slugarch-path",
  "thiserror 2.0.18",
 ]
+
+[[package]]
+name = "slugarch-path"
+version = "0.1.0"
 
 [[package]]
 name = "slugarch-ptx-frontend"
@@ -949,6 +958,7 @@ dependencies = [
  "insta",
  "ptx_parser",
  "slugarch-ir",
+ "slugarch-path",
  "thiserror 2.0.18",
 ]
 
@@ -966,6 +976,7 @@ version = "0.1.0"
 dependencies = [
  "bindgen",
  "cc",
+ "slugarch-path",
 ]
 
 [[package]]

@@ -13,6 +13,7 @@ struct Runtime<'a> {
     classes: Vec<Class>,
     address_spaces: &'a Vec<crate::config::AddressSpace>,
     attached_wrapper: &'a crate::config::AttachedWrapper,
+    hardware_jit: &'a crate::config::HardwareJitConfig,
 }
 
 #[derive(Serialize)]
@@ -133,6 +134,7 @@ pub fn emit(cfg: &CxlEndpointConfig) -> String {
         ],
         address_spaces: &cfg.address_spaces,
         attached_wrapper: &cfg.attached_wrapper,
+        hardware_jit: &cfg.hardware_jit,
     };
     serde_json::to_string_pretty(&runtime).expect("serialize runtime")
 }

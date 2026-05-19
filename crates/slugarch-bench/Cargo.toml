@@ -9,3 +9,4 @@ build = "build.rs"
 anyhow.workspace = true
 
 [build-dependencies]
+slugarch-path = { path = "../slugarch-path" }

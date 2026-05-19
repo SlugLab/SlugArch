@@ -1,7 +1,3 @@
----
-source: crates/slugcxl-gen/src/emit_runtime.rs
-expression: j
----
 {
   "schema": "slugcxl.runtime.v1",
   "name": "slugcxl_4x4",

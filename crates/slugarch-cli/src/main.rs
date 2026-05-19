@@ -65,6 +65,14 @@ enum Cmd {
         /// Path to a GemmJob JSON file: { "a": [[..]], "b": [[..]] }
         job: PathBuf,
     },
+    /// Run the CXL GEMM path with boundary replay recording and validation.
+    EvalCxl {
+        /// Path to a GemmJob JSON file: { "a": [[..]], "b": [[..]] }
+        job: PathBuf,
+        /// Recording mode: validation, delta, or full.
+        #[arg(long, default_value = "validation")]
+        mode: String,
+    },
 }
 
 fn main() -> Result<()> {
@@ -82,6 +90,7 @@ fn main() -> Result<()> {
             hints,
         } => validate(&kernel, &oracle, hints.as_deref()),
         Cmd::RunCxl { job } => run_cxl(&job),
+        Cmd::EvalCxl { job, mode } => eval_cxl(&job, &mode),
     }
 }
 
@@ -100,6 +109,59 @@ fn run_cxl(job_path: &std::path::Path) -> Result<()> {
         println!("  {:?}", row);
     }
     Ok(())
+}
+
+fn eval_cxl(job_path: &std::path::Path, mode: &str) -> Result<()> {
+    use slugarch_host::{CxlHost, CxlRecordPolicy, GemmJob};
+    let text = std::fs::read_to_string(job_path)
+        .with_context(|| format!("reading {}", job_path.display()))?;
+    let job: GemmJob = serde_json::from_str(&text).with_context(|| "parsing GemmJob JSON")?;
+    let mode = parse_cxl_record_mode(mode)?;
+    let policy = CxlRecordPolicy::gemm(mode);
+
+    let run_a = CxlHost::new()
+        .run_gemm_recorded(&job, policy.clone())
+        .map_err(|e| anyhow!("cxl eval run A: {}", e))?;
+    let run_b = CxlHost::new()
+        .run_gemm_recorded(&job, policy)
+        .map_err(|e| anyhow!("cxl eval run B: {}", e))?;
+    let validation = run_a.artifact.validate_equivalent(&run_b.artifact);
+    let summary = &run_a.artifact.summary;
+
+    println!("mode: {:?}", mode);
+    println!("cycles: {}", run_a.result.cycles);
+    println!("flits_sent: {}", run_a.result.flits_sent);
+    println!("flits_received: {}", run_a.result.flits_received);
+    println!("records: {}", summary.record_count);
+    println!("epochs: {}", summary.epoch_count);
+    println!("application_flit_bytes: {}", summary.application_flit_bytes);
+    println!("replay_record_bytes: {}", summary.replay_record_bytes);
+    println!("payload_capture_bytes: {}", summary.payload_capture_bytes);
+    println!(
+        "replay_bytes_per_app_gib: {:.2}",
+        summary.replay_bytes_per_app_gib()
+    );
+    println!("records_compared: {}", validation.records_compared);
+    println!("record_mismatches: {}", validation.record_mismatches);
+    println!(
+        "final_commitment_matches: {}",
+        validation.final_commitment_matches
+    );
+    println!("replay_equivalent: {}", validation.is_equivalent());
+
+    Ok(())
+}
+
+fn parse_cxl_record_mode(mode: &str) -> Result<slugarch_host::CxlRecordMode> {
+    match mode {
+        "validation" => Ok(slugarch_host::CxlRecordMode::Validation),
+        "delta" => Ok(slugarch_host::CxlRecordMode::Delta),
+        "full" => Ok(slugarch_host::CxlRecordMode::Full),
+        other => Err(anyhow!(
+            "unknown CXL record mode `{}`; expected validation, delta, or full",
+            other
+        )),
+    }
 }
 
 fn lower(path: &std::path::Path) -> Result<Module> {

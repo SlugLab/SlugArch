@@ -6,6 +6,7 @@ license.workspace = true
 
 [dependencies]
 slugarch-ir = { path = "../slugarch-ir" }
+slugarch-path = { path = "../slugarch-path" }
 slugarch-verilator = { path = "../slugarch-verilator" }
 serde.workspace = true
 serde_json.workspace = true

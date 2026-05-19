@@ -6,19 +6,11 @@ fn main() {
     println!("cargo:rerun-if-changed=shim/ip_shim.h");
     println!("cargo:rerun-if-changed=shim/ip_shim.cpp");
 
-    let crate_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let vendor_root = crate_dir
-        .join("..")
-        .join("..")
-        .join("vendor")
-        .join("gemma-generated");
+    let vendor_root = slugarch_path::gemma_generated_root();
     let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
 
-    let verilator_bin = std::env::var("VERILATOR")
-        .unwrap_or_else(|_| "/home/victoryang00/tools/verilator/bin/verilator".to_string());
-    let verilator_include = std::env::var("VERILATOR_INCLUDE").unwrap_or_else(|_| {
-        "/home/victoryang00/tools/verilator/share/verilator/include".to_string()
-    });
+    let verilator_bin = std::env::var("VERILATOR").unwrap_or_else(|_| "verilator".to_string());
+    let verilator_include = find_verilator_include(&verilator_bin);
 
     for ip in IPS {
         verilate_ip(&verilator_bin, &vendor_root, &out_dir, ip);
@@ -188,6 +180,50 @@ fn compile_shim(out_dir: &Path, verilator_include: &str) {
     build.include(out_dir.join(format!("obj_dir_{}", SLUGCXL_TOP)));
     build.compile("slugarch_verilator_shim");
     println!("cargo:rustc-link-lib=stdc++");
+}
+
+fn find_verilator_include(verilator_bin: &str) -> String {
+    if let Ok(include) = std::env::var("VERILATOR_INCLUDE") {
+        return include;
+    }
+    if let Ok(root) = std::env::var("VERILATOR_ROOT") {
+        return PathBuf::from(root).join("include").display().to_string();
+    }
+
+    let output = Command::new(verilator_bin)
+        .arg("-V")
+        .output()
+        .unwrap_or_else(|e| {
+            panic!(
+                "failed to invoke `{}` while locating Verilator headers: {}. \
+             Set VERILATOR, VERILATOR_ROOT, or VERILATOR_INCLUDE.",
+                verilator_bin, e
+            )
+        });
+    if !output.status.success() {
+        panic!(
+            "`{} -V` failed while locating Verilator headers. \
+             Set VERILATOR_ROOT or VERILATOR_INCLUDE.",
+            verilator_bin
+        );
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    for line in stdout.lines() {
+        if let Some((key, value)) = line.split_once('=') {
+            if key.trim() == "VERILATOR_ROOT" {
+                return PathBuf::from(value.trim())
+                    .join("include")
+                    .display()
+                    .to_string();
+            }
+        }
+    }
+
+    panic!(
+        "could not parse VERILATOR_ROOT from `{} -V`; set VERILATOR_INCLUDE",
+        verilator_bin
+    );
 }
 
 fn generate_bindings(out_dir: &Path) {

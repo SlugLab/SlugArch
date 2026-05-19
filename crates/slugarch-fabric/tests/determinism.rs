@@ -22,7 +22,7 @@ impl BackendPolicy for AllEmuPolicy {
 }
 
 fn lower() -> slugarch_ir::module::Module {
-    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fixtures/gemm.ptx");
+    let path = slugarch_path::fixture("gemm.ptx");
     let text = std::fs::read_to_string(path).unwrap();
     let parsed = slugarch_ptx_frontend::parse_ptx(&text).unwrap();
     let mut ctx = Context::new();

@@ -7,7 +7,7 @@ use std::fs;
 
 #[test]
 fn gemm_fixture_parses_and_lowers() {
-    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fixtures/gemm.ptx");
+    let path = slugarch_path::fixture("gemm.ptx");
     let text = fs::read_to_string(path).expect("read gemm.ptx");
 
     let parsed = slugarch_ptx_frontend::parse_ptx(&text).expect("parse");

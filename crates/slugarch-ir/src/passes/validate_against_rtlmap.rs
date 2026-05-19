@@ -284,12 +284,8 @@ mod tests {
 
     #[test]
     fn loads_real_qwen_decode_pipeline_from_vendored_file() {
-        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("..")
-            .join("..")
-            .join(
-                "vendor/gemma-generated/generated/mappings/pipelines/qwen_decode_token.rtlmap.json",
-            );
+        let path = slugarch_path::gemma_generated_root()
+            .join("generated/mappings/pipelines/qwen_decode_token.rtlmap.json");
         let oracle = PipelineRtlmap::from_json_file(&path).expect("load vendored pipeline");
         assert_eq!(oracle.name, "qwen_decode_token");
         // Sanity: the pipeline has >=3 nodes and references at least one NPU IP.

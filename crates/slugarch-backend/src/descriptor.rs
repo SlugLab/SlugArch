@@ -3,7 +3,6 @@
 
 use serde::Deserialize;
 use slugarch_ir::types::IpId;
-use std::path::Path;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct IpRuntime {
@@ -16,10 +15,8 @@ pub struct IpRuntime {
 
 impl IpRuntime {
     pub fn load(ip_id: IpId) -> Result<Self, DescriptorError> {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("..")
-            .join("..")
-            .join("vendor/gemma-generated/generated")
+        let root = slugarch_path::gemma_generated_root()
+            .join("generated")
             .join(ip_id.catalog_name())
             .join("runtime")
             .join(format!("{}.json", ip_id.catalog_name()));

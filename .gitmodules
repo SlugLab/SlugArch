@@ -1,0 +1,9 @@
+[submodule "vendor/upstream/concordia"]
+	path = vendor/upstream/concordia
+	url = https://github.com/CXLMemUring/Concordia.git
+	branch = main
+
+[submodule "vendor/upstream/gemma4-on-FPGA"]
+	path = vendor/upstream/gemma4-on-FPGA
+	url = https://github.com/vickiegpt/gemma4-on-FPGA.git
+	branch = main
