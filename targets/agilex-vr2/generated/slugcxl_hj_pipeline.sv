@@ -75,6 +75,8 @@ module slugcxl_hj_pipeline #(
 
   wire [63:0] payload_hash = hash_payload(chosen_flit);
   wire [15:0] payload_capture_bytes = capture_bytes(chosen_flit);
+  wire [63:0] metadata_record_bytes_64 = {32'd0, METADATA_RECORD_BYTES};
+  wire [63:0] payload_capture_bytes_64 = {48'd0, payload_capture_bytes};
 
   assign metadata_data = {
     32'h53484a54,        // "SHJT"
@@ -85,7 +87,7 @@ module slugcxl_hj_pipeline #(
     chosen_class,
     chosen_opcode,
     4'd0,
-    (choose_h2d ? 8'd0 : 8'd1)
+    (choose_h2d ? 4'd0 : 4'd1)
   };
 
   always @(posedge clk or negedge rst_n) begin
@@ -113,7 +115,7 @@ module slugcxl_hj_pipeline #(
 
         if (sampled) begin
           record_count   <= record_count + 64'd1;
-          metadata_bytes <= metadata_bytes + METADATA_RECORD_BYTES + payload_capture_bytes;
+          metadata_bytes <= metadata_bytes + metadata_record_bytes_64 + payload_capture_bytes_64;
           if (!metadata_ready) begin
             metadata_drop_count <= metadata_drop_count + 64'd1;
           end

@@ -10,3 +10,6 @@
 **/*.log
 **/*.o
 **/*.obj
+qdb
+dni
+output_files

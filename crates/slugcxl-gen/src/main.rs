@@ -2,6 +2,7 @@
 
 mod config;
 mod emit_endpoint;
+mod emit_fit_top;
 mod emit_hj_pipeline;
 mod emit_hj_top;
 mod emit_quartus;
@@ -55,10 +56,14 @@ fn main() -> Result<()> {
             emit_hj_top::emit(&cfg),
         )?;
         write(
+            &cli.out.join("slugcxl_hj_fit_top.sv"),
+            emit_fit_top::emit(&cfg),
+        )?;
+        write(
             &cli.out.join("slugcxl_hj_overhead.json"),
             hj_overhead::emit_report_json(&cfg.hardware_jit),
         )?;
-        emitted += 3;
+        emitted += 4;
     }
 
     if let Some(project_root) = &cli.quartus_project {

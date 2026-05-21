@@ -7,5 +7,6 @@ if {![info exists env(SLUGCXL_AGILEX_DEVICE)]} {
 }
 
 set_global_assignment -name DEVICE $env(SLUGCXL_AGILEX_DEVICE)
+export_assignments
 execute_flow -compile
 project_close
