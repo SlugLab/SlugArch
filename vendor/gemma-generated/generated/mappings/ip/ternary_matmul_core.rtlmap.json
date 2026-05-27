@@ -1,18 +1,18 @@
 {
   "backend_hooks": {
     "hardware": {
-      "external_command": "cd /root/ternary_matmul && make vivado CONFIG=xcu250_D=1024_OneCore",
+      "external_command": "cd vendor/externals/ternary_matmul && make vivado CONFIG=xcu250_D=1024_OneCore",
       "filelist": "generated/ternary_matmul_core/hardware/ternary_matmul_core.f",
       "tcl": "generated/ternary_matmul_core/hardware/ternary_matmul_core_synth.tcl"
     },
     "runtime": {
       "descriptor": "generated/ternary_matmul_core/runtime/ternary_matmul_core.json",
-      "external_runtime_python": "/root/ternary_matmul/sw_utils",
+      "external_runtime_python": "vendor/externals/ternary_matmul/sw_utils",
       "launch_mode": "external_ternary_matmul"
     },
     "simulator": {
       "command": "verilator --binary -f generated/ternary_matmul_core/hardware/ternary_matmul_core.f --top gemma_codegen_ternary_matmul_core_df_tb",
-      "external_command": "cd /root/ternary_matmul && make sim TOP=tmatmul_tb",
+      "external_command": "cd vendor/externals/ternary_matmul && make sim TOP=tmatmul_tb",
       "filelist": "generated/ternary_matmul_core/hardware/ternary_matmul_core.f",
       "smoke_tb": "generated/ternary_matmul_core/sim/ternary_matmul_core_smoke_tb.sv"
     }
@@ -57,12 +57,12 @@
     ]
   },
   "external": {
-    "compiler_entry": "/root/ternary_matmul/sw_utils/lib/algorithm_tree.py",
-    "hardware_command": "cd /root/ternary_matmul && make vivado CONFIG=xcu250_D=1024_OneCore",
-    "root": "/root/ternary_matmul",
-    "rtl_filelist": "/root/ternary_matmul/rtl/rtl.f",
-    "runtime_python": "/root/ternary_matmul/sw_utils",
-    "sim_command": "cd /root/ternary_matmul && make sim TOP=tmatmul_tb"
+    "compiler_entry": "vendor/externals/ternary_matmul/sw_utils/lib/algorithm_tree.py",
+    "hardware_command": "cd vendor/externals/ternary_matmul && make vivado CONFIG=xcu250_D=1024_OneCore",
+    "root": "vendor/externals/ternary_matmul",
+    "rtl_filelist": "vendor/externals/ternary_matmul/rtl/rtl.f",
+    "runtime_python": "vendor/externals/ternary_matmul/sw_utils",
+    "sim_command": "cd vendor/externals/ternary_matmul && make sim TOP=tmatmul_tb"
   },
   "external_source": "ternary_matmul",
   "kind": "ternary",
@@ -76,7 +76,7 @@
     "module": "matrix_unit_core",
     "source": null,
     "sources": [
-      "/root/ternary_matmul/rtl/matrix_unit/matrix_unit_core.sv"
+      "vendor/externals/ternary_matmul/rtl/matrix_unit/matrix_unit_core.sv"
     ],
     "top_for_build": "gemma_codegen_ternary_matmul_core_df",
     "wrapper_source": "generated/ternary_matmul_core/rtl/ternary_matmul_core_df_wrapper.sv"

@@ -13,14 +13,9 @@ const IPS: &[&str] = &[
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
-    let vendor_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("..")
-        .join("..")
-        .join("vendor")
-        .join("gemma-generated");
+    let vendor_root = slugarch_path::gemma_generated_root();
     let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
-    let verilator = std::env::var("VERILATOR")
-        .unwrap_or_else(|_| "/home/victoryang00/tools/verilator/bin/verilator".to_string());
+    let verilator = std::env::var("VERILATOR").unwrap_or_else(|_| "verilator".to_string());
 
     for ip in IPS {
         let obj = out_dir.join(format!("bench_obj_{}", ip));

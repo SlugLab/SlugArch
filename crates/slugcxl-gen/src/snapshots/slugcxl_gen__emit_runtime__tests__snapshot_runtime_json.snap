@@ -128,5 +128,13 @@ expression: j
     "token_width": 256,
     "dispatch_base": 8192,
     "result_base": 12288
+  },
+  "hardware_jit": {
+    "enabled": true,
+    "record_mode": "Validation",
+    "epoch_policy": "GemmPhase",
+    "sample_stride": 1,
+    "metadata_fifo_depth": 512,
+    "metadata_record_bytes": 32
   }
 }

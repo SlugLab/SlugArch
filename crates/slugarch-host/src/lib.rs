@@ -4,8 +4,13 @@ pub mod dispatch;
 pub mod error;
 pub mod host;
 pub mod job;
+pub mod replay;
 pub mod result;
 
 pub use error::HostError;
 pub use host::CxlHost;
 pub use job::{GemmJob, GemmResult};
+pub use replay::{
+    CxlDirection, CxlEndpoint, CxlRecordMode, CxlRecordPolicy, CxlRecordedRun, CxlReplayArtifact,
+    CxlReplayRecord, CxlReplaySummary, CxlReplayValidation, CxlTransactionClass,
+};

@@ -2,6 +2,7 @@
 //! GEMM dispatch stream, collects responses, decodes the result matrix.
 
 use crate::dispatch::build_gemm_dispatch_stream;
+use crate::replay::{CxlDirection, CxlRecordPolicy, CxlRecordedRun, CxlTraceRecorder};
 use crate::result::decode_results;
 use crate::{GemmJob, GemmResult, HostError};
 use slugarch_cxl_wire::{decode, encode, CxlMsg, S2MNDROp};
@@ -29,6 +30,25 @@ impl CxlHost {
     }
 
     pub fn run_gemm(&mut self, job: &GemmJob) -> Result<GemmResult, HostError> {
+        self.run_gemm_inner(job, None)
+    }
+
+    pub fn run_gemm_recorded(
+        &mut self,
+        job: &GemmJob,
+        policy: CxlRecordPolicy,
+    ) -> Result<CxlRecordedRun, HostError> {
+        let mut recorder = CxlTraceRecorder::new(policy);
+        let result = self.run_gemm_inner(job, Some(&mut recorder))?;
+        let artifact = recorder.finish(&result);
+        Ok(CxlRecordedRun { result, artifact })
+    }
+
+    fn run_gemm_inner(
+        &mut self,
+        job: &GemmJob,
+        mut recorder: Option<&mut CxlTraceRecorder>,
+    ) -> Result<GemmResult, HostError> {
         let stream = build_gemm_dispatch_stream(job, self.next_tag);
         self.next_tag = self.next_tag.wrapping_add(49);
 
@@ -40,6 +60,10 @@ impl CxlHost {
         let mut last_cycles = start_cycles;
 
         for (i, msg) in stream.iter().enumerate() {
+            if let Some(recorder) = recorder.as_deref_mut() {
+                recorder.record_gemm_msg(i, CxlDirection::HostToDevice, msg);
+            }
+
             let out_flit = encode(msg);
             self.ip.send_flit(&out_flit);
             flits_sent += 1;
@@ -57,6 +81,9 @@ impl CxlHost {
             };
 
             let resp_msg = decode(&resp)?;
+            if let Some(recorder) = recorder.as_deref_mut() {
+                recorder.record_gemm_msg(i, CxlDirection::DeviceToHost, &resp_msg);
+            }
             flits_received += 1;
 
             let expected_tag = msg.tag();

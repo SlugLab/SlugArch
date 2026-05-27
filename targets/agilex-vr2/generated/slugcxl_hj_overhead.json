@@ -1,0 +1,14 @@
+{
+  "workload": "slugcxl_gemm_4x4",
+  "record_mode": "Validation",
+  "request_flits": 49,
+  "response_flits": 49,
+  "record_count": 98,
+  "app_flit_bytes": 6272,
+  "metadata_record_bytes": 3136,
+  "payload_capture_bytes": 392,
+  "metadata_bytes": 3528,
+  "metadata_bytes_per_app_gib": 603979776.0,
+  "inserted_data_path_cycles": 0,
+  "estimated_runtime_overhead_percent": 0.0
+}
