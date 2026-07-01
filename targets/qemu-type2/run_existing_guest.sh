@@ -7,13 +7,16 @@ if [[ $# -ne 1 ]]; then
 fi
 
 RUN_DIR=$1
-GUEST_SSH=${CXLMEMSIM_GUEST_SSH:?set CXLMEMSIM_GUEST_SSH, for example: ssh root@192.168.122.10}
+GUEST_SSH_CMD=${CXLMEMSIM_GUEST_SSH_CMD:?set CXLMEMSIM_GUEST_SSH_CMD, for example: ssh root@192.168.122.10}
+GUEST_SCP_TARGET=${CXLMEMSIM_GUEST_SCP_TARGET:?set CXLMEMSIM_GUEST_SCP_TARGET, for example: root@192.168.122.10}
 CXLMEMSIM_ROOT=${CXLMEMSIM_ROOT:-/home/victoryang00/CXLMemSim}
 GUEST_DIR=${CXLMEMSIM_GUEST_DIR:-/root/slugarch-qemu-type2}
+read -r -a GUEST_SSH_ARR <<<"$GUEST_SSH_CMD"
 
 mkdir -p "$RUN_DIR"
 {
-    echo "guest_ssh=$GUEST_SSH"
+    echo "guest_ssh_cmd=$GUEST_SSH_CMD"
+    echo "guest_scp_target=$GUEST_SCP_TARGET"
     echo "cxlmemsim_root=$CXLMEMSIM_ROOT"
     echo "guest_dir=$GUEST_DIR"
 } >>"$RUN_DIR/commands.txt"
@@ -28,8 +31,8 @@ if [[ ! -f "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" ]]; then
     exit 1
 fi
 
-$GUEST_SSH "mkdir -p '$GUEST_DIR'"
-scp "$RUN_DIR/requests.bin" "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" "$GUEST_SSH:$GUEST_DIR/"
-$GUEST_SSH "cd '$GUEST_DIR' && gcc -O2 -Wall -Wextra -o slugarch_type2_guest slugarch_type2_guest.c && sudo ./slugarch_type2_guest --requests requests.bin --responses responses.bin --summary guest-summary.json"
-scp "$GUEST_SSH:$GUEST_DIR/responses.bin" "$RUN_DIR/responses.bin"
-scp "$GUEST_SSH:$GUEST_DIR/guest-summary.json" "$RUN_DIR/guest-summary.json"
+"${GUEST_SSH_ARR[@]}" "mkdir -p '$GUEST_DIR'"
+scp "$RUN_DIR/requests.bin" "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" "$GUEST_SCP_TARGET:$GUEST_DIR/"
+"${GUEST_SSH_ARR[@]}" "cd '$GUEST_DIR' && gcc -O2 -Wall -Wextra -o slugarch_type2_guest slugarch_type2_guest.c && sudo ./slugarch_type2_guest --requests requests.bin --responses responses.bin --summary guest-summary.json"
+scp "$GUEST_SCP_TARGET:$GUEST_DIR/responses.bin" "$RUN_DIR/responses.bin"
+scp "$GUEST_SCP_TARGET:$GUEST_DIR/guest-summary.json" "$RUN_DIR/guest-summary.json"
