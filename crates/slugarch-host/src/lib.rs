@@ -4,6 +4,7 @@ pub mod dispatch;
 pub mod error;
 pub mod host;
 pub mod job;
+pub mod qemu_type2;
 pub mod replay;
 pub mod result;
 
