@@ -1,5 +1,7 @@
 use slugarch_cxl_wire::{encode, CxlMsg, S2MNDROp, FLIT_BYTES};
-use slugarch_host::qemu_type2::{export_requests, validate_responses};
+use slugarch_host::qemu_type2::{
+    export_requests, validate_responses, QemuType2Expected, QemuType2Summary,
+};
 use slugarch_host::GemmJob;
 use std::fs;
 
@@ -31,9 +33,16 @@ fn export_writes_49_request_flits_and_expected_json() {
     let dir = temp_dir("export");
     let expected = export_requests(&job(), &dir).unwrap();
     let requests = fs::read(dir.join("requests.bin")).unwrap();
+    let expected_json: QemuType2Expected =
+        serde_json::from_slice(&fs::read(dir.join("expected.json")).unwrap()).unwrap();
     assert_eq!(requests.len(), 49 * FLIT_BYTES);
     assert_eq!(expected.request_count, 49);
     assert_eq!(expected.expected_c[0], [2, 3, 4, 5]);
+    assert_eq!(expected_json.workload, expected.workload);
+    assert_eq!(expected_json.flit_bytes, expected.flit_bytes);
+    assert_eq!(expected_json.request_count, expected.request_count);
+    assert_eq!(expected_json.request_tags, expected.request_tags);
+    assert_eq!(expected_json.expected_c, expected.expected_c);
     assert!(dir.join("expected.json").exists());
 }
 
@@ -44,10 +53,29 @@ fn validate_accepts_known_good_response_stream() {
     let response_bytes = known_good_response_stream();
     fs::write(dir.join("responses.bin"), response_bytes).unwrap();
     let summary = validate_responses(&job(), &dir.join("responses.bin"), &dir).unwrap();
+    let summary_json: QemuType2Summary =
+        serde_json::from_slice(&fs::read(dir.join("summary.json")).unwrap()).unwrap();
     assert_eq!(summary.status, "pass");
     assert_eq!(summary.response_count, 49);
     assert_eq!(summary.tag_mismatches, 0);
     assert_eq!(summary.result_c[3], [14, 15, 16, 17]);
+    assert_eq!(summary_json.status, summary.status);
+    assert_eq!(summary_json.request_count, summary.request_count);
+    assert_eq!(summary_json.response_count, summary.response_count);
+    assert_eq!(summary_json.tag_mismatches, summary.tag_mismatches);
+    assert_eq!(summary_json.dispatch_failures, summary.dispatch_failures);
+    assert_eq!(summary_json.result_c, summary.result_c);
+    assert_eq!(summary_json.expected_c, summary.expected_c);
+    assert_eq!(
+        summary_json.requests_path,
+        dir.join("requests.bin").display().to_string()
+    );
+    assert_eq!(
+        summary_json.responses_path,
+        dir.join("responses.bin").display().to_string()
+    );
+    assert!(dir.join("summary.json").exists());
+    assert!(dir.join("summary.csv").exists());
 }
 
 #[test]
