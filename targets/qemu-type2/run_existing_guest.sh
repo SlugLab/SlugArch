@@ -21,18 +21,30 @@ mkdir -p "$RUN_DIR"
     echo "guest_dir=$GUEST_DIR"
 } >>"$RUN_DIR/commands.txt"
 
-if [[ ! -f "$RUN_DIR/requests.bin" ]]; then
-    echo "missing $RUN_DIR/requests.bin; run slugarch export-cxlmemsim first" >&2
-    exit 1
-fi
+command -v scp >/dev/null || { echo "scp not found" >&2; exit 1; }
+command -v cargo >/dev/null || true
+test -r "$RUN_DIR/requests.bin" || { echo "requests.bin is not readable" >&2; exit 1; }
 
 if [[ ! -f "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" ]]; then
     echo "missing CXLMemSim guest helper source; implement qemu_integration/slugarch_type2_guest.c first" >&2
     exit 1
 fi
 
+append_command() {
+    local label=$1
+    shift
+    printf '%s=' "$label" >>"$RUN_DIR/commands.txt"
+    printf '%q ' "$@" >>"$RUN_DIR/commands.txt"
+    printf '\n' >>"$RUN_DIR/commands.txt"
+}
+
+append_command mkdir_guest_dir "${GUEST_SSH_ARR[@]}" "mkdir -p '$GUEST_DIR'"
 "${GUEST_SSH_ARR[@]}" "mkdir -p '$GUEST_DIR'"
+append_command scp_requests scp "$RUN_DIR/requests.bin" "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" "$GUEST_SCP_TARGET:$GUEST_DIR/"
 scp "$RUN_DIR/requests.bin" "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" "$GUEST_SCP_TARGET:$GUEST_DIR/"
+append_command guest_build_run "${GUEST_SSH_ARR[@]}" "cd '$GUEST_DIR' && gcc -O2 -Wall -Wextra -o slugarch_type2_guest slugarch_type2_guest.c && sudo ./slugarch_type2_guest --requests requests.bin --responses responses.bin --summary guest-summary.json"
 "${GUEST_SSH_ARR[@]}" "cd '$GUEST_DIR' && gcc -O2 -Wall -Wextra -o slugarch_type2_guest slugarch_type2_guest.c && sudo ./slugarch_type2_guest --requests requests.bin --responses responses.bin --summary guest-summary.json"
+append_command scp_responses scp "$GUEST_SCP_TARGET:$GUEST_DIR/responses.bin" "$RUN_DIR/responses.bin"
 scp "$GUEST_SCP_TARGET:$GUEST_DIR/responses.bin" "$RUN_DIR/responses.bin"
+append_command scp_guest_summary scp "$GUEST_SCP_TARGET:$GUEST_DIR/guest-summary.json" "$RUN_DIR/guest-summary.json"
 scp "$GUEST_SCP_TARGET:$GUEST_DIR/guest-summary.json" "$RUN_DIR/guest-summary.json"
