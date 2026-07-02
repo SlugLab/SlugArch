@@ -26,8 +26,8 @@
 - Modify `crates/slugarch-host/src/lib.rs`: export the new `sim_feasible` module and public report types.
 - Modify `crates/slugarch-cli/src/main.rs`: add `measure-sim-feasible` CLI command that calls the host module.
 - Create `crates/slugarch-host/tests/sim_feasible.rs`: focused tests for replay metadata, DAX probe classification, QEMU repeatability summarization, and claim ledger boundaries.
-- Create generated artifacts under `artifact/slugarch_cxlmemsim/sim-feasible-20260702-<time>/` during execution.
-- Create `docs/evaluation/sim-feasible-bench-20260702.json` and `docs/evaluation/sim-feasible-bench-20260702.md` after running the benchmark pass.
+- Keep raw/generated run logs under `artifact/slugarch_cxlmemsim/sim-feasible-20260702-<time>/` if a live runner produces them.
+- Create the compact claim-ledger summaries only as `docs/evaluation/sim-feasible-bench-20260702.json` and `docs/evaluation/sim-feasible-bench-20260702.md`.
 - Modify paper file `/root/Concordia/64fa450c44d0cdf46c7c3a7d/eval.tex` only after the artifact summary exists.
 
 ## Task 1: Replay Metadata Measurement API
@@ -892,8 +892,6 @@ git commit -m "feat: emit simulator feasible benchmark report"
 ## Task 3: Generate Benchmark Artifacts and Evaluation Docs
 
 **Files:**
-- Create: `artifact/slugarch_cxlmemsim/sim-feasible-20260702-<time>/sim-feasible-bench-20260702.json`
-- Create: `artifact/slugarch_cxlmemsim/sim-feasible-20260702-<time>/sim-feasible-bench-20260702.md`
 - Create: `docs/evaluation/sim-feasible-bench-20260702.json`
 - Create: `docs/evaluation/sim-feasible-bench-20260702.md`
 
@@ -906,12 +904,12 @@ git commit -m "feat: emit simulator feasible benchmark report"
 Run:
 
 ```bash
-RUN_DIR="artifact/slugarch_cxlmemsim/sim-feasible-20260702-$(date -u +%H%M)"
-mkdir -p "$RUN_DIR"
+SUMMARY_DIR="docs/evaluation"
+mkdir -p "$SUMMARY_DIR"
 env VERILATOR_INCLUDE=/home/victoryang00/tools/verilator/share/verilator/include \
   cargo run -p slugarch-cli -- measure-sim-feasible \
   targets/qemu-type2/identity_times_const.json \
-  --out "$RUN_DIR" \
+  --out "$SUMMARY_DIR" \
   --qemu-repeatability-dir artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627 \
   --dev-root /dev \
   --replay-repeats 5
@@ -919,13 +917,11 @@ env VERILATOR_INCLUDE=/home/victoryang00/tools/verilator/share/verilator/include
 
 Expected: command exits 0 and prints `claims: 12`.
 
-- [ ] **Step 2: Copy compact summaries into docs/evaluation**
+- [ ] **Step 2: Validate compact summaries in docs/evaluation**
 
 Run:
 
 ```bash
-cp "$RUN_DIR/sim-feasible-bench-20260702.json" docs/evaluation/sim-feasible-bench-20260702.json
-cp "$RUN_DIR/sim-feasible-bench-20260702.md" docs/evaluation/sim-feasible-bench-20260702.md
 jq empty docs/evaluation/sim-feasible-bench-20260702.json
 ```
 
@@ -949,7 +945,7 @@ Expected: the Markdown mentions blocked claims, and the JSON prints 12 TSV rows.
 Run:
 
 ```bash
-git add "$RUN_DIR" docs/evaluation/sim-feasible-bench-20260702.json docs/evaluation/sim-feasible-bench-20260702.md
+git add docs/evaluation/sim-feasible-bench-20260702.json docs/evaluation/sim-feasible-bench-20260702.md
 git commit -m "bench: add simulator feasible benchmark evidence"
 ```
 

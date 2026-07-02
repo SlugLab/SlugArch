@@ -184,8 +184,9 @@ review in git:
 - optional narrow per-lane JSON summaries if a lane produces enough detail to
   deserve its own file.
 
-Raw logs and binary artifacts should stay under `artifact/` unless the paper
-needs a compact, human-readable summary.
+Raw logs and binary artifacts should stay under `artifact/`. Compact,
+human-readable claim summaries that the paper cites should be committed under
+`docs/evaluation/`, not duplicated under `artifact/`.
 
 ## Error Handling and Boundaries
 
