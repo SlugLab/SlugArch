@@ -72,6 +72,25 @@ enum Cmd {
         #[arg(long, default_value = "validation")]
         mode: String,
     },
+    /// Export SlugCXL request FLITs for the CXLMemSim QEMU Type-2 BAR target.
+    ExportCxlmemsim {
+        /// Path to a GemmJob JSON file.
+        job: PathBuf,
+        /// Output directory for requests.bin and expected.json.
+        #[arg(long)]
+        out: PathBuf,
+    },
+    /// Validate CXLMemSim QEMU Type-2 BAR response FLITs.
+    ValidateCxlmemsim {
+        /// Path to a GemmJob JSON file.
+        job: PathBuf,
+        /// Path to responses.bin captured from the guest helper.
+        #[arg(long)]
+        responses: PathBuf,
+        /// Output directory for summary.json and summary.csv.
+        #[arg(long)]
+        out: PathBuf,
+    },
 }
 
 fn main() -> Result<()> {
@@ -90,7 +109,49 @@ fn main() -> Result<()> {
         } => validate(&kernel, &oracle, hints.as_deref()),
         Cmd::RunCxl { job } => run_cxl(&job),
         Cmd::EvalCxl { job, mode } => eval_cxl(&job, &mode),
+        Cmd::ExportCxlmemsim { job, out } => export_cxlmemsim(&job, &out),
+        Cmd::ValidateCxlmemsim {
+            job,
+            responses,
+            out,
+        } => validate_cxlmemsim(&job, &responses, &out),
     }
+}
+
+fn read_gemm_job(job_path: &std::path::Path) -> Result<slugarch_host::GemmJob> {
+    let text = std::fs::read_to_string(job_path)
+        .with_context(|| format!("reading {}", job_path.display()))?;
+    serde_json::from_str(&text).with_context(|| "parsing GemmJob JSON")
+}
+
+fn export_cxlmemsim(job_path: &std::path::Path, out: &std::path::Path) -> Result<()> {
+    let job = read_gemm_job(job_path)?;
+    let expected = slugarch_host::qemu_type2::export_requests(&job, out)
+        .map_err(|e| anyhow!("export cxlmemsim: {}", e))?;
+    println!("workload: {}", expected.workload);
+    println!("requests: {}", expected.request_count);
+    println!("flit_bytes: {}", expected.flit_bytes);
+    println!("out: {}", out.display());
+    Ok(())
+}
+
+fn validate_cxlmemsim(
+    job_path: &std::path::Path,
+    responses: &std::path::Path,
+    out: &std::path::Path,
+) -> Result<()> {
+    let job = read_gemm_job(job_path)?;
+    let summary = slugarch_host::qemu_type2::validate_responses(&job, responses, out)
+        .map_err(|e| anyhow!("validate cxlmemsim: {}", e))?;
+    println!("status: {}", summary.status);
+    println!("requests: {}", summary.request_count);
+    println!("responses: {}", summary.response_count);
+    println!("tag_mismatches: {}", summary.tag_mismatches);
+    println!("dispatch_failures: {}", summary.dispatch_failures);
+    if summary.status != "pass" {
+        return Err(anyhow!("CXLMemSim Type-2 validation failed"));
+    }
+    Ok(())
 }
 
 fn run_cxl(job_path: &std::path::Path) -> Result<()> {
@@ -207,8 +268,8 @@ fn run(kernel: &std::path::Path, record: Option<&std::path::Path>, mem_size: usi
 fn replay(artifact_path: &std::path::Path) -> Result<()> {
     let art =
         ReplayArtifact::read_from(artifact_path).map_err(|e| anyhow!("read artifact: {}", e))?;
-    let stream = emit_dispatches(&art.slugir, &art.policy_name)
-        .map_err(|e| anyhow!("bind: {}", e))?;
+    let stream =
+        emit_dispatches(&art.slugir, &art.policy_name).map_err(|e| anyhow!("bind: {}", e))?;
     let mut fabric = Fabric::new(art.host_mem.len());
     fabric.set_host_mem(&art.host_mem);
     let report = fabric.run(stream).map_err(|e| anyhow!("fabric: {}", e))?;
@@ -248,4 +309,86 @@ fn validate(
     pass.run(&mut m).map_err(|e| anyhow!("validate: {}", e))?;
     println!("oracle match: OK");
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{export_cxlmemsim, read_gemm_job, Cli, Cmd};
+    use clap::Parser;
+    use slugarch_host::GemmJob;
+    use std::fs;
+    use std::path::PathBuf;
+
+    fn temp_dir(name: &str) -> PathBuf {
+        let dir =
+            std::env::temp_dir().join(format!("slugarch-cli-{}-{}", name, std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    #[test]
+    fn parses_export_cxlmemsim_subcommand() {
+        let cli = Cli::parse_from([
+            "slugarch",
+            "export-cxlmemsim",
+            "job.json",
+            "--out",
+            "out-dir",
+        ]);
+        match cli.cmd {
+            Cmd::ExportCxlmemsim { job, out } => {
+                assert_eq!(job, PathBuf::from("job.json"));
+                assert_eq!(out, PathBuf::from("out-dir"));
+            }
+            _ => panic!("unexpected command"),
+        }
+    }
+
+    #[test]
+    fn parses_validate_cxlmemsim_subcommand() {
+        let cli = Cli::parse_from([
+            "slugarch",
+            "validate-cxlmemsim",
+            "job.json",
+            "--responses",
+            "responses.bin",
+            "--out",
+            "out-dir",
+        ]);
+        match cli.cmd {
+            Cmd::ValidateCxlmemsim {
+                job,
+                responses,
+                out,
+            } => {
+                assert_eq!(job, PathBuf::from("job.json"));
+                assert_eq!(responses, PathBuf::from("responses.bin"));
+                assert_eq!(out, PathBuf::from("out-dir"));
+            }
+            _ => panic!("unexpected command"),
+        }
+    }
+
+    #[test]
+    fn export_cxlmemsim_writes_expected_artifacts() {
+        let dir = temp_dir("export-cxlmemsim");
+        let job_path = dir.join("job.json");
+        let out_dir = dir.join("out");
+        fs::write(
+            &job_path,
+            r#"{
+  "a": [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+  "b": [[2, 3, 4, 5], [6, 7, 8, 9], [10, 11, 12, 13], [14, 15, 16, 17]]
+}"#,
+        )
+        .unwrap();
+
+        export_cxlmemsim(&job_path, &out_dir).unwrap();
+
+        let job: GemmJob = read_gemm_job(&job_path).unwrap();
+        assert_eq!(job.b[3], [14, 15, 16, 17]);
+        assert!(out_dir.join("requests.bin").exists());
+        assert!(out_dir.join("expected.json").exists());
+    }
 }
