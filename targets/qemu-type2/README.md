@@ -16,6 +16,7 @@ RUN_DIR=artifact/slugarch_cxlmemsim/$(date -u +%Y%m%d-%H%M%S)
 cargo run -p slugarch-cli -- export-cxlmemsim \
   targets/qemu-type2/identity_times_const.json --out "$RUN_DIR"
 CXLMEMSIM_GUEST_SSH_CMD="ssh root@GUEST" \
+CXLMEMSIM_GUEST_SCP_CMD="scp" \
 CXLMEMSIM_GUEST_SCP_TARGET="root@GUEST" \
   targets/qemu-type2/run_existing_guest.sh "$RUN_DIR"
 cargo run -p slugarch-cli -- validate-cxlmemsim \
