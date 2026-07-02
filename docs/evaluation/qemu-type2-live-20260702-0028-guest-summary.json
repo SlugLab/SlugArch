@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "device": "0000:0d:00.0",
+  "requests": 49,
+  "responses": 49,
+  "slug_submitted": 49,
+  "slug_completed": 49,
+  "slug_failed": 0,
+  "elapsed_ms": 9,
+  "command_failures": 0,
+  "slug_loads": 32,
+  "slug_computes": 1,
+  "slug_reads": 16,
+  "slug_bad_tags": 0
+}

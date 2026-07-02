@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "workload": "slugcxl_gemm_4x4",
+  "flit_bytes": 64,
+  "request_count": 49,
+  "response_count": 49,
+  "request_bytes": 3136,
+  "response_bytes": 3136,
+  "tag_mismatches": 0,
+  "dispatch_failures": 0,
+  "result_c": [
+    [2, 3, 4, 5],
+    [6, 7, 8, 9],
+    [10, 11, 12, 13],
+    [14, 15, 16, 17]
+  ],
+  "expected_c": [
+    [2, 3, 4, 5],
+    [6, 7, 8, 9],
+    [10, 11, 12, 13],
+    [14, 15, 16, 17]
+  ],
+  "artifact_path": "/tmp/slugarch-cxlmemsim-type2/artifact/slugarch_cxlmemsim/qemu-type2-live-20260702-0028-summary",
+  "raw_artifact_sha256": {
+    "requests.bin": "f9f05b04d9352de8e0213c42e5efb46f56b05863e077d9cf1ce47a9ddef2b75c",
+    "responses.bin": "0562b4dda7e4ec3076b407936b3179eb36fdbc755b92985911b547fb27a7e85c",
+    "summary.json": "049c5cc19f7bdb4c450a0fe503ea0271a1d6b67d73b71085bebeefb4985ba9e8"
+  },
+  "note": "This checked-in file is an enriched evidence bundle. raw_artifact_sha256.summary.json is the hash of the original summary.json at artifact_path, not this enriched file.",
+  "slugarch_head": "62fa01942d6cc0570e8195736e79332c3a9cda3d",
+  "cxlmemsim_head": "5475fa44d09ce27b645ed77caa6cc6b47a38a8d4"
+}
