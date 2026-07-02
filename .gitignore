@@ -5,6 +5,7 @@
 .idea/
 /docs/scratch/
 .worktrees/
+.superpowers/
 # Plan 2 artifacts (Verilator + simulation outputs)
 **/obj_dir/
 **/*.vcd
