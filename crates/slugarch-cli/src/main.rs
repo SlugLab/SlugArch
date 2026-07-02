@@ -91,6 +91,23 @@ enum Cmd {
         #[arg(long)]
         out: PathBuf,
     },
+    /// Build the simulator-feasible benchmark report and claim ledger.
+    MeasureSimFeasible {
+        /// Path to a GemmJob JSON file.
+        job: PathBuf,
+        /// Output directory for sim-feasible-bench-20260702.json and .md.
+        #[arg(long)]
+        out: PathBuf,
+        /// Existing qemu-type2 repeatability artifact directory.
+        #[arg(long)]
+        qemu_repeatability_dir: Option<PathBuf>,
+        /// Device root to probe for dax* devices.
+        #[arg(long, default_value = "/dev")]
+        dev_root: PathBuf,
+        /// Number of replay validation repetitions per mode.
+        #[arg(long, default_value_t = 5)]
+        replay_repeats: usize,
+    },
 }
 
 fn main() -> Result<()> {
@@ -115,6 +132,19 @@ fn main() -> Result<()> {
             responses,
             out,
         } => validate_cxlmemsim(&job, &responses, &out),
+        Cmd::MeasureSimFeasible {
+            job,
+            out,
+            qemu_repeatability_dir,
+            dev_root,
+            replay_repeats,
+        } => measure_sim_feasible(
+            &job,
+            &out,
+            qemu_repeatability_dir.as_deref(),
+            &dev_root,
+            replay_repeats,
+        ),
     }
 }
 
@@ -151,6 +181,31 @@ fn validate_cxlmemsim(
     if summary.status != "pass" {
         return Err(anyhow!("CXLMemSim Type-2 validation failed"));
     }
+    Ok(())
+}
+
+fn measure_sim_feasible(
+    job_path: &std::path::Path,
+    out: &std::path::Path,
+    qemu_repeatability_dir: Option<&std::path::Path>,
+    dev_root: &std::path::Path,
+    replay_repeats: usize,
+) -> Result<()> {
+    let job = read_gemm_job(job_path)?;
+    let report = slugarch_host::sim_feasible::build_sim_feasible_report(
+        slugarch_host::sim_feasible::SimFeasibleInput {
+            job: &job,
+            replay_repeats,
+            qemu_repeatability_dir,
+            dev_root,
+        },
+    )
+    .map_err(|e| anyhow!("measure sim feasible: {}", e))?;
+    slugarch_host::sim_feasible::write_sim_feasible_report(&report, out)
+        .map_err(|e| anyhow!("write sim feasible report: {}", e))?;
+    println!("workload: {}", report.workload);
+    println!("claims: {}", report.claims.len());
+    println!("out: {}", out.display());
     Ok(())
 }
 
