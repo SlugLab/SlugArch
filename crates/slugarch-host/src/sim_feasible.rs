@@ -372,18 +372,19 @@ pub fn build_sim_feasible_report(
 
 fn claim_ledger(report: &SimFeasibleReport) -> Vec<ClaimLedgerEntry> {
     let bar2_status = report.bar2_evidence.status.clone();
+    let bar2_source = report
+        .bar2_evidence
+        .source_dir
+        .clone()
+        .unwrap_or_else(|| "none".to_string());
     vec![
         claim(
             "QEMU Type-2 BAR2 command/replay boundary",
             bar2_status,
-            report
-                .bar2_evidence
-                .source_dir
-                .clone()
-                .unwrap_or_else(|| "none".to_string()),
+            bar2_source.clone(),
             "CXLMemSim QEMU Type-2 BAR2 carried the SlugArch command stream when the supplied artifact has all runs passing.",
             &report.bar2_evidence.limitation,
-            vec!["artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627".to_string()],
+            vec![bar2_source.clone()],
             None,
         ),
         claim(
@@ -443,10 +444,10 @@ fn claim_ledger(report: &SimFeasibleReport) -> Vec<ClaimLedgerEntry> {
         claim(
             "Runtime overhead",
             ClaimStatus::PartiallyMeasured,
-            "artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627".to_string(),
+            bar2_source.clone(),
             "Runtime overhead is partially measured for the QEMU Type-2 BAR2 command path only.",
             "This is not a CXL link, hardware endpoint, or production continuous-overhead measurement.",
-            vec!["guest-summary.json elapsed_ms".to_string()],
+            vec![bar2_source],
             Some("hardware endpoint timing and continuous workload timing".to_string()),
         ),
         claim(

@@ -131,3 +131,74 @@ fn sim_feasible_report_uses_measured_replay_workload() {
 
     assert_eq!(report.workload, report.replay_metadata.workload);
 }
+
+#[test]
+fn bar2_claims_follow_the_actual_repeatability_source_path() {
+    let out = std::env::temp_dir().join(format!("slugarch-sim-bar2-source-{}", std::process::id()));
+    let dev = out.join("dev");
+    let fake_bar2 = out.join("custom-repeatability-artifact");
+    let _ = fs::remove_dir_all(&out);
+    fs::create_dir_all(&dev).unwrap();
+    fs::create_dir_all(fake_bar2.join("run-1")).unwrap();
+    fs::write(
+        fake_bar2.join("run-1/summary.json"),
+        r#"{"status":"pass","request_count":1,"response_count":1,"tag_mismatches":0,"dispatch_failures":0}"#,
+    )
+    .unwrap();
+    fs::write(
+        fake_bar2.join("run-1/guest-summary.json"),
+        r#"{"elapsed_ms":7}"#,
+    )
+    .unwrap();
+
+    let blocked_report = build_sim_feasible_report(SimFeasibleInput {
+        job: &job(),
+        replay_repeats: 1,
+        qemu_repeatability_dir: None,
+        dev_root: &dev,
+    })
+    .unwrap();
+    let measured_report = build_sim_feasible_report(SimFeasibleInput {
+        job: &job(),
+        replay_repeats: 1,
+        qemu_repeatability_dir: Some(&fake_bar2),
+        dev_root: &dev,
+    })
+    .unwrap();
+
+    for report in [&blocked_report, &measured_report] {
+        let serialized = serde_json::to_string(report).unwrap();
+        assert!(!serialized.contains("qemu-type2-repeatability-20260702-0627"));
+    }
+
+    let bar2_claim = measured_report
+        .claims
+        .iter()
+        .find(|claim| claim.claim == "QEMU Type-2 BAR2 command/replay boundary")
+        .unwrap();
+    let runtime_claim = measured_report
+        .claims
+        .iter()
+        .find(|claim| claim.claim == "Runtime overhead")
+        .unwrap();
+    let fake_path = fake_bar2.display().to_string();
+    assert_eq!(bar2_claim.evidence_artifact, fake_path);
+    assert_eq!(bar2_claim.checked, vec![fake_path.clone()]);
+    assert_eq!(runtime_claim.evidence_artifact, fake_path);
+    assert_eq!(runtime_claim.checked, vec![fake_path]);
+
+    let blocked_bar2_claim = blocked_report
+        .claims
+        .iter()
+        .find(|claim| claim.claim == "QEMU Type-2 BAR2 command/replay boundary")
+        .unwrap();
+    let blocked_runtime_claim = blocked_report
+        .claims
+        .iter()
+        .find(|claim| claim.claim == "Runtime overhead")
+        .unwrap();
+    assert_eq!(blocked_bar2_claim.evidence_artifact, "none");
+    assert_eq!(blocked_bar2_claim.checked, vec!["none".to_string()]);
+    assert_eq!(blocked_runtime_claim.evidence_artifact, "none");
+    assert_eq!(blocked_runtime_claim.checked, vec!["none".to_string()]);
+}
