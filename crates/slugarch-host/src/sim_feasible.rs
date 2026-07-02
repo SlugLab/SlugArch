@@ -360,7 +360,7 @@ pub fn build_sim_feasible_report(
         .unwrap_or_else(|_| "unix_epoch_seconds:0".to_string());
     let mut report = SimFeasibleReport {
         generated_utc,
-        workload: "slugcxl_gemm_4x4".to_string(),
+        workload: replay_metadata.workload.clone(),
         replay_metadata,
         dax_probe,
         bar2_evidence,
@@ -372,10 +372,6 @@ pub fn build_sim_feasible_report(
 
 fn claim_ledger(report: &SimFeasibleReport) -> Vec<ClaimLedgerEntry> {
     let bar2_status = report.bar2_evidence.status.clone();
-    let dax_status = match report.dax_probe.status {
-        DaxProbeStatus::Measured => ClaimStatus::PartiallyMeasured,
-        DaxProbeStatus::Blocked => ClaimStatus::Blocked,
-    };
     vec![
         claim(
             "QEMU Type-2 BAR2 command/replay boundary",
@@ -392,16 +388,12 @@ fn claim_ledger(report: &SimFeasibleReport) -> Vec<ClaimLedgerEntry> {
         ),
         claim(
             "CXL.mem/DAX simulator traffic",
-            dax_status,
+            ClaimStatus::Blocked,
             report.dax_probe.dev_root.clone(),
-            "CXL.mem/DAX is reported only as a device-reachability result unless a streaming workload is present.",
+            "CXL.mem/DAX simulator traffic remains blocked unless a real streaming workload artifact is present.",
             &report.dax_probe.limitation,
             report.dax_probe.checked.clone(),
-            if report.dax_probe.devices.is_empty() {
-                Some("/dev/dax* device or guest DAX path".to_string())
-            } else {
-                None
-            },
+            Some("DAX streaming workload artifact".to_string()),
         ),
         claim(
             "CXL.cache coherence",

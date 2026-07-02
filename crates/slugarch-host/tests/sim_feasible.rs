@@ -80,3 +80,54 @@ fn sim_feasible_report_writes_json_and_markdown_with_blocked_claims() {
     assert!(md.contains("CXL.cache coherence"));
     assert!(md.contains("software replay validation only"));
 }
+
+#[test]
+fn visible_dax_nodes_do_not_upgrade_cxl_mem_claim_without_streaming_artifact() {
+    let out = std::env::temp_dir().join(format!("slugarch-sim-visible-dax-{}", std::process::id()));
+    let dev = out.join("dev");
+    let _ = fs::remove_dir_all(&out);
+    fs::create_dir_all(&dev).unwrap();
+    fs::write(dev.join("dax0.0"), b"").unwrap();
+
+    let report = build_sim_feasible_report(SimFeasibleInput {
+        job: &job(),
+        replay_repeats: 1,
+        qemu_repeatability_dir: None,
+        dev_root: &dev,
+    })
+    .unwrap();
+
+    assert_eq!(report.dax_probe.status, DaxProbeStatus::Measured);
+    let dax_claim = report
+        .claims
+        .iter()
+        .find(|claim| claim.claim == "CXL.mem/DAX simulator traffic")
+        .unwrap();
+    assert!(report
+        .dax_probe
+        .devices
+        .iter()
+        .any(|path| path.ends_with("dax0.0")));
+    assert_eq!(
+        serde_json::to_value(&dax_claim.status).unwrap(),
+        serde_json::json!("blocked")
+    );
+}
+
+#[test]
+fn sim_feasible_report_uses_measured_replay_workload() {
+    let out = std::env::temp_dir().join(format!("slugarch-sim-workload-{}", std::process::id()));
+    let dev = out.join("dev");
+    let _ = fs::remove_dir_all(&out);
+    fs::create_dir_all(&dev).unwrap();
+
+    let report = build_sim_feasible_report(SimFeasibleInput {
+        job: &job(),
+        replay_repeats: 1,
+        qemu_repeatability_dir: None,
+        dev_root: &dev,
+    })
+    .unwrap();
+
+    assert_eq!(report.workload, report.replay_metadata.workload);
+}
