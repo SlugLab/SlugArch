@@ -275,12 +275,25 @@ pub fn summarize_bar2_repeatability(dir: Option<&Path>) -> Result<Bar2EvidenceSu
     let mut tag_mismatches = 0u64;
     let mut dispatch_failures = 0u64;
     let mut guest_elapsed_ms = Vec::new();
-    for idx in 1..=5 {
-        let run_dir = dir.join(format!("run-{idx}"));
+    let mut run_dirs = fs::read_dir(dir)
+        .map_err(|e| HostError::DispatchFailed {
+            tag: 0,
+            reason: format!("read {}: {e}", dir.display()),
+        })?
+        .filter_map(|entry| entry.ok().map(|entry| entry.path()))
+        .filter(|path| {
+            path.is_dir()
+                && path
+                    .file_name()
+                    .and_then(|name| name.to_str())
+                    .is_some_and(|name| name.starts_with("run-"))
+                && path.join("summary.json").exists()
+        })
+        .collect::<Vec<_>>();
+    run_dirs.sort_by(|left, right| run_dir_sort_key(left).cmp(&run_dir_sort_key(right)));
+
+    for run_dir in run_dirs {
         let summary_path = run_dir.join("summary.json");
-        if !summary_path.exists() {
-            continue;
-        }
         runs += 1;
         let summary: serde_json::Value =
             serde_json::from_slice(&fs::read(&summary_path).map_err(|e| {
@@ -348,6 +361,18 @@ pub fn summarize_bar2_repeatability(dir: Option<&Path>) -> Result<Bar2EvidenceSu
     })
 }
 
+fn run_dir_sort_key(path: &Path) -> (u64, String) {
+    let name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or_default();
+    let numeric = name
+        .strip_prefix("run-")
+        .and_then(|suffix| suffix.parse::<u64>().ok())
+        .unwrap_or(u64::MAX);
+    (numeric, name.to_string())
+}
+
 pub fn build_sim_feasible_report(
     input: SimFeasibleInput<'_>,
 ) -> Result<SimFeasibleReport, HostError> {
@@ -377,6 +402,21 @@ fn claim_ledger(report: &SimFeasibleReport) -> Vec<ClaimLedgerEntry> {
         .source_dir
         .clone()
         .unwrap_or_else(|| "none".to_string());
+    let runtime_status = if bar2_status == ClaimStatus::Measured {
+        ClaimStatus::PartiallyMeasured
+    } else {
+        ClaimStatus::Blocked
+    };
+    let runtime_wording = if runtime_status == ClaimStatus::PartiallyMeasured {
+        "Runtime overhead is partially measured for the QEMU Type-2 BAR2 command path only."
+    } else {
+        "Runtime overhead remains blocked until BAR2 repeatability evidence is measured."
+    };
+    let runtime_limitation = if runtime_status == ClaimStatus::PartiallyMeasured {
+        "This is not a CXL link, hardware endpoint, or production continuous-overhead measurement."
+    } else {
+        "No measured BAR2 repeatability artifact is available, so runtime overhead cannot be cited."
+    };
     vec![
         claim(
             "QEMU Type-2 BAR2 command/replay boundary",
@@ -443,10 +483,10 @@ fn claim_ledger(report: &SimFeasibleReport) -> Vec<ClaimLedgerEntry> {
         ),
         claim(
             "Runtime overhead",
-            ClaimStatus::PartiallyMeasured,
+            runtime_status,
             bar2_source.clone(),
-            "Runtime overhead is partially measured for the QEMU Type-2 BAR2 command path only.",
-            "This is not a CXL link, hardware endpoint, or production continuous-overhead measurement.",
+            runtime_wording,
+            runtime_limitation,
             vec![bar2_source],
             Some("hardware endpoint timing and continuous workload timing".to_string()),
         ),
@@ -553,6 +593,10 @@ fn report_markdown(report: &SimFeasibleReport) -> String {
         report.bar2_evidence.pass_runs, report.bar2_evidence.runs
     ));
     out.push_str(&format!(
+        "- BAR2 evidence source: `{}`\n",
+        report.bar2_evidence.source_dir.as_deref().unwrap_or("none")
+    ));
+    out.push_str(&format!(
         "- DAX probe: `{:?}`; {}\n\n",
         report.dax_probe.status, report.dax_probe.limitation
     ));
@@ -573,12 +617,16 @@ fn report_markdown(report: &SimFeasibleReport) -> String {
         ));
     }
     out.push_str("\n## Claim Ledger\n\n");
-    out.push_str("| Claim | Status | Paper-safe wording | Limitation |\n");
-    out.push_str("| --- | --- | --- | --- |\n");
+    out.push_str("| Claim | Status | Evidence artifact | Paper-safe wording | Limitation |\n");
+    out.push_str("| --- | --- | --- | --- | --- |\n");
     for claim in &report.claims {
         out.push_str(&format!(
-            "| {} | {:?} | {} | {} |\n",
-            claim.claim, claim.status, claim.paper_safe_wording, claim.limitation
+            "| {} | {:?} | {} | {} | {} |\n",
+            claim.claim,
+            claim.status,
+            claim.evidence_artifact,
+            claim.paper_safe_wording,
+            claim.limitation
         ));
     }
     out

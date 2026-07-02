@@ -1,6 +1,7 @@
 use slugarch_host::sim_feasible::{
     build_sim_feasible_report, measure_replay_metadata, probe_dax_devices,
-    write_sim_feasible_report, DaxProbeStatus, SimFeasibleInput,
+    summarize_bar2_repeatability, write_sim_feasible_report, ClaimStatus, DaxProbeStatus,
+    SimFeasibleInput,
 };
 use slugarch_host::GemmJob;
 use std::fs;
@@ -201,4 +202,101 @@ fn bar2_claims_follow_the_actual_repeatability_source_path() {
     assert_eq!(blocked_bar2_claim.checked, vec!["none".to_string()]);
     assert_eq!(blocked_runtime_claim.evidence_artifact, "none");
     assert_eq!(blocked_runtime_claim.checked, vec!["none".to_string()]);
+}
+
+#[test]
+fn runtime_overhead_is_blocked_without_bar2_evidence() {
+    let out = std::env::temp_dir().join(format!(
+        "slugarch-sim-runtime-blocked-{}",
+        std::process::id()
+    ));
+    let dev = out.join("dev");
+    let _ = fs::remove_dir_all(&out);
+    fs::create_dir_all(&dev).unwrap();
+
+    let report = build_sim_feasible_report(SimFeasibleInput {
+        job: &job(),
+        replay_repeats: 1,
+        qemu_repeatability_dir: None,
+        dev_root: &dev,
+    })
+    .unwrap();
+
+    assert_eq!(report.bar2_evidence.status, ClaimStatus::Blocked);
+    let runtime_claim = report
+        .claims
+        .iter()
+        .find(|claim| claim.claim == "Runtime overhead")
+        .unwrap();
+    assert_eq!(runtime_claim.status, ClaimStatus::Blocked);
+}
+
+#[test]
+fn bar2_repeatability_discovers_all_run_directories_and_blocks_on_extra_failure() {
+    let root = std::env::temp_dir().join(format!("slugarch-bar2-runs-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    fs::create_dir_all(&root).unwrap();
+
+    for run in [6_u64, 1, 2, 3, 4, 5] {
+        let run_dir = root.join(format!("run-{run}"));
+        fs::create_dir_all(&run_dir).unwrap();
+        let status = if run == 6 { "fail" } else { "pass" };
+        fs::write(
+            run_dir.join("summary.json"),
+            format!(
+                "{{\"status\":\"{status}\",\"request_count\":1,\"response_count\":1,\"tag_mismatches\":0,\"dispatch_failures\":0}}"
+            ),
+        )
+        .unwrap();
+        fs::write(
+            run_dir.join("guest-summary.json"),
+            format!("{{\"elapsed_ms\":{run}}}"),
+        )
+        .unwrap();
+    }
+
+    let summary = summarize_bar2_repeatability(Some(&root)).unwrap();
+    assert_eq!(summary.status, ClaimStatus::Blocked);
+    assert_eq!(summary.runs, 6);
+    assert_eq!(summary.pass_runs, 5);
+    assert_eq!(summary.request_count, 6);
+    assert_eq!(summary.response_count, 6);
+    assert_eq!(summary.guest_elapsed_ms, vec![1, 2, 3, 4, 5, 6]);
+}
+
+#[test]
+fn markdown_includes_bar2_evidence_source_and_claim_artifact_column() {
+    let out = std::env::temp_dir().join(format!("slugarch-sim-markdown-{}", std::process::id()));
+    let dev = out.join("dev");
+    let fake_bar2 = out.join("custom-repeatability-artifact");
+    let _ = fs::remove_dir_all(&out);
+    fs::create_dir_all(&dev).unwrap();
+    fs::create_dir_all(fake_bar2.join("run-1")).unwrap();
+    fs::write(
+        fake_bar2.join("run-1/summary.json"),
+        r#"{"status":"pass","request_count":1,"response_count":1,"tag_mismatches":0,"dispatch_failures":0}"#,
+    )
+    .unwrap();
+    fs::write(
+        fake_bar2.join("run-1/guest-summary.json"),
+        r#"{"elapsed_ms":7}"#,
+    )
+    .unwrap();
+
+    let report = build_sim_feasible_report(SimFeasibleInput {
+        job: &job(),
+        replay_repeats: 1,
+        qemu_repeatability_dir: Some(&fake_bar2),
+        dev_root: &dev,
+    })
+    .unwrap();
+    write_sim_feasible_report(&report, &out).unwrap();
+
+    let md = fs::read_to_string(out.join("sim-feasible-bench-20260702.md")).unwrap();
+    let fake_path = fake_bar2.display().to_string();
+    assert!(md.contains(&format!("- BAR2 evidence source: `{fake_path}`")));
+    assert!(md.contains("| Claim | Status | Evidence artifact | Paper-safe wording | Limitation |"));
+    assert!(md.contains(&format!(
+        "| Runtime overhead | PartiallyMeasured | {fake_path} |"
+    )));
 }

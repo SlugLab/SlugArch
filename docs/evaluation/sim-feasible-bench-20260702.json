@@ -1,5 +1,5 @@
 {
-  "generated_utc": "unix_epoch_seconds:1783014467",
+  "generated_utc": "unix_epoch_seconds:1783016168",
   "workload": "slugcxl_gemm_4x4",
   "replay_metadata": {
     "workload": "slugcxl_gemm_4x4",
@@ -19,8 +19,8 @@
           "full": 0
         },
         "payload_compression_ratio_vs_full": 4.0,
-        "equivalent_validation_ns": 14918,
-        "mismatch_validation_ns": 8672,
+        "equivalent_validation_ns": 24569,
+        "mismatch_validation_ns": 16800,
         "equivalent": true,
         "mismatch_detected": true,
         "provenance_labels": {
@@ -45,8 +45,8 @@
           "full": 0
         },
         "payload_compression_ratio_vs_full": 2.8405797101449277,
-        "equivalent_validation_ns": 15844,
-        "mismatch_validation_ns": 9576,
+        "equivalent_validation_ns": 18962,
+        "mismatch_validation_ns": 8737,
         "equivalent": true,
         "mismatch_detected": true,
         "provenance_labels": {
@@ -71,8 +71,8 @@
           "full": 49
         },
         "payload_compression_ratio_vs_full": 1.0,
-        "equivalent_validation_ns": 14129,
-        "mismatch_validation_ns": 8142,
+        "equivalent_validation_ns": 17396,
+        "mismatch_validation_ns": 8513,
         "equivalent": true,
         "mismatch_detected": true,
         "provenance_labels": {
