@@ -4,6 +4,7 @@
 .vscode/
 .idea/
 /docs/scratch/
+.worktrees/
 # Plan 2 artifacts (Verilator + simulation outputs)
 **/obj_dir/
 **/*.vcd
