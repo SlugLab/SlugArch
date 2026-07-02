@@ -1,0 +1,80 @@
+{
+  "date_utc": "2026-07-02",
+  "scope": "offline QEMU Type-2 response-stream fail-stop validation",
+  "workload": "slugcxl_gemm_4x4",
+  "flit_bytes": 64,
+  "request_count": 49,
+  "validated_in_live_qemu": false,
+  "validated_by": "slugarch-host qemu_type2_artifacts test fixture with mutated response streams",
+  "test_command": "env VERILATOR_INCLUDE=/home/victoryang00/tools/verilator/share/verilator/include cargo test -p slugarch-host --test qemu_type2_artifacts",
+  "test_result": {
+    "status": "pass",
+    "tests_run": 9,
+    "failures": 0,
+    "ignored": 0
+  },
+  "source_revision_before_pass2_changes": "3ce1a69541708f87247e2ea39794bbff16a29309",
+  "cases": [
+    {
+      "case": "known_good",
+      "input_mutation": "none",
+      "expected_signal": "pass",
+      "observed_status": "pass",
+      "response_count": 49,
+      "tag_mismatches": 0,
+      "dispatch_failures": 0
+    },
+    {
+      "case": "truncated_bytes",
+      "input_mutation": "responses.bin is 63 bytes, one byte shorter than one 64-byte FLIT",
+      "expected_signal": "validator error before summary generation",
+      "observed_error_substring": "multiple of 64"
+    },
+    {
+      "case": "bad_tag",
+      "input_mutation": "replace response 10 tag with 99",
+      "expected_signal": "fail status with tag mismatch",
+      "observed_status": "fail",
+      "tag_mismatches": 1,
+      "dispatch_failures": 0
+    },
+    {
+      "case": "missing_response",
+      "input_mutation": "remove the final response FLIT",
+      "expected_signal": "fail status with response_count lower than request_count",
+      "observed_status": "fail",
+      "response_count": 48
+    },
+    {
+      "case": "extra_duplicate_response",
+      "input_mutation": "append a duplicate final response FLIT",
+      "expected_signal": "fail status with response_count higher than request_count",
+      "observed_status": "fail",
+      "response_count": 50
+    },
+    {
+      "case": "dispatch_failed_response",
+      "input_mutation": "replace response 3 opcode with DispatchFailed",
+      "expected_signal": "fail status with one dispatch failure",
+      "observed_status": "fail",
+      "dispatch_failures": 1
+    },
+    {
+      "case": "wrong_read_data",
+      "input_mutation": "increment first byte of the first MemData response",
+      "expected_signal": "fail status because result_c differs from expected_c",
+      "observed_status": "fail",
+      "tag_mismatches": 0,
+      "dispatch_failures": 0,
+      "result_matches_expected": false
+    },
+    {
+      "case": "wrong_response_phase",
+      "input_mutation": "replace first MemData response with a Cmp response at the same tag",
+      "expected_signal": "fail status with dispatch failure",
+      "observed_status": "fail",
+      "dispatch_failures": 1
+    }
+  ],
+  "claim_boundary": "This is offline validator evidence over synthetic response streams. It does not prove live QEMU/CXLMemSim fault injection, device-side recovery, fabric replay, CXL.cache, CXL.mem, DMA, ATS, migration, switch ordering, compression, or runtime overhead."
+}

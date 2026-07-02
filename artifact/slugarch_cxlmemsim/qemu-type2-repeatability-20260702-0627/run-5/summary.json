@@ -1,0 +1,61 @@
+{
+  "status": "pass",
+  "request_count": 49,
+  "response_count": 49,
+  "tag_mismatches": 0,
+  "dispatch_failures": 0,
+  "result_c": [
+    [
+      2,
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8,
+      9
+    ],
+    [
+      10,
+      11,
+      12,
+      13
+    ],
+    [
+      14,
+      15,
+      16,
+      17
+    ]
+  ],
+  "expected_c": [
+    [
+      2,
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8,
+      9
+    ],
+    [
+      10,
+      11,
+      12,
+      13
+    ],
+    [
+      14,
+      15,
+      16,
+      17
+    ]
+  ],
+  "requests_path": "artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627/run-5/requests.bin",
+  "responses_path": "artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627/run-5/responses.bin"
+}

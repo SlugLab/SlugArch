@@ -1,0 +1,62 @@
+{
+  "date_utc": "2026-07-02",
+  "scope": "live QEMU Type-2 BAR2 repeatability benchmark",
+  "workload": "slugcxl_gemm_4x4",
+  "artifact_dir": "artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627",
+  "slugarch_head_before_pass2_changes": "3ce1a69541708f87247e2ea39794bbff16a29309",
+  "cxlmemsim_head": "5475fa44d09ce27b645ed77caa6cc6b47a38a8d4",
+  "guest": {
+    "ssh": "127.0.0.1:12022",
+    "kernel": "Linux node1 6.18.0-rc5+ #8 SMP PREEMPT_DYNAMIC Tue May 19 04:14:31 UTC 2026 x86_64 GNU/Linux",
+    "type2_pci_device": "0d:00.0 CXL [0502]: Intel Corporation Device [8086:0d92] (rev 01)"
+  },
+  "host_launch": {
+    "qemu_binary": "/tmp/CXLMemSim-slugarch-type2/lib/qemu/build-slug2/qemu-system-x86_64",
+    "qemu_sha256": "ab865d9c760b07907406459f5c6f33e102b8f7d3d40d17dc8563d7b2673fa62c",
+    "cxlmemsim_server": "/home/victoryang00/CXLMemSim/build/cxlmemsim_server",
+    "cxlmemsim_server_sha256": "b7f876c12a36c1deda99c0911319b4c7ed460fec73ac6c2577b05be9c6f8700a",
+    "kernel_image": "/home/victoryang00/cxl/arch/x86/boot/bzImage",
+    "kernel_sha256": "26aeb76cf9b11b61989dfc5f54ff0af251380a6124ec36f8d0c9daff2c11eee0",
+    "disk_image": "/home/victoryang00/CXLMemSim/build/qemu1.img",
+    "disk_image_bytes": 53687091200,
+    "qemu_guest_log": "artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627/qemu-guest.log",
+    "qemu_guest_log_sha256": "e5a2741fa5334f4c7a1bbf874ea2ebd073bdc63fc334d498c453990462e057f3",
+    "qemu_accel": "tcg",
+    "vm_memory": "2G",
+    "vm_smp": 2,
+    "cxlmemsim_port": 10199,
+    "type2_gpu_mode": 0,
+    "type2_cache_size": "16M",
+    "type2_mem_size": "64M"
+  },
+  "run_command": {
+    "export_env": "VERILATOR_INCLUDE=/home/victoryang00/tools/verilator/share/verilator/include",
+    "per_run": [
+      "cargo run -p slugarch-cli -- export-cxlmemsim targets/qemu-type2/identity_times_const.json --out $RUN_DIR",
+      "CXLMEMSIM_GUEST_SSH_CMD='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 12022 root@127.0.0.1' CXLMEMSIM_GUEST_SCP_CMD='scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 12022' CXLMEMSIM_GUEST_SCP_TARGET=root@127.0.0.1 CXLMEMSIM_ROOT=/tmp/CXLMemSim-slugarch-type2 targets/qemu-type2/run_existing_guest.sh $RUN_DIR",
+      "cargo run -p slugarch-cli -- validate-cxlmemsim targets/qemu-type2/identity_times_const.json --responses $RUN_DIR/responses.bin --out $RUN_DIR"
+    ]
+  },
+  "aggregate_result": {
+    "runs": 5,
+    "passes": 5,
+    "failures": 0,
+    "request_count_each": 49,
+    "response_count_each": 49,
+    "tag_mismatches_each": 0,
+    "dispatch_failures_each": 0,
+    "request_bytes_each": 3136,
+    "response_bytes_each": 3136,
+    "requests_sha256_each": "f9f05b04d9352de8e0213c42e5efb46f56b05863e077d9cf1ce47a9ddef2b75c",
+    "responses_sha256_each": "0562b4dda7e4ec3076b407936b3179eb36fdbc755b92985911b547fb27a7e85c",
+    "result_c_each": [[2, 3, 4, 5], [6, 7, 8, 9], [10, 11, 12, 13], [14, 15, 16, 17]]
+  },
+  "runs": [
+    {"run": 1, "status": "pass", "guest_elapsed_ms": 8, "guest_slug_submitted": 49, "guest_slug_completed": 49, "guest_slug_failed": 0, "guest_command_failures": 0, "guest_slug_bad_tags": 0},
+    {"run": 2, "status": "pass", "guest_elapsed_ms": 6, "guest_slug_submitted": 49, "guest_slug_completed": 49, "guest_slug_failed": 0, "guest_command_failures": 0, "guest_slug_bad_tags": 0},
+    {"run": 3, "status": "pass", "guest_elapsed_ms": 6, "guest_slug_submitted": 49, "guest_slug_completed": 49, "guest_slug_failed": 0, "guest_command_failures": 0, "guest_slug_bad_tags": 0},
+    {"run": 4, "status": "pass", "guest_elapsed_ms": 6, "guest_slug_submitted": 49, "guest_slug_completed": 49, "guest_slug_failed": 0, "guest_command_failures": 0, "guest_slug_bad_tags": 0},
+    {"run": 5, "status": "pass", "guest_elapsed_ms": 6, "guest_slug_submitted": 49, "guest_slug_completed": 49, "guest_slug_failed": 0, "guest_command_failures": 0, "guest_slug_bad_tags": 0}
+  ],
+  "claim_boundary": "This measures repeatability of the CXLMemSim QEMU Type-2 BAR2 command/response path for one 4x4 GEMM workload. It does not measure CXL.mem reads/writes, CXL.cache coherence traffic, DMA, ATS, page migration, switch ordering, compression, provenance precision, replay latency, end-to-end overhead, FPGA resource cost, or hardware JIT behavior."
+}

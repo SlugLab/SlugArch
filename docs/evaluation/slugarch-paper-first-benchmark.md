@@ -28,3 +28,15 @@ The validated artifact supports the claim that the SlugArch host and CXLMemSim Q
 | Fabric logs provide endpoint/protection-domain provenance | Unmeasured | Keep as an evaluation question, not a result. |
 | Boundary contract is portable across CPUs, GPUs, DMA engines, memory devices, and switches | Unmeasured | Keep as an evaluation question, not a result. |
 | FPGA or hardware JIT feasibility | Replaced in this pass | State that this pass evaluates the simulator-backed QEMU Type-2 path instead of FPGA hardware JIT. |
+
+## Pass-2 Addendum
+
+The second benchmark pass adds two evidence bundles:
+
+- `qemu-type2-repeatability-20260702`: five live QEMU Type-2 BAR2 guest runs in one booted guest. All five runs validated with 49 request FLITs, 49 response FLITs, zero tag mismatches, zero dispatch failures, and the expected 4x4 matrix. Guest elapsed times were 8, 6, 6, 6, and 6 ms.
+- `qemu-type2-failstop-20260702`: offline malformed response-stream cases covering truncated bytes, bad tag, missing response, extra duplicate response, dispatch-failed opcode, wrong read data, and wrong response phase. These are validator/fault-stream tests, not live injected QEMU device faults.
+
+The paper now cites both results. The boundary remains unchanged for broader
+claims: this is still a BAR2 command/response path, not evidence for CXL.cache,
+CXL.mem, DMA, ATS, migration, switch ordering, compression, runtime overhead,
+provenance precision, portability, recovery, or FPGA resource cost.

@@ -1,0 +1,11 @@
+guest_ssh_cmd=ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 12022 root@127.0.0.1
+guest_scp_cmd=scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 12022
+guest_scp_target=root@127.0.0.1
+cxlmemsim_root=/tmp/CXLMemSim-slugarch-type2
+guest_dir=/root/slugarch-qemu-type2
+mkdir_guest_dir=ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 12022 root@127.0.0.1 mkdir\ -p\ \'/root/slugarch-qemu-type2/guest_libcuda\' 
+scp_requests=scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 12022 artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627/run-4/requests.bin /tmp/CXLMemSim-slugarch-type2/qemu_integration/slugarch_type2_guest.c /tmp/CXLMemSim-slugarch-type2/qemu_integration/guest_libcuda/cxl_gpu_cmd.h root@127.0.0.1:/root/slugarch-qemu-type2/ 
+move_guest_header=ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 12022 root@127.0.0.1 mv\ \'/root/slugarch-qemu-type2/cxl_gpu_cmd.h\'\ \'/root/slugarch-qemu-type2/guest_libcuda/cxl_gpu_cmd.h\' 
+guest_build_run=ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 12022 root@127.0.0.1 cd\ \'/root/slugarch-qemu-type2\'\ \&\&\ gcc\ -O2\ -Wall\ -Wextra\ -o\ slugarch_type2_guest\ slugarch_type2_guest.c\ \&\&\ if\ command\ -v\ sudo\ \>/dev/null\ 2\>\&1\;\ then\ sudo\ ./slugarch_type2_guest\ --requests\ requests.bin\ --responses\ responses.bin\ --summary\ guest-summary.json\;\ else\ ./slugarch_type2_guest\ --requests\ requests.bin\ --responses\ responses.bin\ --summary\ guest-summary.json\;\ fi 
+scp_responses=scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 12022 root@127.0.0.1:/root/slugarch-qemu-type2/responses.bin artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627/run-4/responses.bin 
+scp_guest_summary=scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 12022 root@127.0.0.1:/root/slugarch-qemu-type2/guest-summary.json artifact/slugarch_cxlmemsim/qemu-type2-repeatability-20260702-0627/run-4/guest-summary.json 
