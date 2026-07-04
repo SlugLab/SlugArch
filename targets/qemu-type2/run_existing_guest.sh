@@ -7,11 +7,21 @@ if [[ $# -ne 1 ]]; then
 fi
 
 RUN_DIR=$1
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 GUEST_SSH_CMD=${CXLMEMSIM_GUEST_SSH_CMD:?set CXLMEMSIM_GUEST_SSH_CMD, for example: ssh root@192.168.122.10}
 GUEST_SCP_CMD=${CXLMEMSIM_GUEST_SCP_CMD:-scp}
 GUEST_SCP_TARGET=${CXLMEMSIM_GUEST_SCP_TARGET:?set CXLMEMSIM_GUEST_SCP_TARGET, for example: root@192.168.122.10}
 CXLMEMSIM_ROOT=${CXLMEMSIM_ROOT:-/home/victoryang00/CXLMemSim}
 GUEST_DIR=${CXLMEMSIM_GUEST_DIR:-/root/slugarch-qemu-type2}
+HELPER_SRC=${CXLMEMSIM_SLUGARCH_GUEST_HELPER:-}
+if [[ -z "$HELPER_SRC" ]]; then
+    if [[ -f "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" ]]; then
+        HELPER_SRC="$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c"
+    else
+        HELPER_SRC="$SCRIPT_DIR/slugarch_type2_guest.c"
+    fi
+fi
+HEADER_SRC=${CXLMEMSIM_GPU_CMD_HEADER:-"$CXLMEMSIM_ROOT/qemu_integration/guest_libcuda/cxl_gpu_cmd.h"}
 read -r -a GUEST_SSH_ARR <<<"$GUEST_SSH_CMD"
 read -r -a GUEST_SCP_ARR <<<"$GUEST_SCP_CMD"
 
@@ -22,18 +32,20 @@ mkdir -p "$RUN_DIR"
     echo "guest_scp_target=$GUEST_SCP_TARGET"
     echo "cxlmemsim_root=$CXLMEMSIM_ROOT"
     echo "guest_dir=$GUEST_DIR"
+    echo "helper_src=$HELPER_SRC"
+    echo "header_src=$HEADER_SRC"
 } >>"$RUN_DIR/commands.txt"
 
 command -v "${GUEST_SCP_ARR[0]}" >/dev/null || { echo "${GUEST_SCP_ARR[0]} not found" >&2; exit 1; }
 command -v cargo >/dev/null || true
 test -r "$RUN_DIR/requests.bin" || { echo "requests.bin is not readable" >&2; exit 1; }
 
-if [[ ! -f "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" ]]; then
-    echo "missing CXLMemSim guest helper source; implement qemu_integration/slugarch_type2_guest.c first" >&2
+if [[ ! -f "$HELPER_SRC" ]]; then
+    echo "missing SlugArch guest helper source: $HELPER_SRC" >&2
     exit 1
 fi
-if [[ ! -f "$CXLMEMSIM_ROOT/qemu_integration/guest_libcuda/cxl_gpu_cmd.h" ]]; then
-    echo "missing CXLMemSim guest command header; implement qemu_integration/guest_libcuda/cxl_gpu_cmd.h first" >&2
+if [[ ! -f "$HEADER_SRC" ]]; then
+    echo "missing CXLMemSim guest command header: $HEADER_SRC" >&2
     exit 1
 fi
 
@@ -47,8 +59,8 @@ append_command() {
 
 append_command mkdir_guest_dir "${GUEST_SSH_ARR[@]}" "mkdir -p '$GUEST_DIR/guest_libcuda'"
 "${GUEST_SSH_ARR[@]}" "mkdir -p '$GUEST_DIR/guest_libcuda'"
-append_command scp_requests "${GUEST_SCP_ARR[@]}" "$RUN_DIR/requests.bin" "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" "$CXLMEMSIM_ROOT/qemu_integration/guest_libcuda/cxl_gpu_cmd.h" "$GUEST_SCP_TARGET:$GUEST_DIR/"
-"${GUEST_SCP_ARR[@]}" "$RUN_DIR/requests.bin" "$CXLMEMSIM_ROOT/qemu_integration/slugarch_type2_guest.c" "$CXLMEMSIM_ROOT/qemu_integration/guest_libcuda/cxl_gpu_cmd.h" "$GUEST_SCP_TARGET:$GUEST_DIR/"
+append_command scp_requests "${GUEST_SCP_ARR[@]}" "$RUN_DIR/requests.bin" "$HELPER_SRC" "$HEADER_SRC" "$GUEST_SCP_TARGET:$GUEST_DIR/"
+"${GUEST_SCP_ARR[@]}" "$RUN_DIR/requests.bin" "$HELPER_SRC" "$HEADER_SRC" "$GUEST_SCP_TARGET:$GUEST_DIR/"
 append_command move_guest_header "${GUEST_SSH_ARR[@]}" "mv '$GUEST_DIR/cxl_gpu_cmd.h' '$GUEST_DIR/guest_libcuda/cxl_gpu_cmd.h'"
 "${GUEST_SSH_ARR[@]}" "mv '$GUEST_DIR/cxl_gpu_cmd.h' '$GUEST_DIR/guest_libcuda/cxl_gpu_cmd.h'"
 GUEST_RUN_CMD="cd '$GUEST_DIR' && gcc -O2 -Wall -Wextra -o slugarch_type2_guest slugarch_type2_guest.c && if command -v sudo >/dev/null 2>&1; then sudo ./slugarch_type2_guest --requests requests.bin --responses responses.bin --summary guest-summary.json; else ./slugarch_type2_guest --requests requests.bin --responses responses.bin --summary guest-summary.json; fi"
