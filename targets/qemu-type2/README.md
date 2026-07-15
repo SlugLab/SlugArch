@@ -27,3 +27,19 @@ cargo run -p slugarch-cli -- validate-cxlmemsim \
 For this existing-guest harness, the CLI validation pass is `summary.json`
 reporting `status: "pass"`. For the full evaluation evidence, also archive the
 QEMU and CXLMemSim logs from the supported Type-2 launch and smoke path.
+
+## Live Sweep Flow
+
+`run_live_knob_sweep.sh` launches the compatible CXLMemSim server and QEMU
+Type-2 guest, waits for guest SSH, runs five BAR2 helper passes through
+`run_existing_guest.sh`, and then emits the simulator-feasible replay-policy
+report:
+
+```bash
+targets/qemu-type2/run_live_knob_sweep.sh
+```
+
+The current guest image reaches SSH reliably with QEMU user networking through
+`virtio-net-pci`. A previous `e1000` launch reached the serial login prompt but
+timed out during SSH banner exchange, so the live sweep script keeps
+`virtio-net-pci` as the default SSH NIC.

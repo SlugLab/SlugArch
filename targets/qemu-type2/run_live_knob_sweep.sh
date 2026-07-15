@@ -130,7 +130,7 @@ env CXL_TRANSPORT_MODE=tcp \
         -drive "file=$DISK_IMAGE,if=none,id=bootdisk,format=raw" \
         -device virtio-blk-pci,drive=bootdisk,bus=pcie.0 \
         -netdev "user,id=net0,hostfwd=tcp:127.0.0.1:$SSH_PORT-:22" \
-        -device e1000,netdev=net0,bus=pcie.0 \
+        -device virtio-net-pci,netdev=net0,bus=pcie.0,mac=52:54:00:00:10:22 \
         -device pxb-cxl,bus_nr=12,bus=pcie.0,id=cxl.0 \
         -device cxl-rp,port=0,bus=cxl.0,id=type2_rp,chassis=0,slot=2 \
         -device "cxl-type2,bus=type2_rp,id=cxl-type2-slugarch,sn=200,gpu-mode=0,cache-size=$CXL_TYPE2_CACHE_SIZE,mem-size=$CXL_TYPE2_MEM_SIZE,cxlmemsim-addr=$CXL_MEMSIM_HOST,cxlmemsim-port=$CXL_MEMSIM_PORT,coherency-enabled=$CXL_TYPE2_COHERENCY" \
