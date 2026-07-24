@@ -57,6 +57,11 @@ Modes*. It is an anonymous 21-page ACM-format manuscript with placeholder
 publication metadata. The SlugArch paper must call it a reference manuscript,
 not an accepted or published SIGMETRICS paper.
 
+Add it to the SlugArch bibliography as an anonymous unpublished July 2026
+manuscript, without its placeholder DOI, volume, article number, or venue.
+Cite it only in the methodology sentence that attributes the latency grid and
+five-repeat median/minimum/maximum convention.
+
 None of its absolute performance values, percentage differences, crossover
 points, bandwidth claims, or platform claims may be overlaid with or used as a
 quantitative baseline for SlugArch. Its access modes and workload are not the
@@ -98,6 +103,17 @@ that a load from the CXL fixed memory window reaches the Type-2 device-memory
 handler. The implementation must add an explicit one-target Type-2 CFMWS
 dispatch path and prove it with an end-to-end sentinel exchange. Merely mapping
 PCI BAR4 is not sufficient for a CXL.mem claim.
+
+The current QEMU Type-2 Register Locator advertises no device-register mailbox,
+while the custom guest `cxl_type2_accel` driver currently requires mailbox
+Identify before registering its memdev. For this simulator endpoint only
+(`8086:0d92` with `use_dvsec_hdm=1`), the driver must read the DVSEC memory
+capacity twice, require identical nonzero 256 MiB results, and synthesize the
+volatile-capacity fields instead of issuing mailbox Identify. Any mismatch
+fails probe. This is a QEMU compatibility path, not generic Type-2 hardware
+support. Rebuild the kernel and its complete matching CXL module set and
+install them in a private guest-image overlay; never mix the older image module
+with the new kernel.
 
 ### Local-RAM Bypass
 
@@ -406,11 +422,15 @@ selects and records fixed, non-overlapping allowed CPU sets for the QEMU and
 server processes before the pilot, and the same sets are used for all campaign
 boots.
 
-Boot the recorded `/home/victoryang00/cxl/arch/x86/boot/bzImage` with the
-Type-2 memdev path enabled and the recorded
-`/home/victoryang00/CXLMemSim/build/qemu1.img`. These paths identify current
-inputs only; the campaign manifest freezes their content hashes, and a changed
-hash creates a new campaign rather than silently updating the existing one.
+Treat `/home/victoryang00/cxl/arch/x86/boot/bzImage` and
+`/home/victoryang00/CXLMemSim/build/qemu1.img` only as recorded source inputs.
+Before the pilot, rebuild the patched kernel and its complete matching module
+set, install those modules into a private copied image, and publish the
+inseparable kernel/image tuple under
+`/tmp/slugarch-type2-cxlmem-build/`. Every pilot and campaign boot uses that
+published tuple through a private qcow2 overlay. The campaign manifest freezes
+the source-input and published-tuple hashes; a changed hash creates a new
+campaign rather than silently updating the existing one.
 
 ### Independent Repetition Unit
 
@@ -586,28 +606,37 @@ bulk-overlay, and coherent-pool completion deltas must all be zero.
 
 ### Trace Sizes
 
-Use the frozen 49-record, 64-byte GEMM trace at these scales:
+Use the frozen 49-request, 64-byte GEMM trace at these scales:
 
-| Scale | Records | Construction |
+| Scale | Request records | Construction |
 | ---: | ---: | --- |
 | 1x | 49 | Original trace |
 | 4x | 196 | Four ordered copies |
 | 16x | 784 | Sixteen ordered copies |
 | 64x | 3,136 | Sixty-four ordered copies |
 
+Here `request_record_count` is the scaling variable and Figure 2 x-axis.
+SlugArch records both sides of the boundary, so the existing recorder emits
+one request and one response record per request:
+`boundary_record_count = request_record_count + response_record_count =
+2 * request_record_count`. Every condition and normalized row stores all three
+counts explicitly. The paper must not describe the 1x SlugArch artifact as
+having only 49 boundary records.
+
 Repeated copies receive deterministic sequence/tag namespaces so accidental
 cross-copy matches cannot pass validation. The semantic request content
 otherwise remains unchanged.
 
 Collect all four modes and all four trace sizes in every boot. For the
-across-latency headline, use 196 records as the predeclared canonical size.
+across-latency headline, use 196 request records as the predeclared canonical
+size.
 For the scaling headline, use the 400 ns setting as the predeclared canonical
 latency.
 
-The 4x through 64x conditions are deterministic repetitions of one 49-record
-GEMM trace. They measure byte-count and record-count sensitivity only; they are
-not workload diversity, independent workload replication, or evidence that
-unseen applications scale the same way.
+The 4x through 64x conditions are deterministic repetitions of one 49-request
+GEMM trace. They measure byte-count and request-record-count sensitivity only;
+they are not workload diversity, independent workload replication, or
+evidence that unseen applications scale the same way.
 
 Reserve the first 1 MiB of the work window for the sentinel and control
 patterns. Allocate a distinct, one-MiB-aligned subregion after it for
@@ -615,6 +644,12 @@ calibration, each transfer size, and each mode/trace-size condition. These 21
 one-MiB slots fit within the 32 MiB work window. Initialization and zeroing
 occur outside timed ranges. The warmup and timed pass reuse the same subregion
 for a condition, while different conditions never alias.
+
+Baseline records are 64 bytes, but replay-policy records are not. Before the
+pilot, derive every request length, aligned response offset, response length,
+and total layout from the production serializer, bind those values into the
+experiment-version hash and guest configuration, and reject the experiment if
+any exact request-plus-response layout exceeds its assigned one-MiB slot.
 
 ### Post-Transport Corruption
 
@@ -646,7 +681,8 @@ For every latency-setting cell, report the five boot-level observations as:
 Figures show the median with min/max whiskers and, where legible, the five
 individual boot points. Do not report a confidence interval, standard error,
 or standard deviation as the primary uncertainty summary. Do not promote
-within-boot iterations, records, scalar loads, or RPCs to independent samples.
+within-boot iterations, request records, scalar loads, or RPCs to independent
+samples.
 
 ### Paired SlugArch Overhead
 
@@ -931,12 +967,13 @@ layout:
    4 KiB, 64 KiB, and 1 MiB at all four configured points. Use compact
    read/write facets, consistent latency colors, direct units, and
    median/min-max.
-3. **Paired SlugArch overhead.** At 196 records, show per-boot ratios for
+3. **Paired SlugArch overhead.** At 196 request records, show per-boot ratios for
    validation, delta, and full relative to the same boot's baseline across all
    four latency settings. Include a quiet 1.0 reference line.
 4. **Record-count scaling.** At 400 ns, show end-to-end time versus 49, 196,
-   784, and 3,136 records for baseline, validation, delta, and full, with
-   median/min-max.
+   784, and 3,136 request records for baseline, validation, delta, and full,
+   with median/min-max. Retain the corresponding boundary-record counts in the
+   paper data.
 
 Use a white background, dark text, quiet guides, one consistent latency color
 family, and distinct marker/line/hatch encodings that remain legible in
@@ -962,7 +999,7 @@ Figure 2 is all-or-nothing. Its panel gates are:
 | --- | --- |
 | calibration | exact 4,096-read accounting and the dependent-load monotonicity/separation rule |
 | transfer | exact byte accounting and every size's read/write monotonicity/separation rule |
-| paired overhead | all 196-record same-boot baseline/mode pairs and hashes |
+| paired overhead | all 196-request-record same-boot baseline/mode pairs and hashes |
 | record scaling | all four modes and record counts at 400 ns, with the repeated-trace limitation |
 
 If any general protocol, sentinel, bypass, artifact, corruption, or panel gate
@@ -980,7 +1017,7 @@ The revised evaluation proceeds in this order:
 2. legacy BAR2 repeatability and software results in Figure 1;
 3. Type-2 CXL.mem protocol, sentinel proof, latency calibration, and transfer
    sensitivity;
-4. paired SlugArch overhead and record-count scaling in Figure 2;
+4. paired SlugArch overhead and request-record-count scaling in Figure 2;
 5. offline mutation coverage, 20 post-transport guest-software corruptions,
    and fail-stop interpretation; and
 6. measured boundary, exclusions, and blocked hardware claims.
@@ -1073,8 +1110,9 @@ Implementation must proceed through these gates in order:
 
 1. Unit-test wire encoding/decoding, endian handling, length limits, request-ID
    matching, checksums, short I/O, timeout, and malformed-frame rejection.
-2. Build the isolated CXLMemSim server and QEMU snapshot and record their
-   hashes.
+2. Build the isolated CXLMemSim server, QEMU snapshot, and matching patched
+   guest kernel/module set; install modules only in a private image overlay and
+   record every source and binary hash.
 3. Run a protocol smoke test with oracle READ/WRITE round trips and nonzero
    per-client counters.
 4. Run a QEMU no-guest smoke test that proves version negotiation and rejects
