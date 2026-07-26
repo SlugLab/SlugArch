@@ -1,10 +1,12 @@
 mod coordinator;
+mod export;
 mod fault;
 mod home_agent;
 mod types;
 mod workload;
 
 pub use coordinator::{EpochCoordinator, EpochStatus, TileRecord};
+pub use export::{export_corpus, CorpusConfig, CorpusExport, RecordMode};
 pub use fault::{first_fault, inject_one, FaultKind, FaultedTrace};
 pub use home_agent::HomeAgent;
 pub use types::{
