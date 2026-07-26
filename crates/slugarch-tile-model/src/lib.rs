@@ -1,7 +1,9 @@
+mod fault;
 mod home_agent;
 mod types;
 mod workload;
 
+pub use fault::{first_fault, inject_one, FaultKind, FaultedTrace};
 pub use home_agent::HomeAgent;
 pub use types::{
     AppliedEvent, EventKind, FailureRecord, FaultCode, LineState, ModelError, TileCounters,
