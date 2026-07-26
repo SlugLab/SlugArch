@@ -1,8 +1,10 @@
+mod coordinator;
 mod fault;
 mod home_agent;
 mod types;
 mod workload;
 
+pub use coordinator::{EpochCoordinator, EpochStatus, TileRecord};
 pub use fault::{first_fault, inject_one, FaultKind, FaultedTrace};
 pub use home_agent::HomeAgent;
 pub use types::{

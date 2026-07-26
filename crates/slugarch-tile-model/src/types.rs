@@ -25,6 +25,10 @@ pub enum FaultCode {
     CohFenceMissing = 0x1004,
     PolicyDigest = 0x2001,
     RecordDrop = 0x2002,
+    EvidenceSequence = 0x3001,
+    EvidenceCounters = 0x3002,
+    EvidenceIncomplete = 0x3003,
+    EvidenceModelSeal = 0x3004,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
