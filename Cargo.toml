@@ -10,6 +10,7 @@ members = [
     "crates/slugarch-cxl-wire",
     "crates/slugarch-fabric",
     "crates/slugarch-host",
+    "crates/slugarch-jit",
     "crates/slugarch-tile-model",
     "crates/slugarch-verilator",
     "crates/slugarch-verilator-sys",
@@ -37,4 +38,5 @@ petgraph = { version = "0.6", features = ["serde-1"] }
 proptest = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+sha2 = "0.10"
 thiserror = "2"

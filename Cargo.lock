@@ -1007,6 +1007,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "slugarch-jit"
+version = "0.1.0"
+dependencies = [
+ "proptest",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "slugarch-path"
 version = "0.1.0"
 
