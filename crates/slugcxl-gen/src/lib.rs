@@ -66,6 +66,8 @@ pub fn generate(options: &GenerateOptions) -> Result<Vec<PathBuf>> {
     )?;
 
     if options.hardware_jit {
+        let policy = policy.as_ref().expect("HJ policy was created above");
+        let image = encode_policy_image(policy)?;
         write(
             &mut outputs,
             options.out.join("slugcxl_hj_pipeline.sv"),
@@ -79,15 +81,13 @@ pub fn generate(options: &GenerateOptions) -> Result<Vec<PathBuf>> {
         write(
             &mut outputs,
             options.out.join("slugcxl_hj_fit_top.sv"),
-            emit_fit_top::emit(&cfg),
+            emit_fit_top::emit(&cfg, policy, &image),
         )?;
         write(
             &mut outputs,
             options.out.join("slugcxl_hj_overhead.json"),
             hj_overhead::emit_report_json(&cfg.hardware_jit),
         )?;
-        let policy = policy.as_ref().expect("HJ policy was created above");
-        let image = encode_policy_image(policy)?;
         write(
             &mut outputs,
             options.out.join("slugcxl_hj_policy.hex"),
@@ -117,7 +117,7 @@ fn load_policy(path: Option<&Path>) -> Result<VerifiedPolicy> {
     Ok(policy.verify()?)
 }
 
-fn default_policy() -> Policy {
+pub(crate) fn default_policy() -> Policy {
     Policy {
         version: SLUG_JIT_ABI_VERSION,
         name: "validation-cxlmem".to_string(),

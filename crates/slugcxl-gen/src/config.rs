@@ -183,14 +183,6 @@ impl HardwareJitConfig {
         }
         Ok(())
     }
-
-    pub fn record_mode_code(&self) -> u32 {
-        match self.record_mode {
-            HardwareJitRecordMode::Validation => 0,
-            HardwareJitRecordMode::Delta => 1,
-            HardwareJitRecordMode::Full => 2,
-        }
-    }
 }
 
 #[derive(Debug, thiserror::Error)]
