@@ -7,7 +7,8 @@ expression: sv
 
 module slugcxl_4x4_hj_top #(
   parameter integer FLIT_BITS = 512,
-  parameter integer TOKEN_WIDTH = 256
+  parameter integer TOKEN_WIDTH = 256,
+  parameter integer MODEL_OBSERVE_ONLY = 0
 ) (
   input  wire                     clk,
   input  wire                     rst_n,
@@ -103,18 +104,29 @@ module slugcxl_4x4_hj_top #(
     .last_reject_code(hj_last_reject_code)
   );
 
-  slugcxl_4x4_top #(
-    .FLIT_BITS(FLIT_BITS),
-    .TOKEN_WIDTH(TOKEN_WIDTH)
-  ) u_slugcxl (
-    .clk(clk),
-    .rst_n(rst_n),
-    .flit_in_valid(w_ep_flit_valid),
-    .flit_in_ready(w_ep_flit_ready),
-    .flit_in_data(w_ep_flit_data),
-    .flit_out_valid(w_ep_resp_valid),
-    .flit_out_ready(w_ep_resp_ready),
-    .flit_out_data(w_ep_resp_data)
-  );
+  // MODEL_OBSERVE_ONLY is for a Verilator/debug driver that submits one event
+  // at a time. It prevents endpoint responses from re-entering the observer.
+  // The synthesizable/default value remains the connected endpoint path.
+  generate
+    if (MODEL_OBSERVE_ONLY != 0) begin : g_observe_only
+      assign w_ep_flit_ready = 1'b1;
+      assign w_ep_resp_valid = 1'b0;
+      assign w_ep_resp_data = '0;
+    end else begin : g_endpoint
+      slugcxl_4x4_top #(
+        .FLIT_BITS(FLIT_BITS),
+        .TOKEN_WIDTH(TOKEN_WIDTH)
+      ) u_slugcxl (
+        .clk(clk),
+        .rst_n(rst_n),
+        .flit_in_valid(w_ep_flit_valid),
+        .flit_in_ready(w_ep_flit_ready),
+        .flit_in_data(w_ep_flit_data),
+        .flit_out_valid(w_ep_resp_valid),
+        .flit_out_ready(w_ep_resp_ready),
+        .flit_out_data(w_ep_resp_data)
+      );
+    end
+  endgenerate
 
 endmodule

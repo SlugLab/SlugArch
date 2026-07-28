@@ -11,9 +11,12 @@
 #include "Vgemma_codegen_noc_mesh_df.h"
 #include "Vgemma_codegen_gemm_ip_df.h"
 #include "Vslugcxl_4x4_top.h"
+#include "Vslugcxl_4x4_hj_top.h"
 #include "verilated.h"
 
 #include <array>
+#include <memory>
+#include <new>
 #include <queue>
 
 // The Verilated classes don't share a base (they're independent generated
@@ -291,4 +294,261 @@ extern "C" int slugarch_cxl_recv_flit(SlugarchIp* ip, uint8_t flit_out[SLUGARCH_
     ip->outbound_flits->pop();
     std::memcpy(flit_out, f.data(), 64);
     return 1;
+}
+
+// ---- Runtime-programmable Hardware-JIT model ----
+
+struct SlugarchHj {
+    Vslugcxl_4x4_hj_top* dut;
+    VerilatedContext* ctx;
+    uint64_t cycles;
+};
+
+static_assert(sizeof(SlugarchHjStats) == 88,
+              "SlugarchHjStats C ABI layout changed");
+
+static uint32_t read_le32(const uint8_t* bytes) {
+    return static_cast<uint32_t>(bytes[0])
+        | (static_cast<uint32_t>(bytes[1]) << 8)
+        | (static_cast<uint32_t>(bytes[2]) << 16)
+        | (static_cast<uint32_t>(bytes[3]) << 24);
+}
+
+static void hj_eval_low(SlugarchHj* hj) {
+    hj->dut->clk = 0;
+    hj->dut->eval();
+}
+
+static void hj_tick(SlugarchHj* hj) {
+    hj->dut->clk = 0;
+    hj->dut->eval();
+    hj->dut->clk = 1;
+    hj->dut->eval();
+    hj->cycles++;
+    hj->dut->clk = 0;
+    hj->dut->eval();
+}
+
+static void hj_clear_inputs(SlugarchHj* hj) {
+    auto* d = hj->dut;
+    d->flit_in_valid = 0;
+    std::memset(reinterpret_cast<void*>(&d->flit_in_data), 0,
+                SLUGARCH_HJ_EVENT_BYTES);
+    d->flit_out_ready = 1;
+    d->policy_load_begin = 0;
+    d->policy_load_valid = 0;
+    d->policy_load_index = 0;
+    std::memset(reinterpret_cast<void*>(&d->policy_load_word), 0, 16);
+    d->policy_load_commit = 0;
+    d->policy_load_abort = 0;
+    std::memset(reinterpret_cast<void*>(&d->policy_load_digest), 0, 32);
+    d->policy_load_instruction_count = 0;
+    d->policy_load_range_count = 0;
+    d->record_ready = 0;
+}
+
+static void hj_abort_policy_load(SlugarchHj* hj) {
+    auto* d = hj->dut;
+    d->policy_load_begin = 0;
+    d->policy_load_valid = 0;
+    d->policy_load_commit = 0;
+    d->policy_load_abort = 1;
+    hj_tick(hj);
+    d->policy_load_abort = 0;
+}
+
+extern "C" SlugarchHj* slugarch_hj_new(void) {
+    try {
+        auto ctx = std::make_unique<VerilatedContext>();
+        auto dut = std::make_unique<Vslugcxl_4x4_hj_top>(ctx.get());
+        auto hj = std::make_unique<SlugarchHj>(
+            SlugarchHj{dut.get(), ctx.get(), 0});
+        hj_clear_inputs(hj.get());
+        dut.release();
+        ctx.release();
+        return hj.release();
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+extern "C" void slugarch_hj_free(SlugarchHj* hj) {
+    if (!hj) return;
+    delete hj->dut;
+    delete hj->ctx;
+    delete hj;
+}
+
+extern "C" void slugarch_hj_reset(SlugarchHj* hj) {
+    if (!hj) return;
+    hj->cycles = 0;
+    hj_clear_inputs(hj);
+    hj->dut->rst_n = 0;
+    for (int i = 0; i < 4; ++i) hj_tick(hj);
+    hj->dut->rst_n = 1;
+    hj_tick(hj);
+}
+
+extern "C" int slugarch_hj_load_policy(SlugarchHj* hj,
+                                         const uint8_t* image,
+                                         uint32_t image_len) {
+    if (!hj || !image) return SLUGARCH_HJ_ERR_NULL;
+    if (image_len != SLUGARCH_HJ_POLICY_BYTES) return SLUGARCH_HJ_ERR_SIZE;
+    if (std::memcmp(image, "SJIT", 4) != 0
+        || read_le32(image + 4) != 1
+        || read_le32(image + 8) != 1
+        || read_le32(image + 12) != 1
+        || read_le32(image + 28) != SLUGARCH_HJ_POLICY_BYTES) {
+        return SLUGARCH_HJ_ERR_PROTOCOL;
+    }
+
+    auto* d = hj->dut;
+    d->flit_in_valid = 0;
+    d->record_ready = 0;
+    d->policy_load_abort = 0;
+    d->policy_load_valid = 0;
+    d->policy_load_commit = 0;
+    d->policy_load_instruction_count = read_le32(image + 16);
+    d->policy_load_range_count = read_le32(image + 20);
+    std::memcpy(reinterpret_cast<void*>(&d->policy_load_digest), image + 32, 32);
+
+    d->policy_load_begin = 1;
+    hj_tick(hj);
+    d->policy_load_begin = 0;
+    if (d->policy_error != 0) return SLUGARCH_HJ_ERR_RTL;
+
+    for (uint32_t index = 0; index < 40; ++index) {
+        d->policy_load_index = static_cast<uint16_t>(index);
+        std::memcpy(reinterpret_cast<void*>(&d->policy_load_word),
+                    image + index * 16, 16);
+        d->policy_load_valid = 1;
+        hj_eval_low(hj);
+        if (!d->policy_load_ready) {
+            hj_abort_policy_load(hj);
+            return SLUGARCH_HJ_ERR_PROTOCOL;
+        }
+        hj_tick(hj);
+        if (d->policy_error != 0) {
+            hj_abort_policy_load(hj);
+            return SLUGARCH_HJ_ERR_RTL;
+        }
+    }
+    d->policy_load_valid = 0;
+    d->policy_load_commit = 1;
+    hj_tick(hj);
+    d->policy_load_commit = 0;
+
+    for (uint32_t wait = 0; wait < 64; ++wait) {
+        hj_eval_low(hj);
+        if (d->policy_error != 0) return SLUGARCH_HJ_ERR_RTL;
+        if (d->policy_ready) {
+            if (std::memcmp(reinterpret_cast<const void*>(&d->policy_digest),
+                            image + 32, 32) != 0) {
+                return SLUGARCH_HJ_ERR_PROTOCOL;
+            }
+            return SLUGARCH_HJ_OK;
+        }
+        hj_tick(hj);
+    }
+    hj_abort_policy_load(hj);
+    return SLUGARCH_HJ_ERR_TIMEOUT;
+}
+
+extern "C" int slugarch_hj_observe(
+    SlugarchHj* hj, const uint8_t event[SLUGARCH_HJ_EVENT_BYTES],
+    uint8_t record[SLUGARCH_HJ_RECORD_BYTES], uint32_t* record_len,
+    uint64_t* cycles) {
+    if (!hj || !event || !record || !record_len || !cycles)
+        return SLUGARCH_HJ_ERR_NULL;
+
+    *record_len = 0;
+    *cycles = 0;
+    std::memset(record, 0, SLUGARCH_HJ_RECORD_BYTES);
+    auto* d = hj->dut;
+    hj_eval_low(hj);
+    if (!d->policy_ready || d->policy_error != 0)
+        return SLUGARCH_HJ_ERR_RTL;
+
+    const uint64_t start_cycles = hj->cycles;
+    const uint64_t starting_events = d->hj_event_count;
+    d->record_ready = 0;
+    std::memcpy(reinterpret_cast<void*>(&d->flit_in_data), event,
+                SLUGARCH_HJ_EVENT_BYTES);
+    d->flit_in_valid = 1;
+
+    bool accepted = false;
+    for (uint32_t wait = 0; wait < 256; ++wait) {
+        hj_eval_low(hj);
+        const bool ready = d->flit_in_ready != 0;
+        hj_tick(hj);
+        if (ready) {
+            accepted = true;
+            d->flit_in_valid = 0;
+            break;
+        }
+        if (d->policy_error != 0) {
+            d->flit_in_valid = 0;
+            *cycles = hj->cycles - start_cycles;
+            return SLUGARCH_HJ_ERR_RTL;
+        }
+    }
+    if (!accepted) {
+        d->flit_in_valid = 0;
+        *cycles = hj->cycles - start_cycles;
+        return SLUGARCH_HJ_ERR_TIMEOUT;
+    }
+
+    for (uint32_t wait = 0; wait < 2048; ++wait) {
+        hj_eval_low(hj);
+        if (d->policy_error != 0) {
+            *cycles = hj->cycles - start_cycles;
+            return SLUGARCH_HJ_ERR_RTL;
+        }
+        if (d->record_valid) {
+            const uint32_t length = d->record_length;
+            if (length < 96 || length > SLUGARCH_HJ_RECORD_BYTES) {
+                *cycles = hj->cycles - start_cycles;
+                return SLUGARCH_HJ_ERR_BUFFER;
+            }
+            std::memcpy(record, reinterpret_cast<const void*>(&d->record_data),
+                        SLUGARCH_HJ_RECORD_BYTES);
+            *record_len = length;
+            d->record_ready = 1;
+            hj_tick(hj);
+            d->record_ready = 0;
+            *cycles = hj->cycles - start_cycles;
+            return SLUGARCH_HJ_OK;
+        }
+        if (d->hj_event_count != starting_events) {
+            *cycles = hj->cycles - start_cycles;
+            return SLUGARCH_HJ_OK;
+        }
+        hj_tick(hj);
+    }
+
+    *cycles = hj->cycles - start_cycles;
+    return SLUGARCH_HJ_ERR_TIMEOUT;
+}
+
+extern "C" int slugarch_hj_stats(const SlugarchHj* hj,
+                                   SlugarchHjStats* stats) {
+    if (!hj || !stats) return SLUGARCH_HJ_ERR_NULL;
+    const auto* d = hj->dut;
+    *stats = SlugarchHjStats{
+        hj->cycles,
+        d->hj_event_count,
+        d->hj_record_count,
+        d->hj_metadata_bytes,
+        d->hj_reject_count,
+        d->hj_metadata_drop_count,
+        d->hj_instruction_count,
+        d->hj_epoch,
+        d->hj_app_flit_bytes,
+        d->hj_stall_cycles,
+        d->policy_error,
+        d->hj_last_reject_code,
+        static_cast<uint8_t>(d->policy_ready ? 1 : 0),
+        0,
+    };
+    return SLUGARCH_HJ_OK;
 }

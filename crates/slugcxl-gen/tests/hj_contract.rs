@@ -72,6 +72,8 @@ fn generated_hj_has_atomic_runtime_policy_and_record_ports() {
     let top = std::fs::read_to_string(dir.path().join("slugcxl_4x4_hj_top.sv")).unwrap();
     assert!(top.contains(".policy_load_begin(policy_load_begin)"));
     assert!(top.contains(".record_data(record_data)"));
+    assert!(top.contains("parameter integer MODEL_OBSERVE_ONLY = 0"));
+    assert!(top.contains("if (MODEL_OBSERVE_ONLY != 0)"));
 
     let fit = std::fs::read_to_string(dir.path().join("slugcxl_hj_fit_top.sv")).unwrap();
     assert!(fit.contains("default_policy_word"));

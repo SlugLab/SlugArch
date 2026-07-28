@@ -1058,7 +1058,10 @@ name = "slugarch-verilator"
 version = "0.1.0"
 dependencies = [
  "slugarch-ir",
+ "slugarch-jit",
  "slugarch-verilator-sys",
+ "slugcxl-gen",
+ "thiserror 2.0.18",
 ]
 
 [[package]]

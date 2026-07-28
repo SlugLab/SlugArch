@@ -7,3 +7,6 @@ license.workspace = true
 [dependencies]
 slugarch-verilator-sys = { path = "../slugarch-verilator-sys" }
 slugarch-ir = { path = "../slugarch-ir" }
+slugarch-jit = { path = "../slugarch-jit" }
+slugcxl-gen = { path = "../slugcxl-gen" }
+thiserror.workspace = true
