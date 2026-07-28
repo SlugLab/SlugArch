@@ -11,6 +11,7 @@ members = [
     "crates/slugarch-fabric",
     "crates/slugarch-host",
     "crates/slugarch-jit",
+    "crates/slugarch-jit-ffi",
     "crates/slugarch-tile-model",
     "crates/slugarch-verilator",
     "crates/slugarch-verilator-sys",
