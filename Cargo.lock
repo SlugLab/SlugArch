@@ -1021,6 +1021,7 @@ dependencies = [
 name = "slugarch-jit-ffi"
 version = "0.1.0"
 dependencies = [
+ "cc",
  "serde_json",
  "slugarch-jit",
 ]

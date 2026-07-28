@@ -10,3 +10,6 @@ crate-type = ["cdylib", "staticlib", "rlib"]
 [dependencies]
 serde_json.workspace = true
 slugarch-jit = { path = "../slugarch-jit" }
+
+[build-dependencies]
+cc.workspace = true
