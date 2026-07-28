@@ -5,8 +5,11 @@ use std::sync::{Mutex, MutexGuard};
 
 use slugarch_jit::{
     Decision, Direction, Engine, Event, EventClass, JitError, JitErrorCode, Policy, Stats,
-    MAX_EVENT_PAYLOAD,
+    VerifiedPolicy, MAX_EVENT_PAYLOAD,
 };
+
+#[cfg(feature = "fpga-verilator")]
+pub mod fpga;
 
 pub const SLUG_JIT_ABI_VERSION: u32 = slugarch_jit::SLUG_JIT_ABI_VERSION;
 pub const SLUG_JIT_PAYLOAD_BYTES: usize = MAX_EVENT_PAYLOAD;
@@ -119,9 +122,91 @@ pub struct SlugJitStats {
     pub epoch: u64,
 }
 
+enum BackendState {
+    Rust(Option<Engine>),
+    #[cfg(feature = "fpga-verilator")]
+    Fpga(fpga::FpgaBackend),
+}
+
+impl BackendState {
+    fn create(backend: u32) -> Result<Self, JitError> {
+        match backend {
+            SLUG_JIT_BACKEND_RUST => Ok(Self::Rust(None)),
+            SLUG_JIT_BACKEND_FPGA_VERILATOR => {
+                #[cfg(feature = "fpga-verilator")]
+                {
+                    fpga::FpgaBackend::new().map(Self::Fpga)
+                }
+                #[cfg(not(feature = "fpga-verilator"))]
+                {
+                    Err(error(
+                        JitErrorCode::Unsupported,
+                        "the selected FPGA-Verilator backend is not compiled in",
+                    ))
+                }
+            }
+            _ => Err(error(
+                JitErrorCode::Unsupported,
+                "the selected JIT backend is unavailable",
+            )),
+        }
+    }
+
+    fn id(&self) -> u32 {
+        match self {
+            Self::Rust(_) => SLUG_JIT_BACKEND_RUST,
+            #[cfg(feature = "fpga-verilator")]
+            Self::Fpga(_) => SLUG_JIT_BACKEND_FPGA_VERILATOR,
+        }
+    }
+
+    fn clear_policy(&mut self) -> Result<(), JitError> {
+        match self {
+            Self::Rust(engine) => {
+                *engine = None;
+                Ok(())
+            }
+            #[cfg(feature = "fpga-verilator")]
+            Self::Fpga(engine) => engine.reset(),
+        }
+    }
+
+    fn load_policy(&mut self, policy: VerifiedPolicy) -> Result<(), JitError> {
+        match self {
+            Self::Rust(engine) => {
+                *engine = Some(Engine::new(policy));
+                Ok(())
+            }
+            #[cfg(feature = "fpga-verilator")]
+            Self::Fpga(engine) => engine.load_policy(&policy),
+        }
+    }
+
+    fn observe(&mut self, event: &Event) -> Result<Decision, JitError> {
+        match self {
+            Self::Rust(engine) => engine
+                .as_mut()
+                .ok_or_else(|| error(JitErrorCode::Backend, "no policy is installed"))?
+                .observe(event),
+            #[cfg(feature = "fpga-verilator")]
+            Self::Fpga(engine) => engine.observe(event),
+        }
+    }
+
+    fn stats(&self) -> Stats {
+        match self {
+            Self::Rust(engine) => engine
+                .as_ref()
+                .map(Engine::stats)
+                .unwrap_or_else(Stats::default),
+            #[cfg(feature = "fpga-verilator")]
+            Self::Fpga(engine) => engine.stats(),
+        }
+    }
+}
+
 struct EngineState {
-    backend: u32,
-    engine: Option<Engine>,
+    backend: BackendState,
     diagnostic_capacity: usize,
     diagnostic: Vec<u8>,
 }
@@ -236,7 +321,15 @@ pub extern "C" fn slugarch_jit_abi_version() -> u32 {
 
 #[no_mangle]
 pub extern "C" fn slugarch_jit_backend_caps() -> u64 {
-    SLUG_JIT_CAP_POLICY | SLUG_JIT_CAP_RECORD
+    let capabilities = SLUG_JIT_CAP_POLICY | SLUG_JIT_CAP_RECORD;
+    #[cfg(feature = "fpga-verilator")]
+    {
+        capabilities | SLUG_JIT_CAP_FPGA_RTL
+    }
+    #[cfg(not(feature = "fpga-verilator"))]
+    {
+        capabilities
+    }
 }
 
 /// Creates one isolated Rust policy engine.
@@ -261,10 +354,10 @@ pub unsafe extern "C" fn slugarch_jit_create(
         // SAFETY: the validated prefix is at least sizeof(SlugJitCreateArgs).
         let args = unsafe { ptr::read(args) };
 
-        if args.backend != SLUG_JIT_BACKEND_RUST || args.strict != 1 || args.reserved != 0 {
+        if args.strict != 1 || args.reserved != 0 {
             return Err(error(
                 JitErrorCode::Unsupported,
-                "only the strict Rust backend is available",
+                "only strict backend selection is available",
             ));
         }
         if args.diagnostic_capacity > MAX_DIAGNOSTIC_BYTES {
@@ -274,10 +367,10 @@ pub unsafe extern "C" fn slugarch_jit_create(
             ));
         }
 
+        let backend = BackendState::create(args.backend)?;
         let handle = Box::new(SlugJitHandle {
             state: Mutex::new(EngineState {
-                backend: args.backend,
-                engine: None,
+                backend,
                 diagnostic_capacity: args.diagnostic_capacity as usize,
                 diagnostic: Vec::new(),
             }),
@@ -315,7 +408,7 @@ pub unsafe extern "C" fn slugarch_jit_load_policy(
         let verified = match Policy::parse(json).and_then(|policy| policy.verify()) {
             Ok(verified) => verified,
             Err(parse_error) => {
-                state.engine = None;
+                let _ = state.backend.clear_policy();
                 state.set_diagnostic(&parse_error.to_string());
                 return Err(parse_error);
             }
@@ -326,7 +419,7 @@ pub unsafe extern "C" fn slugarch_jit_load_policy(
         let info = SlugJitPolicyInfo {
             struct_size: size_of::<SlugJitPolicyInfo>() as u32,
             abi_version: SLUG_JIT_ABI_VERSION,
-            backend: state.backend,
+            backend: state.backend.id(),
             canonical_bytes,
             digest: verified.digest,
             instruction_count,
@@ -335,7 +428,11 @@ pub unsafe extern "C" fn slugarch_jit_load_policy(
             reserved: 0,
         };
 
-        state.engine = Some(Engine::new(verified));
+        if let Err(load_error) = state.backend.load_policy(verified) {
+            let _ = state.backend.clear_policy();
+            state.set_diagnostic(&load_error.to_string());
+            return Err(load_error);
+        }
         state.clear_diagnostic();
         // SAFETY: out was validated as a writable ABI 1 prefix.
         unsafe { ptr::write(out, info) };
@@ -392,23 +489,17 @@ pub unsafe extern "C" fn slugarch_jit_observe(
 
         // SAFETY: handle must be live by the ABI contract.
         let mut state = unsafe { lock_handle(handle)? };
-        let engine = state
-            .engine
-            .as_mut()
-            .ok_or_else(|| error(JitErrorCode::Backend, "no policy is installed"))?;
-        let decision = match engine.observe(&event) {
+        let decision = match state.backend.observe(&event) {
             Ok(decision) => decision,
             Err(observe_error) => {
                 state.set_diagnostic(&observe_error.to_string());
                 return Err(observe_error);
             }
         };
+        let stats = state.backend.stats();
         let (accepted, emitted, error_code, record_bytes, payload_bytes, epoch, record_id) =
             match decision {
-                Decision::Accept => {
-                    let stats = engine.stats();
-                    (1, 0, 0, 0, 0, stats.epoch, 0)
-                }
+                Decision::Accept => (1, 0, 0, 0, 0, stats.epoch, 0),
                 Decision::Emit { record } => (
                     1,
                     1,
@@ -421,7 +512,6 @@ pub unsafe extern "C" fn slugarch_jit_observe(
                     record.sequence,
                 ),
                 Decision::Reject { .. } => {
-                    let stats = engine.stats();
                     (0, 0, SLUG_JIT_ERR_REJECTED as u32, 0, 0, stats.epoch, 0)
                 }
             };
@@ -463,11 +553,7 @@ pub unsafe extern "C" fn slugarch_jit_stats(
         unsafe { validate_prefix(out)? };
         // SAFETY: handle must be live by the ABI contract.
         let state = unsafe { lock_handle(handle)? };
-        let stats = state
-            .engine
-            .as_ref()
-            .map(Engine::stats)
-            .unwrap_or_else(Stats::default);
+        let stats = state.backend.stats();
         let stats = SlugJitStats {
             struct_size: size_of::<SlugJitStats>() as u32,
             abi_version: SLUG_JIT_ABI_VERSION,

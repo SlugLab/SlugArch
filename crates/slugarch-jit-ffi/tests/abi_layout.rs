@@ -1,6 +1,8 @@
 use std::mem::{align_of, size_of, MaybeUninit};
 use std::ptr::{addr_of, null, null_mut};
 
+#[cfg(feature = "fpga-verilator")]
+use slugarch_jit_ffi::SLUG_JIT_CAP_FPGA_RTL;
 use slugarch_jit_ffi::{
     slugarch_jit_abi_version, slugarch_jit_backend_caps, slugarch_jit_create, slugarch_jit_destroy,
     SlugJitCreateArgs, SlugJitDecision, SlugJitEvent, SlugJitHandle, SlugJitPolicyInfo,
@@ -8,6 +10,8 @@ use slugarch_jit_ffi::{
     SLUG_JIT_CAP_RECORD, SLUG_JIT_ERR_ABI_VERSION, SLUG_JIT_ERR_NULL, SLUG_JIT_ERR_STRUCT_SIZE,
     SLUG_JIT_OK,
 };
+#[cfg(not(feature = "fpga-verilator"))]
+use slugarch_jit_ffi::{SLUG_JIT_BACKEND_FPGA_VERILATOR, SLUG_JIT_ERR_UNSUPPORTED};
 
 macro_rules! offset_of {
     ($ty:ty, $field:ident) => {{
@@ -33,10 +37,10 @@ fn create_args() -> SlugJitCreateArgs {
 fn abi_one_layout_matches_the_checked_in_c_prefix() {
     assert_eq!(slugarch_jit_abi_version(), 1);
     assert_eq!(SLUG_JIT_ABI_VERSION, 1);
-    assert_eq!(
-        slugarch_jit_backend_caps(),
-        SLUG_JIT_CAP_POLICY | SLUG_JIT_CAP_RECORD
-    );
+    let expected_caps = SLUG_JIT_CAP_POLICY | SLUG_JIT_CAP_RECORD;
+    #[cfg(feature = "fpga-verilator")]
+    let expected_caps = expected_caps | SLUG_JIT_CAP_FPGA_RTL;
+    assert_eq!(slugarch_jit_backend_caps(), expected_caps);
 
     assert_eq!(
         (
@@ -151,4 +155,19 @@ fn create_accepts_an_oversized_known_prefix() {
         assert!(!handle.is_null());
         slugarch_jit_destroy(handle);
     }
+}
+
+#[cfg(not(feature = "fpga-verilator"))]
+#[test]
+fn unavailable_fpga_backend_is_rejected_without_rust_fallback() {
+    let mut args = create_args();
+    args.backend = SLUG_JIT_BACKEND_FPGA_VERILATOR;
+    let mut handle: *mut SlugJitHandle = null_mut();
+
+    // SAFETY: args and output pointer remain live for the call.
+    assert_eq!(
+        unsafe { slugarch_jit_create(&args, &mut handle) },
+        SLUG_JIT_ERR_UNSUPPORTED
+    );
+    assert!(handle.is_null());
 }

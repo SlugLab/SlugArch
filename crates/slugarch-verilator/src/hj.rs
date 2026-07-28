@@ -42,8 +42,15 @@ pub struct HjObservation {
     pub accepted: bool,
     pub reject_code: Option<u16>,
     pub record: Option<ReplayRecord>,
+    pub record_image: Option<HjRecordImage>,
     pub stats: HjStats,
     pub cycles: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct HjRecordImage {
+    pub bytes: [u8; RECORD_BYTES],
+    pub length: usize,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -204,10 +211,17 @@ impl VerilatedHj {
             return Err(HjError::Rtl(stats.policy_error));
         }
 
-        let record = if record_len == 0 {
-            None
+        let (record, record_image) = if record_len == 0 {
+            (None, None)
         } else {
-            Some(decode_record(&record_bytes, record_len as usize)?)
+            let length = record_len as usize;
+            (
+                Some(decode_record(&record_bytes, length)?),
+                Some(HjRecordImage {
+                    bytes: record_bytes,
+                    length,
+                }),
+            )
         };
         let next_reject = before
             .reject_count
@@ -225,6 +239,7 @@ impl VerilatedHj {
             accepted: reject_code.is_none(),
             reject_code,
             record,
+            record_image,
             stats,
             cycles,
         })

@@ -73,6 +73,8 @@ fn verilate_ip(verilator_bin: &str, vendor_root: &Path, out_dir: &Path, ip: &str
             "--build",
             "--no-timing",
             "-O1",
+            "-CFLAGS",
+            "-fPIC",
             "--Mdir",
             obj_dir.to_str().unwrap(),
             "-Irtl/designs", // NPU baseline uses `include of companion files (no space after -I)
@@ -142,6 +144,8 @@ fn verilate_slugcxl(verilator_bin: &str, vendor_root: &Path, out_dir: &Path) {
             "--build",
             "--no-timing",
             "-O1",
+            "-CFLAGS",
+            "-fPIC",
             "--Mdir",
             obj_dir.to_str().unwrap(),
             "-Irtl/designs",
@@ -201,6 +205,8 @@ fn verilate_slugcxl_hj(verilator_bin: &str, vendor_root: &Path, out_dir: &Path) 
             "--build",
             "--no-timing",
             "-O1",
+            "-CFLAGS",
+            "-fPIC",
             "--Mdir",
             obj_dir.to_str().unwrap(),
             "-Irtl/designs",
@@ -238,6 +244,7 @@ fn compile_shim(out_dir: &Path, verilator_include: &str) {
     build
         .cpp(true)
         .std("c++17")
+        .pic(true)
         .file("shim/ip_shim.cpp")
         .include("shim")
         .include(verilator_include)

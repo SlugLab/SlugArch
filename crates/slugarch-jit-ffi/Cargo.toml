@@ -7,9 +7,17 @@ license.workspace = true
 [lib]
 crate-type = ["cdylib", "staticlib", "rlib"]
 
+[features]
+default = []
+fpga-verilator = ["dep:slugarch-verilator"]
+
 [dependencies]
 serde_json.workspace = true
 slugarch-jit = { path = "../slugarch-jit" }
+
+[dependencies.slugarch-verilator]
+path = "../slugarch-verilator"
+optional = true
 
 [build-dependencies]
 cc.workspace = true
