@@ -77,4 +77,25 @@ fn generated_hj_has_atomic_runtime_policy_and_record_ports() {
     assert!(fit.contains("default_policy_word"));
     assert!(fit.contains("policy_load_commit"));
     assert!(fit.contains("policy_ready"));
+
+    let runtime: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(dir.path().join("slugcxl_endpoint_runtime.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        runtime["flit_layout"]["event_id_bytes"],
+        serde_json::json!([43, 50])
+    );
+    assert_eq!(
+        runtime["flit_layout"]["phase_id_bytes"],
+        serde_json::json!([51, 58])
+    );
+    assert_eq!(
+        runtime["flit_layout"]["status_bytes"],
+        serde_json::json!([59, 62])
+    );
+    assert_eq!(runtime["flit_layout"]["control_byte"], 63);
+    assert_eq!(runtime["record_layout"]["record_bytes"], 128);
+    assert_eq!(runtime["transport_limits"]["max_payload_bytes"], 32);
+    assert_eq!(runtime["transport_limits"]["max_delta_pairs"], 16);
 }

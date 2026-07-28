@@ -42,11 +42,16 @@ module slugcxl_4x4_hj_top #(
   output wire [15:0]              record_length,
   output wire [1023:0]            record_data,
 
+  output wire [63:0]              hj_event_count,
   output wire [63:0]              hj_record_count,
   output wire [63:0]              hj_metadata_bytes,
+  output wire [63:0]              hj_reject_count,
+  output wire [63:0]              hj_instruction_count,
+  output wire [63:0]              hj_epoch,
   output wire [63:0]              hj_app_flit_bytes,
   output wire [63:0]              hj_stall_cycles,
-  output wire [63:0]              hj_metadata_drop_count
+  output wire [63:0]              hj_metadata_drop_count,
+  output wire [15:0]              hj_last_reject_code
 );
 
   wire                 w_ep_flit_valid;
@@ -90,11 +95,16 @@ module slugcxl_4x4_hj_top #(
     .record_ready(record_ready),
     .record_length(record_length),
     .record_data(record_data),
+    .event_count(hj_event_count),
     .record_count(hj_record_count),
     .metadata_bytes(hj_metadata_bytes),
+    .reject_count(hj_reject_count),
+    .instruction_count(hj_instruction_count),
+    .epoch(hj_epoch),
     .app_flit_bytes(hj_app_flit_bytes),
     .stall_cycles(hj_stall_cycles),
-    .metadata_drop_count(hj_metadata_drop_count)
+    .metadata_drop_count(hj_metadata_drop_count),
+    .last_reject_code(hj_last_reject_code)
   );
 
   slugcxl_4x4_top #(

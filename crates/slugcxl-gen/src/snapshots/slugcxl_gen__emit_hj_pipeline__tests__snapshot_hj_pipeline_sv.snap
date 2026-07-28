@@ -47,21 +47,31 @@ module slugcxl_hj_pipeline #(
   output reg  [15:0]           record_length,
   output reg  [1023:0]         record_data,
 
+  output reg  [63:0]           event_count,
   output reg  [63:0]           record_count,
   output reg  [63:0]           metadata_bytes,
+  output reg  [63:0]           reject_count,
+  output reg  [63:0]           instruction_count,
+  output reg  [63:0]           epoch,
   output reg  [63:0]           app_flit_bytes,
   output reg  [63:0]           stall_cycles,
-  output reg  [63:0]           metadata_drop_count
+  output reg  [63:0]           metadata_drop_count,
+  output reg  [15:0]           last_reject_code
 );
 
   localparam [31:0] SLUG_JIT_ERR_STRUCT_SIZE       = 32'd2;
-  localparam [31:0] SLUG_JIT_ERR_ABI_VERSION      = 32'd3;
+  localparam [31:0] SLUG_JIT_ERR_ABI_VERSION       = 32'd3;
   localparam [31:0] SLUG_JIT_ERR_TOO_MANY_INSTRUCTIONS = 32'd6;
   localparam [31:0] SLUG_JIT_ERR_TOO_MANY_RANGES  = 32'd7;
+  localparam [31:0] SLUG_JIT_ERR_INVALID_RANGE     = 32'd8;
+  localparam [31:0] SLUG_JIT_ERR_INVALID_STRIDE    = 32'd9;
+  localparam [31:0] SLUG_JIT_ERR_BUDGET_EXCEEDED  = 32'd10;
   localparam [31:0] SLUG_JIT_ERR_INVALID_CONTROL_FLOW = 32'd11;
+  localparam [31:0] SLUG_JIT_ERR_UNSUPPORTED       = 32'd12;
   localparam [31:0] SLUG_JIT_ERR_DIGEST_MISMATCH  = 32'd13;
-  localparam [31:0] SLUG_JIT_ERR_DROP             = 32'd15;
-  localparam [31:0] SLUG_JIT_ERR_BACKEND          = 32'd17;
+  localparam [31:0] SLUG_JIT_ERR_DROP              = 32'd15;
+  localparam [31:0] SLUG_JIT_ERR_TIMEOUT           = 32'd16;
+  localparam [31:0] SLUG_JIT_ERR_BACKEND           = 32'd17;
 
   localparam [31:0] POLICY_MAGIC       = 32'h54494a53; // bytes "SJIT"
   localparam [31:0] POLICY_ABI_VERSION = 32'd1;
@@ -69,6 +79,32 @@ module slugcxl_hj_pipeline #(
   localparam [31:0] PACKET_ABI_VERSION = 32'd1;
   localparam [31:0] POLICY_IMAGE_BYTES = 32'd640;
   localparam [6:0]  POLICY_IMAGE_WORDS = 7'd40;
+
+  localparam [7:0] HJ_OP_HALT = 8'h00;
+  localparam [7:0] HJ_OP_MATCH_CLASS = 8'h01;
+  localparam [7:0] HJ_OP_MATCH_DIRECTION = 8'h02;
+  localparam [7:0] HJ_OP_MATCH_STATUS = 8'h03;
+  localparam [7:0] HJ_OP_MATCH_RANGE = 8'h04;
+  localparam [7:0] HJ_OP_SAMPLE = 8'h05;
+  localparam [7:0] HJ_OP_CAPTURE = 8'h06;
+  localparam [7:0] HJ_OP_EMIT = 8'h07;
+  localparam [7:0] HJ_OP_EPOCH_INCREMENT = 8'h08;
+  localparam [7:0] HJ_OP_EPOCH_FROM_PHASE = 8'h09;
+  localparam [7:0] HJ_OP_REJECT = 8'h0a;
+
+  localparam [1:0] HJ_CAPTURE_VALIDATION = 2'd0;
+  localparam [1:0] HJ_CAPTURE_DELTA = 2'd1;
+  localparam [1:0] HJ_CAPTURE_FULL = 2'd2;
+
+  localparam [3:0] HJ_STATE_IDLE = 4'd0;
+  localparam [3:0] HJ_STATE_FETCH = 4'd1;
+  localparam [3:0] HJ_STATE_DECODE = 4'd2;
+  localparam [3:0] HJ_STATE_MATCH = 4'd3;
+  localparam [3:0] HJ_STATE_CAPTURE = 4'd4;
+  localparam [3:0] HJ_STATE_EMIT_WAIT = 4'd5;
+  localparam [3:0] HJ_STATE_REJECT = 4'd6;
+  localparam [3:0] HJ_STATE_DONE = 4'd7;
+  localparam [3:0] HJ_STATE_ERROR = 4'd8;
 
   reg [127:0] policy_words_bank0 [0:31];
   reg [127:0] policy_words_bank1 [0:31];
@@ -80,6 +116,7 @@ module slugcxl_hj_pipeline #(
   reg [31:0]  active_metadata_budget;
 
   reg         load_in_progress;
+  reg         load_failed;
   reg         load_bank;
   reg [39:0]  load_seen;
   reg [6:0]   load_word_count;
@@ -93,8 +130,37 @@ module slugcxl_hj_pipeline #(
   reg [31:0]  load_image_bytes;
   reg [255:0] load_digest_header;
 
-  reg [63:0] sequence_id;
-  reg [63:0] epoch_id;
+  reg [3:0]   hj_state;
+  reg [31:0]  program_counter;
+  reg [5:0]   execution_steps;
+  reg [127:0] current_instruction;
+  reg         match_result;
+  reg [31:0]  branch_target;
+
+  reg [63:0]  event_id;
+  reg         event_direction;
+  reg [3:0]   event_class;
+  reg [3:0]   event_opcode;
+  reg [63:0]  event_address;
+  reg [15:0]  event_tag;
+  reg [63:0]  event_phase_id;
+  reg [31:0]  event_status;
+  reg [5:0]   event_payload_len;
+  reg [255:0] event_payload;
+  reg [63:0]  event_epoch;
+
+  reg [1:0]   capture_mode;
+  reg         capture_ready;
+  reg [5:0]   captured_bytes;
+  reg [5:0]   delta_pair_count;
+  reg [5:0]   delta_scan_index;
+  reg [255:0] capture_data;
+  reg         emit_requested;
+
+  reg [1023:0] pending_record_data;
+  reg [15:0]   pending_record_length;
+  reg [63:0]   pending_instruction_steps;
+  reg [63:0]   sequence_id;
   integer i;
 
   wire [4:0] policy_slot = policy_load_index[4:0] - 5'd4;
@@ -104,35 +170,55 @@ module slugcxl_hj_pipeline #(
     && (policy_load_index < 16'd40)
     && !load_seen[policy_load_index[5:0]];
 
-  wire record_blocked = policy_ready && record_valid && !record_ready;
-  assign ep_flit_valid  = h2d_flit_valid && !record_blocked;
-  assign h2d_flit_ready = ep_flit_ready && !record_blocked;
+  wire engine_idle =
+      (hj_state == HJ_STATE_IDLE)
+    && policy_ready
+    && (policy_error == 32'd0)
+    && !load_in_progress
+    && !record_valid;
+
+  // Device responses win arbitration so a host that holds valid while the
+  // single-outstanding endpoint is responding cannot create a circular stall.
+  assign ep_flit_valid  = h2d_flit_valid && engine_idle
+      && !ep_resp_valid;
+  assign h2d_flit_ready = ep_flit_ready && engine_idle
+      && !ep_resp_valid;
   assign ep_flit_data   = h2d_flit_data;
-  assign d2h_flit_valid = ep_resp_valid && !record_blocked;
-  assign ep_resp_ready  = d2h_flit_ready && !record_blocked;
+  assign d2h_flit_valid = ep_resp_valid && engine_idle;
+  assign ep_resp_ready  = d2h_flit_ready && engine_idle;
   assign d2h_flit_data  = ep_resp_data;
 
   wire h2d_fire = ep_flit_valid && ep_flit_ready;
   wire d2h_fire = d2h_flit_valid && d2h_flit_ready;
   wire any_fire = h2d_fire || d2h_fire;
-  wire dual_fire = h2d_fire && d2h_fire;
-  wire choose_h2d = h2d_fire;
   wire [FLIT_BITS-1:0] chosen_flit =
-      choose_h2d ? h2d_flit_data : ep_resp_data;
+      h2d_fire ? h2d_flit_data : ep_resp_data;
 
   wire [3:0]  chosen_class       = chosen_flit[7:4];
   wire [3:0]  chosen_opcode      = chosen_flit[3:0];
   wire [15:0] chosen_tag         = chosen_flit[23:8];
   wire [63:0] chosen_address     = chosen_flit[87:24];
+  wire [255:0] chosen_payload    = chosen_flit[343:88];
   wire [63:0] chosen_event_id    = chosen_flit[407:344];
   wire [63:0] chosen_phase_id    = chosen_flit[471:408];
   wire [31:0] chosen_status      = chosen_flit[503:472];
+  wire        chosen_reserved    = chosen_flit[510];
   wire        chosen_direction   = chosen_flit[511];
   wire [5:0]  chosen_payload_len = chosen_flit[509:504];
-  wire [5:0]  bounded_payload_len =
-      (chosen_payload_len > 6'd32) ? 6'd32 : chosen_payload_len;
-  wire [63:0] chosen_payload_hash =
-      hash_payload(chosen_flit, bounded_payload_len);
+
+  wire [7:0] instruction_opcode = current_instruction[7:0];
+  wire [7:0] instruction_arg0 = current_instruction[15:8];
+  wire [7:0] instruction_skip = current_instruction[23:16];
+  wire [31:0] instruction_arg1 = current_instruction[63:32];
+  wire [7:0] instruction_range_index = current_instruction[15:8];
+  wire [31:0] instruction_stride = current_instruction[63:32];
+  wire instruction_reserved =
+      (current_instruction[31:24] != 8'd0)
+    || (current_instruction[127:64] != 64'd0);
+  wire [127:0] active_range_word =
+      active_bank
+      ? range_words_bank1[instruction_range_index[1:0]]
+      : range_words_bank0[instruction_range_index[1:0]];
 
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
@@ -144,6 +230,7 @@ module slugcxl_hj_pipeline #(
       policy_error             <= 32'd0;
       policy_digest            <= 256'd0;
       load_in_progress         <= 1'b0;
+      load_failed              <= 1'b0;
       load_bank                <= 1'b1;
       load_seen                <= 40'd0;
       load_word_count          <= 7'd0;
@@ -156,16 +243,47 @@ module slugcxl_hj_pipeline #(
       load_metadata_budget     <= 32'd0;
       load_image_bytes         <= 32'd0;
       load_digest_header       <= 256'd0;
+      hj_state                 <= HJ_STATE_IDLE;
+      program_counter          <= 32'd0;
+      execution_steps          <= 6'd0;
+      current_instruction      <= 128'd0;
+      match_result             <= 1'b0;
+      branch_target            <= 32'd0;
+      event_id                 <= 64'd0;
+      event_direction          <= 1'b0;
+      event_class              <= 4'd0;
+      event_opcode             <= 4'd0;
+      event_address            <= 64'd0;
+      event_tag                <= 16'd0;
+      event_phase_id           <= 64'd0;
+      event_status             <= 32'd0;
+      event_payload_len        <= 6'd0;
+      event_payload            <= 256'd0;
+      event_epoch              <= 64'd0;
+      capture_mode             <= HJ_CAPTURE_VALIDATION;
+      capture_ready            <= 1'b0;
+      captured_bytes           <= 6'd0;
+      delta_pair_count         <= 6'd0;
+      delta_scan_index         <= 6'd0;
+      capture_data             <= 256'd0;
+      emit_requested           <= 1'b0;
+      pending_record_data      <= 1024'd0;
+      pending_record_length    <= 16'd0;
+      pending_instruction_steps <= 64'd0;
       record_valid             <= 1'b0;
       record_length            <= 16'd0;
       record_data              <= 1024'd0;
+      event_count              <= 64'd0;
       record_count             <= 64'd0;
       metadata_bytes           <= 64'd0;
+      reject_count             <= 64'd0;
+      instruction_count        <= 64'd0;
+      epoch                    <= 64'd0;
       app_flit_bytes           <= 64'd0;
       stall_cycles             <= 64'd0;
       metadata_drop_count      <= 64'd0;
+      last_reject_code         <= 16'd0;
       sequence_id              <= 64'd0;
-      epoch_id                 <= 64'd0;
       for (i = 0; i < 32; i = i + 1) begin
         policy_words_bank0[i] <= 128'd0;
         policy_words_bank1[i] <= 128'd0;
@@ -175,23 +293,533 @@ module slugcxl_hj_pipeline #(
         range_words_bank1[i] <= 128'd0;
       end
     end else begin
-      if (record_valid && record_ready) begin
-        record_valid <= 1'b0;
-      end
-      if (record_valid && !record_ready) begin
+      if (record_valid && !record_ready)
         stall_cycles <= stall_cycles + 64'd1;
-      end
+
+      case (hj_state)
+        HJ_STATE_IDLE: begin
+          if (any_fire) begin
+            app_flit_bytes <= app_flit_bytes + 64'd64;
+            if (chosen_payload_len > 6'd32
+                || chosen_reserved
+                || payload_tail_nonzero(chosen_payload, chosen_payload_len)
+                || !supported_event_class(chosen_class)) begin
+              policy_error <= SLUG_JIT_ERR_UNSUPPORTED;
+              policy_ready <= 1'b0;
+              metadata_drop_count <= metadata_drop_count + 64'd1;
+              hj_state <= HJ_STATE_ERROR;
+            end else begin
+              event_id <= chosen_event_id;
+              event_direction <= chosen_direction;
+              event_class <= chosen_class;
+              event_opcode <= chosen_opcode;
+              event_address <= chosen_address;
+              event_tag <= chosen_tag;
+              event_phase_id <= chosen_phase_id;
+              event_status <= chosen_status;
+              event_payload_len <= chosen_payload_len;
+              event_payload <= chosen_payload;
+              event_epoch <= epoch;
+              program_counter <= 32'd0;
+              execution_steps <= 6'd0;
+              capture_mode <= HJ_CAPTURE_VALIDATION;
+              capture_ready <= 1'b0;
+              captured_bytes <= 6'd0;
+              delta_pair_count <= 6'd0;
+              delta_scan_index <= 6'd0;
+              capture_data <= 256'd0;
+              emit_requested <= 1'b0;
+              last_reject_code <= 16'd0;
+              hj_state <= HJ_STATE_FETCH;
+            end
+          end
+        end
+
+        HJ_STATE_FETCH: begin
+          if (program_counter >= active_instruction_count) begin
+            policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+            policy_ready <= 1'b0;
+            metadata_drop_count <= metadata_drop_count + 64'd1;
+            hj_state <= HJ_STATE_ERROR;
+          end else begin
+            if (active_bank)
+              current_instruction <= policy_words_bank1[program_counter[4:0]];
+            else
+              current_instruction <= policy_words_bank0[program_counter[4:0]];
+            hj_state <= HJ_STATE_DECODE;
+          end
+        end
+
+        HJ_STATE_DECODE: begin
+          if ((execution_steps == 6'd31)
+              && (instruction_opcode != HJ_OP_HALT)
+              && (instruction_opcode != HJ_OP_REJECT)) begin
+            policy_error <= SLUG_JIT_ERR_TIMEOUT;
+            policy_ready <= 1'b0;
+            metadata_drop_count <= metadata_drop_count + 64'd1;
+            hj_state <= HJ_STATE_ERROR;
+          end else begin
+            execution_steps <= execution_steps + 6'd1;
+            case (instruction_opcode)
+              HJ_OP_HALT: begin
+                if (instruction_reserved
+                    || instruction_arg0 != 8'd0
+                    || instruction_skip != 8'd0
+                    || instruction_arg1 != 32'd0) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else if (emit_requested && !capture_ready) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else if (emit_requested) begin
+                  pending_record_data <= make_record(
+                      sequence_id + 64'd1,
+                      event_id,
+                      policy_digest,
+                      event_epoch,
+                      event_direction,
+                      event_class,
+                      event_opcode,
+                      event_address,
+                      {{48'd0, event_tag}},
+                      event_status,
+                      capture_mode,
+                      event_payload_len,
+                      captured_bytes,
+                      delta_pair_count,
+                      capture_data
+                  );
+                  pending_record_length <= 16'd96 + {10'd0, captured_bytes};
+                  pending_instruction_steps <= {58'd0, execution_steps} + 64'd1;
+                  hj_state <= HJ_STATE_EMIT_WAIT;
+                end else begin
+                  event_count <= event_count + 64'd1;
+                  instruction_count <= instruction_count
+                      + {58'd0, execution_steps} + 64'd1;
+                  epoch <= event_epoch;
+                  hj_state <= HJ_STATE_DONE;
+                end
+              end
+
+              HJ_OP_MATCH_CLASS: begin
+                if (instruction_reserved
+                    || instruction_arg1 != 32'd0
+                    || instruction_skip == 8'd0
+                    || !supported_event_class(instruction_arg0[3:0])
+                    || instruction_arg0[7:4] != 4'd0) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  match_result <= (event_class == instruction_arg0[3:0]);
+                  branch_target <= program_counter + 32'd1
+                      + {24'd0, instruction_skip};
+                  hj_state <= HJ_STATE_MATCH;
+                end
+              end
+
+              HJ_OP_MATCH_DIRECTION: begin
+                if (instruction_reserved
+                    || instruction_arg1 != 32'd0
+                    || instruction_skip == 8'd0
+                    || instruction_arg0 > 8'd1) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  match_result <=
+                      (event_direction == instruction_arg0[0]);
+                  branch_target <= program_counter + 32'd1
+                      + {24'd0, instruction_skip};
+                  hj_state <= HJ_STATE_MATCH;
+                end
+              end
+
+              HJ_OP_MATCH_STATUS: begin
+                if (instruction_reserved
+                    || instruction_arg0 != 8'd0
+                    || instruction_skip == 8'd0) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  match_result <= (event_status == instruction_arg1);
+                  branch_target <= program_counter + 32'd1
+                      + {24'd0, instruction_skip};
+                  hj_state <= HJ_STATE_MATCH;
+                end
+              end
+
+              HJ_OP_MATCH_RANGE: begin
+                if (instruction_reserved
+                    || instruction_arg1 != 32'd0
+                    || instruction_skip == 8'd0
+                    || {24'd0, instruction_range_index}
+                       >= active_range_count) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else if (active_range_word[127:64] == 64'd0
+                             || (active_range_word[63:0]
+                                 + active_range_word[127:64])
+                                < active_range_word[63:0]) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_RANGE;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  match_result <=
+                      (event_address >= active_range_word[63:0])
+                    && ((event_address - active_range_word[63:0])
+                        < active_range_word[127:64]);
+                  branch_target <= program_counter + 32'd1
+                      + {24'd0, instruction_skip};
+                  hj_state <= HJ_STATE_MATCH;
+                end
+              end
+
+              HJ_OP_SAMPLE: begin
+                if (instruction_reserved
+                    || instruction_arg0 != 8'd0
+                    || instruction_skip == 8'd0
+                    || instruction_stride == 32'd0) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_STRIDE;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  match_result <=
+                      ((event_id % {32'd0, instruction_stride}) == 64'd0);
+                  branch_target <= program_counter + 32'd1
+                      + {24'd0, instruction_skip};
+                  hj_state <= HJ_STATE_MATCH;
+                end
+              end
+
+              HJ_OP_CAPTURE: begin
+                if (instruction_reserved
+                    || instruction_skip != 8'd0
+                    || instruction_arg1 != 32'd0
+                    || instruction_arg0 > 8'd2) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  capture_mode <= instruction_arg0[1:0];
+                  capture_ready <= 1'b0;
+                  captured_bytes <= 6'd0;
+                  delta_pair_count <= 6'd0;
+                  delta_scan_index <= 6'd0;
+                  capture_data <= 256'd0;
+                  hj_state <= HJ_STATE_CAPTURE;
+                end
+              end
+
+              HJ_OP_EMIT: begin
+                if (instruction_reserved
+                    || instruction_arg0 != 8'd0
+                    || instruction_skip != 8'd0
+                    || instruction_arg1 != 32'd0
+                    || emit_requested
+                    || (program_counter + 32'd1
+                        >= active_instruction_count)) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  emit_requested <= 1'b1;
+                  program_counter <= program_counter + 32'd1;
+                  hj_state <= HJ_STATE_FETCH;
+                end
+              end
+
+              HJ_OP_EPOCH_INCREMENT: begin
+                if (instruction_reserved
+                    || instruction_arg0 != 8'd0
+                    || instruction_skip != 8'd0
+                    || instruction_arg1 != 32'd0) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else if (event_epoch == 64'hffffffffffffffff) begin
+                  policy_error <= SLUG_JIT_ERR_BACKEND;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else if (program_counter + 32'd1
+                             >= active_instruction_count) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  event_epoch <= event_epoch + 64'd1;
+                  program_counter <= program_counter + 32'd1;
+                  hj_state <= HJ_STATE_FETCH;
+                end
+              end
+
+              HJ_OP_EPOCH_FROM_PHASE: begin
+                if (instruction_reserved
+                    || instruction_arg0 != 8'd0
+                    || instruction_skip != 8'd0
+                    || instruction_arg1 != 32'd0
+                    || (program_counter + 32'd1
+                        >= active_instruction_count)) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  event_epoch <= event_phase_id;
+                  program_counter <= program_counter + 32'd1;
+                  hj_state <= HJ_STATE_FETCH;
+                end
+              end
+
+              HJ_OP_REJECT: begin
+                if (instruction_reserved
+                    || instruction_arg0 != 8'd0
+                    || instruction_skip != 8'd0
+                    || instruction_arg1 == 32'd0
+                    || instruction_arg1 > 32'd65535) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  last_reject_code <= instruction_arg1[15:0];
+                  hj_state <= HJ_STATE_REJECT;
+                end
+              end
+
+              default: begin
+                policy_error <= SLUG_JIT_ERR_UNSUPPORTED;
+                policy_ready <= 1'b0;
+                metadata_drop_count <= metadata_drop_count + 64'd1;
+                hj_state <= HJ_STATE_ERROR;
+              end
+            endcase
+          end
+        end
+
+        HJ_STATE_MATCH: begin
+          if ((!match_result
+               && branch_target >= active_instruction_count)
+              || (match_result
+                  && (program_counter + 32'd1
+                      >= active_instruction_count))) begin
+            policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+            policy_ready <= 1'b0;
+            metadata_drop_count <= metadata_drop_count + 64'd1;
+            hj_state <= HJ_STATE_ERROR;
+          end else begin
+            if (match_result)
+              program_counter <= program_counter + 32'd1;
+            else
+              program_counter <= branch_target;
+            hj_state <= HJ_STATE_FETCH;
+          end
+        end
+
+        HJ_STATE_CAPTURE: begin
+          case (capture_mode)
+            HJ_CAPTURE_VALIDATION: begin
+              if (active_metadata_budget < 32'd8) begin
+                policy_error <= SLUG_JIT_ERR_BUDGET_EXCEEDED;
+                policy_ready <= 1'b0;
+                metadata_drop_count <= metadata_drop_count + 64'd1;
+                hj_state <= HJ_STATE_ERROR;
+              end else if (program_counter + 32'd1
+                           >= active_instruction_count) begin
+                policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                policy_ready <= 1'b0;
+                metadata_drop_count <= metadata_drop_count + 64'd1;
+                hj_state <= HJ_STATE_ERROR;
+              end else begin
+                capture_data[63:0] <=
+                    hash_payload(event_payload, event_payload_len);
+                captured_bytes <= 6'd8;
+                capture_ready <= 1'b1;
+                program_counter <= program_counter + 32'd1;
+                hj_state <= HJ_STATE_FETCH;
+              end
+            end
+
+            HJ_CAPTURE_FULL: begin
+              if ({26'd0, event_payload_len}
+                  > active_metadata_budget) begin
+                policy_error <= SLUG_JIT_ERR_BUDGET_EXCEEDED;
+                policy_ready <= 1'b0;
+                metadata_drop_count <= metadata_drop_count + 64'd1;
+                hj_state <= HJ_STATE_ERROR;
+              end else if (program_counter + 32'd1
+                           >= active_instruction_count) begin
+                policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                policy_ready <= 1'b0;
+                metadata_drop_count <= metadata_drop_count + 64'd1;
+                hj_state <= HJ_STATE_ERROR;
+              end else begin
+                capture_data <= mask_payload(event_payload, event_payload_len);
+                captured_bytes <= event_payload_len;
+                capture_ready <= 1'b1;
+                program_counter <= program_counter + 32'd1;
+                hj_state <= HJ_STATE_FETCH;
+              end
+            end
+
+            HJ_CAPTURE_DELTA: begin
+              if (event_payload_len == 6'd0) begin
+                if (program_counter + 32'd1
+                    >= active_instruction_count) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  capture_ready <= 1'b1;
+                  program_counter <= program_counter + 32'd1;
+                  hj_state <= HJ_STATE_FETCH;
+                end
+              end else if (event_payload[
+                               delta_scan_index * 8 +: 8] != 8'd0) begin
+                if (delta_pair_count >= 6'd16
+                    || ({26'd0, captured_bytes} + 32'd2)
+                       > active_metadata_budget) begin
+                  policy_error <= SLUG_JIT_ERR_BUDGET_EXCEEDED;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  capture_data[delta_pair_count * 16 +: 16] <= {
+                    event_payload[delta_scan_index * 8 +: 8],
+                    {2'd0, delta_scan_index}
+                  };
+                  delta_pair_count <= delta_pair_count + 6'd1;
+                  captured_bytes <= captured_bytes + 6'd2;
+                  if (delta_scan_index + 6'd1
+                      == event_payload_len) begin
+                    if (program_counter + 32'd1
+                        >= active_instruction_count) begin
+                      policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                      policy_ready <= 1'b0;
+                      metadata_drop_count <= metadata_drop_count + 64'd1;
+                      hj_state <= HJ_STATE_ERROR;
+                    end else begin
+                      capture_ready <= 1'b1;
+                      program_counter <= program_counter + 32'd1;
+                      hj_state <= HJ_STATE_FETCH;
+                    end
+                  end else begin
+                    delta_scan_index <= delta_scan_index + 6'd1;
+                  end
+                end
+              end else if (delta_scan_index + 6'd1
+                           == event_payload_len) begin
+                if (program_counter + 32'd1
+                    >= active_instruction_count) begin
+                  policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+                  policy_ready <= 1'b0;
+                  metadata_drop_count <= metadata_drop_count + 64'd1;
+                  hj_state <= HJ_STATE_ERROR;
+                end else begin
+                  capture_ready <= 1'b1;
+                  program_counter <= program_counter + 32'd1;
+                  hj_state <= HJ_STATE_FETCH;
+                end
+              end else begin
+                delta_scan_index <= delta_scan_index + 6'd1;
+              end
+            end
+
+            default: begin
+              policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+              policy_ready <= 1'b0;
+              metadata_drop_count <= metadata_drop_count + 64'd1;
+              hj_state <= HJ_STATE_ERROR;
+            end
+          endcase
+        end
+
+        HJ_STATE_EMIT_WAIT: begin
+          if (record_valid
+              && ((record_data != pending_record_data)
+                  || (record_length != pending_record_length))) begin
+            policy_error <= SLUG_JIT_ERR_DROP;
+            policy_ready <= 1'b0;
+            metadata_drop_count <= metadata_drop_count + 64'd1;
+            hj_state <= HJ_STATE_ERROR;
+          end else if (!record_valid) begin
+            record_valid <= 1'b1;
+            record_data <= pending_record_data;
+            record_length <= pending_record_length;
+          end else if (record_ready) begin
+            record_valid <= 1'b0;
+            sequence_id <= sequence_id + 64'd1;
+            event_count <= event_count + 64'd1;
+            record_count <= record_count + 64'd1;
+            metadata_bytes <= metadata_bytes
+                + {58'd0, captured_bytes};
+            instruction_count <= instruction_count
+                + pending_instruction_steps;
+            epoch <= event_epoch;
+            hj_state <= HJ_STATE_DONE;
+          end
+        end
+
+        HJ_STATE_REJECT: begin
+          event_count <= event_count + 64'd1;
+          reject_count <= reject_count + 64'd1;
+          instruction_count <= instruction_count
+              + {58'd0, execution_steps};
+          epoch <= event_epoch;
+          hj_state <= HJ_STATE_DONE;
+        end
+
+        HJ_STATE_DONE: begin
+          hj_state <= HJ_STATE_IDLE;
+        end
+
+        HJ_STATE_ERROR: begin
+          hj_state <= HJ_STATE_ERROR;
+        end
+
+        default: begin
+          policy_error <= SLUG_JIT_ERR_BACKEND;
+          policy_ready <= 1'b0;
+          metadata_drop_count <= metadata_drop_count + 64'd1;
+          hj_state <= HJ_STATE_ERROR;
+        end
+      endcase
 
       if (policy_load_abort) begin
         load_in_progress <= 1'b0;
+        load_failed <= 1'b0;
         load_seen <= 40'd0;
         load_word_count <= 7'd0;
       end else begin
         if (policy_load_begin) begin
-          if (load_in_progress) begin
+          if (load_in_progress
+              || ((hj_state != HJ_STATE_IDLE)
+                  && (hj_state != HJ_STATE_ERROR))
+              || record_valid) begin
             policy_error <= SLUG_JIT_ERR_BACKEND;
+            if (load_in_progress)
+              load_failed <= 1'b1;
           end else begin
             load_in_progress <= 1'b1;
+            load_failed <= 1'b0;
             load_bank <= ~active_bank;
             load_seen <= 40'd0;
             load_word_count <= 7'd0;
@@ -224,8 +852,10 @@ module slugcxl_hj_pipeline #(
             policy_error <= SLUG_JIT_ERR_BACKEND;
           end else if (policy_load_index >= 16'd40) begin
             policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+            load_failed <= 1'b1;
           end else if (load_seen[policy_load_index[5:0]]) begin
             policy_error <= SLUG_JIT_ERR_INVALID_CONTROL_FLOW;
+            load_failed <= 1'b1;
           end else begin
             load_seen[policy_load_index[5:0]] <= 1'b1;
             load_word_count <= load_word_count + 7'd1;
@@ -264,6 +894,8 @@ module slugcxl_hj_pipeline #(
         if (policy_load_commit) begin
           if (!load_in_progress) begin
             policy_error <= SLUG_JIT_ERR_BACKEND;
+          end else if (load_failed) begin
+            load_in_progress <= 1'b0;
           end else if (load_word_count != POLICY_IMAGE_WORDS
                        || load_seen != 40'hffffffffff) begin
             policy_error <= SLUG_JIT_ERR_STRUCT_SIZE;
@@ -286,6 +918,9 @@ module slugcxl_hj_pipeline #(
                        || load_range_count != policy_load_range_count) begin
             policy_error <= SLUG_JIT_ERR_TOO_MANY_RANGES;
             load_in_progress <= 1'b0;
+          end else if (load_metadata_budget > 32'd256) begin
+            policy_error <= SLUG_JIT_ERR_BUDGET_EXCEEDED;
+            load_in_progress <= 1'b0;
           end else if (load_digest_header != policy_load_digest) begin
             policy_error <= SLUG_JIT_ERR_DIGEST_MISMATCH;
             load_in_progress <= 1'b0;
@@ -298,50 +933,54 @@ module slugcxl_hj_pipeline #(
             policy_ready <= 1'b1;
             policy_error <= 32'd0;
             load_in_progress <= 1'b0;
-            epoch_id <= epoch_id + 64'd1;
+            load_failed <= 1'b0;
+            hj_state <= HJ_STATE_IDLE;
+            record_valid <= 1'b0;
+            record_length <= 16'd0;
+            record_data <= 1024'd0;
+            event_count <= 64'd0;
+            record_count <= 64'd0;
+            metadata_bytes <= 64'd0;
+            reject_count <= 64'd0;
+            instruction_count <= 64'd0;
+            epoch <= 64'd0;
+            app_flit_bytes <= 64'd0;
+            stall_cycles <= 64'd0;
+            metadata_drop_count <= 64'd0;
+            last_reject_code <= 16'd0;
+            sequence_id <= 64'd0;
           end
-        end
-      end
-
-      if (any_fire) begin
-        app_flit_bytes <= app_flit_bytes + (dual_fire ? 64'd128 : 64'd64);
-      end
-      if (any_fire && policy_ready) begin
-        if (!record_valid || record_ready) begin
-          sequence_id <= sequence_id + 64'd1;
-          epoch_id <= chosen_phase_id;
-          record_valid <= 1'b1;
-          record_length <= 16'd96;
-          record_data <= make_validation_record(
-              sequence_id + 64'd1,
-              chosen_event_id,
-              policy_digest,
-              chosen_phase_id,
-              chosen_direction,
-              chosen_class,
-              chosen_opcode,
-              chosen_address,
-              {{48'd0, chosen_tag}},
-              chosen_status,
-              bounded_payload_len,
-              chosen_payload_hash
-          );
-          record_count <= record_count + 64'd1;
-          metadata_bytes <= metadata_bytes + 64'd8;
-        end else begin
-          metadata_drop_count <= metadata_drop_count + 64'd1;
-          policy_error <= SLUG_JIT_ERR_DROP;
-        end
-        if (dual_fire) begin
-          metadata_drop_count <= metadata_drop_count + 64'd1;
-          policy_error <= SLUG_JIT_ERR_DROP;
         end
       end
     end
   end
 
+  function automatic supported_event_class(input [3:0] class_value);
+    begin
+      supported_event_class =
+          (class_value == 4'd1)
+        || (class_value == 4'd2)
+        || (class_value == 4'd3)
+        || (class_value == 4'd4);
+    end
+  endfunction
+
+  function automatic payload_tail_nonzero(
+    input [255:0] payload,
+    input [5:0] length
+  );
+    integer byte_index;
+    begin
+      payload_tail_nonzero = 1'b0;
+      for (byte_index = 0; byte_index < 32; byte_index = byte_index + 1)
+        if ((byte_index >= length)
+            && (payload[byte_index * 8 +: 8] != 8'd0))
+          payload_tail_nonzero = 1'b1;
+    end
+  endfunction
+
   function automatic [63:0] hash_payload(
-    input [FLIT_BITS-1:0] flit,
+    input [255:0] payload,
     input [5:0] length
   );
     integer byte_index;
@@ -350,7 +989,7 @@ module slugcxl_hj_pipeline #(
       hash = 64'hcbf29ce484222325;
       for (byte_index = 0; byte_index < 32; byte_index = byte_index + 1) begin
         if (byte_index < length) begin
-          hash = hash ^ {{56'd0, flit[88 + byte_index * 8 +: 8]}};
+          hash = hash ^ {{56'd0, payload[byte_index * 8 +: 8]}};
           hash = hash * 64'h00000100000001b3;
         end
       end
@@ -358,19 +997,38 @@ module slugcxl_hj_pipeline #(
     end
   endfunction
 
-  function automatic [1023:0] make_validation_record(
+  function automatic [255:0] mask_payload(
+    input [255:0] payload,
+    input [5:0] length
+  );
+    integer byte_index;
+    reg [255:0] masked;
+    begin
+      masked = 256'd0;
+      for (byte_index = 0; byte_index < 32; byte_index = byte_index + 1)
+        if (byte_index < length)
+          masked[byte_index * 8 +: 8] =
+              payload[byte_index * 8 +: 8];
+      mask_payload = masked;
+    end
+  endfunction
+
+  function automatic [1023:0] make_record(
     input [63:0] record_sequence,
-    input [63:0] event_id,
+    input [63:0] record_event_id,
     input [255:0] digest,
-    input [63:0] epoch,
+    input [63:0] record_epoch,
     input direction,
-    input [3:0] event_class,
+    input [3:0] record_class,
     input [3:0] opcode,
     input [63:0] address,
     input [63:0] tag,
     input [31:0] status,
+    input [1:0] mode,
     input [5:0] payload_length,
-    input [63:0] payload_hash
+    input [5:0] capture_length,
+    input [5:0] pair_count,
+    input [255:0] payload_capture
   );
     reg [1023:0] record_bits;
     begin
@@ -380,21 +1038,21 @@ module slugcxl_hj_pipeline #(
       record_bits[23:16] = 8'd1;
       record_bits[31:24] = 8'd0;
       record_bits[95:32] = record_sequence;
-      record_bits[159:96] = event_id;
+      record_bits[159:96] = record_event_id;
       record_bits[415:160] = digest;
-      record_bits[479:416] = epoch;
+      record_bits[479:416] = record_epoch;
       record_bits[487:480] = {{7'd0, direction}};
-      record_bits[495:488] = {{4'd0, event_class}};
+      record_bits[495:488] = {{4'd0, record_class}};
       record_bits[511:496] = {{12'd0, opcode}};
       record_bits[575:512] = address;
       record_bits[639:576] = tag;
       record_bits[671:640] = status;
-      record_bits[679:672] = 8'd0; // validation capture
+      record_bits[679:672] = {{6'd0, mode}};
       record_bits[687:680] = {{2'd0, payload_length}};
-      record_bits[695:688] = 8'd8;
-      record_bits[703:696] = 8'd0;
-      record_bits[767:704] = payload_hash;
-      make_validation_record = record_bits;
+      record_bits[695:688] = {{2'd0, capture_length}};
+      record_bits[703:696] = {{2'd0, pair_count}};
+      record_bits[1023:768] = payload_capture;
+      make_record = record_bits;
     end
   endfunction
 

@@ -53,23 +53,33 @@ module slugcxl_hj_fit_top (
   wire                 record_valid;
   wire [15:0]          record_length;
   wire [1023:0]        record_data;
+  wire [63:0]          hj_event_count;
   wire [63:0]          hj_record_count;
   wire [63:0]          hj_metadata_bytes;
+  wire [63:0]          hj_reject_count;
+  wire [63:0]          hj_instruction_count;
+  wire [63:0]          hj_epoch;
   wire [63:0]          hj_app_flit_bytes;
   wire [63:0]          hj_stall_cycles;
   wire [63:0]          hj_metadata_drop_count;
+  wire [15:0]          hj_last_reject_code;
 
   reg [3:0] seq_idx;
   reg       done_q;
 
+  (* preserve *) reg [63:0] observed_event_count;
   (* preserve *) reg [63:0] observed_record_count;
   (* preserve *) reg [63:0] observed_metadata_bytes;
+  (* preserve *) reg [63:0] observed_reject_count;
+  (* preserve *) reg [63:0] observed_instruction_count;
+  (* preserve *) reg [63:0] observed_epoch;
   (* preserve *) reg [63:0] observed_app_flit_bytes;
   (* preserve *) reg [63:0] observed_stall_cycles;
   (* preserve *) reg [63:0] observed_drop_count;
   (* preserve *) reg [31:0] observed_policy_error;
   (* preserve *) reg [255:0] observed_policy_digest;
   (* preserve *) reg [1023:0] observed_record_last;
+  (* preserve *) reg [15:0] observed_last_reject_code;
 
   slugcxl_4x4_hj_top #(
     .FLIT_BITS(FLIT_BITS),
@@ -100,11 +110,16 @@ module slugcxl_hj_fit_top (
     .record_ready(1'b1),
     .record_length(record_length),
     .record_data(record_data),
+    .hj_event_count(hj_event_count),
     .hj_record_count(hj_record_count),
     .hj_metadata_bytes(hj_metadata_bytes),
+    .hj_reject_count(hj_reject_count),
+    .hj_instruction_count(hj_instruction_count),
+    .hj_epoch(hj_epoch),
     .hj_app_flit_bytes(hj_app_flit_bytes),
     .hj_stall_cycles(hj_stall_cycles),
-    .hj_metadata_drop_count(hj_metadata_drop_count)
+    .hj_metadata_drop_count(hj_metadata_drop_count),
+    .hj_last_reject_code(hj_last_reject_code)
   );
 
   always_ff @(posedge clk or negedge rst_n) begin
@@ -138,22 +153,32 @@ module slugcxl_hj_fit_top (
       done_q <= 1'b0;
       flit_in_valid <= 1'b0;
       flit_in_data <= '0;
+      observed_event_count <= 64'd0;
       observed_record_count <= 64'd0;
       observed_metadata_bytes <= 64'd0;
+      observed_reject_count <= 64'd0;
+      observed_instruction_count <= 64'd0;
+      observed_epoch <= 64'd0;
       observed_app_flit_bytes <= 64'd0;
       observed_stall_cycles <= 64'd0;
       observed_drop_count <= 64'd0;
       observed_policy_error <= 32'd0;
       observed_policy_digest <= 256'd0;
       observed_record_last <= 1024'd0;
+      observed_last_reject_code <= 16'd0;
     end else begin
+      observed_event_count <= hj_event_count;
       observed_record_count <= hj_record_count;
       observed_metadata_bytes <= hj_metadata_bytes;
+      observed_reject_count <= hj_reject_count;
+      observed_instruction_count <= hj_instruction_count;
+      observed_epoch <= hj_epoch;
       observed_app_flit_bytes <= hj_app_flit_bytes;
       observed_stall_cycles <= hj_stall_cycles;
       observed_drop_count <= hj_metadata_drop_count;
       observed_policy_error <= policy_error;
       observed_policy_digest <= policy_digest;
+      observed_last_reject_code <= hj_last_reject_code;
       if (record_valid)
         observed_record_last <= record_data;
 
@@ -177,14 +202,19 @@ module slugcxl_hj_fit_top (
   assign status_led =
       done_q
     ^ policy_ready
+    ^ observed_event_count[0]
     ^ observed_record_count[0]
     ^ observed_metadata_bytes[0]
+    ^ observed_reject_count[0]
+    ^ observed_instruction_count[0]
+    ^ observed_epoch[0]
     ^ observed_app_flit_bytes[0]
     ^ observed_stall_cycles[0]
     ^ observed_drop_count[0]
     ^ observed_policy_error[0]
     ^ observed_policy_digest[0]
     ^ observed_record_last[0]
+    ^ observed_last_reject_code[0]
     ^ record_length[0]
     ^ flit_out_valid
     ^ flit_out_data[0];

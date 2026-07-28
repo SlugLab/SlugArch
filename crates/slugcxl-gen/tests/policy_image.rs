@@ -7,11 +7,14 @@ use slugcxl_gen::{
     POLICY_IMAGE_BYTES, POLICY_INSTRUCTION_SLOTS, POLICY_RANGE_SLOTS,
 };
 
-fn validation_policy(rules: Vec<Rule>) -> VerifiedPolicy {
+fn validation_policy_with_classes(
+    allowed_classes: Vec<EventClass>,
+    rules: Vec<Rule>,
+) -> VerifiedPolicy {
     Policy {
         version: SLUG_JIT_ABI_VERSION,
         name: "policy-image-test".to_string(),
-        allowed_classes: vec![EventClass::CxlMemWrite],
+        allowed_classes,
         ranges: vec![AddressRange {
             base: 80 * 1024 * 1024,
             length: 32 * 1024 * 1024,
@@ -24,6 +27,18 @@ fn validation_policy(rules: Vec<Rule>) -> VerifiedPolicy {
     }
     .verify()
     .unwrap()
+}
+
+fn validation_policy(rules: Vec<Rule>) -> VerifiedPolicy {
+    validation_policy_with_classes(
+        vec![
+            EventClass::CxlMemRead,
+            EventClass::CxlMemWrite,
+            EventClass::CxlMemData,
+            EventClass::Completion,
+        ],
+        rules,
+    )
 }
 
 fn matched_policy() -> VerifiedPolicy {
@@ -131,6 +146,52 @@ fn match_opcode_is_explicitly_unsupported_by_encoding_v1() {
         encode_policy_image(&verified),
         Err(PolicyImageError::UnsupportedInstruction(
             Instruction::MatchOpcode { .. }
+        ))
+    ));
+}
+
+#[test]
+fn policy_image_v1_rejects_an_allowlist_it_cannot_serialize() {
+    let verified = validation_policy_with_classes(
+        vec![EventClass::CxlMemWrite],
+        vec![
+            Rule::Capture {
+                mode: RecordMode::Validation,
+            },
+            Rule::Emit,
+            Rule::EpochFromPhase,
+            Rule::Halt,
+        ],
+    );
+
+    assert!(matches!(
+        encode_policy_image(&verified),
+        Err(PolicyImageError::UnsupportedAllowedClasses)
+    ));
+}
+
+#[test]
+fn policy_image_v1_rejects_a_match_class_outside_its_fixed_domain() {
+    let verified = validation_policy(vec![
+        Rule::MatchClass {
+            class: EventClass::Phase,
+            skip: 3,
+        },
+        Rule::Capture {
+            mode: RecordMode::Validation,
+        },
+        Rule::Emit,
+        Rule::EpochFromPhase,
+        Rule::Halt,
+    ]);
+
+    assert!(matches!(
+        encode_policy_image(&verified),
+        Err(PolicyImageError::UnsupportedInstruction(
+            Instruction::MatchClass {
+                class: EventClass::Phase,
+                ..
+            }
         ))
     ));
 }

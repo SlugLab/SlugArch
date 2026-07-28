@@ -20,10 +20,92 @@ expression: j
       11,
       42
     ],
-    "reserved_bytes": [
+    "event_id_bytes": [
       43,
+      50
+    ],
+    "phase_id_bytes": [
+      51,
+      58
+    ],
+    "status_bytes": [
+      59,
+      62
+    ],
+    "control_byte": 63,
+    "payload_len_bits": [
+      0,
+      5
+    ],
+    "reserved_bit": 6,
+    "direction_bit": 7
+  },
+  "record_layout": {
+    "record_bytes": 128,
+    "header_bytes": 96,
+    "version_bytes": [
+      0,
+      3
+    ],
+    "sequence_bytes": [
+      4,
+      11
+    ],
+    "event_id_bytes": [
+      12,
+      19
+    ],
+    "policy_digest_bytes": [
+      20,
+      51
+    ],
+    "epoch_bytes": [
+      52,
+      59
+    ],
+    "event_fields_bytes": [
+      60,
       63
+    ],
+    "address_bytes": [
+      64,
+      71
+    ],
+    "tag_bytes": [
+      72,
+      79
+    ],
+    "status_bytes": [
+      80,
+      83
+    ],
+    "capture_header_bytes": [
+      84,
+      87
+    ],
+    "reserved_bytes": [
+      88,
+      95
+    ],
+    "capture_data_bytes": [
+      96,
+      127
     ]
+  },
+  "transport_limits": {
+    "local_debug_transport": true,
+    "standards_compliant_cxl_flit": false,
+    "max_payload_bytes": 32,
+    "max_delta_pairs": 16,
+    "max_tag_bits": 16,
+    "max_opcode_bits": 4,
+    "fixed_policy_event_classes": [
+      "cxl_mem_read",
+      "cxl_mem_write",
+      "cxl_mem_data",
+      "completion"
+    ],
+    "match_opcode_supported": false
   },
   "classes": [
     {

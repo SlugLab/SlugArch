@@ -43,6 +43,8 @@ pub enum PolicyImageError {
     UnknownOpcode(u8),
     #[error("instruction is unsupported by policy image v1: {0:?}")]
     UnsupportedInstruction(Instruction),
+    #[error("policy image v1 requires exactly the four local CXL event classes")]
+    UnsupportedAllowedClasses,
     #[error("policy image field does not encode a known enum value")]
     InvalidEnum,
     #[error("decoded policy image differs from the verified {0}")]
@@ -64,6 +66,9 @@ pub fn encode_policy_image(policy: &VerifiedPolicy) -> Result<Vec<u8>, PolicyIma
         || policy.ranges.len() > POLICY_RANGE_SLOTS
     {
         return Err(PolicyImageError::InvalidCount);
+    }
+    if !has_v1_allowed_classes(&policy.allowed_classes) {
+        return Err(PolicyImageError::UnsupportedAllowedClasses);
     }
 
     let mut image = vec![0; POLICY_IMAGE_BYTES];
@@ -94,6 +99,19 @@ pub fn encode_policy_image(policy: &VerifiedPolicy) -> Result<Vec<u8>, PolicyIma
 
     decode_policy_image(&image, policy)?;
     Ok(image)
+}
+
+fn has_v1_allowed_classes(classes: &[EventClass]) -> bool {
+    const REQUIRED: [EventClass; 4] = [
+        EventClass::CxlMemRead,
+        EventClass::CxlMemWrite,
+        EventClass::CxlMemData,
+        EventClass::Completion,
+    ];
+    classes.len() == REQUIRED.len()
+        && REQUIRED
+            .iter()
+            .all(|required| classes.iter().filter(|class| *class == required).count() == 1)
 }
 
 pub fn decode_policy_image(
@@ -247,8 +265,11 @@ struct PolicyManifest<'a> {
 fn encode_instruction(instruction: Instruction, word: &mut [u8]) -> Result<(), PolicyImageError> {
     let (opcode, arg0, skip, arg1) = match instruction {
         Instruction::Halt => (OP_HALT, 0, 0, 0),
-        Instruction::MatchClass { class, skip } => {
+        Instruction::MatchClass { class, skip } if is_v1_event_class(class) => {
             (OP_MATCH_CLASS, event_class_code(class), skip, 0)
+        }
+        Instruction::MatchClass { .. } => {
+            return Err(PolicyImageError::UnsupportedInstruction(instruction));
         }
         Instruction::MatchDirection { direction, skip } => {
             (OP_MATCH_DIRECTION, direction_code(direction), skip, 0)
@@ -339,6 +360,16 @@ fn event_class_code(class: EventClass) -> u8 {
         EventClass::Phase => 7,
         EventClass::Fence => 8,
     }
+}
+
+fn is_v1_event_class(class: EventClass) -> bool {
+    matches!(
+        class,
+        EventClass::CxlMemRead
+            | EventClass::CxlMemWrite
+            | EventClass::CxlMemData
+            | EventClass::Completion
+    )
 }
 
 fn decode_event_class(value: u8) -> Result<EventClass, PolicyImageError> {
