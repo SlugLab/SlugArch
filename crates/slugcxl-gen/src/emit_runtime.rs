@@ -14,6 +14,10 @@ struct Runtime<'a> {
     address_spaces: &'a Vec<crate::config::AddressSpace>,
     attached_wrapper: &'a crate::config::AttachedWrapper,
     hardware_jit: &'a crate::config::HardwareJitConfig,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    policy_hex: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    policy_json: Option<&'a str>,
 }
 
 #[derive(Serialize)]
@@ -38,7 +42,7 @@ struct Opcode {
     value: u8,
 }
 
-pub fn emit(cfg: &CxlEndpointConfig) -> String {
+pub fn emit(cfg: &CxlEndpointConfig, policy_artifacts: bool) -> String {
     let runtime = Runtime {
         schema: "slugcxl.runtime.v1",
         name: &cfg.name,
@@ -135,6 +139,8 @@ pub fn emit(cfg: &CxlEndpointConfig) -> String {
         address_spaces: &cfg.address_spaces,
         attached_wrapper: &cfg.attached_wrapper,
         hardware_jit: &cfg.hardware_jit,
+        policy_hex: policy_artifacts.then_some("slugcxl_hj_policy.hex"),
+        policy_json: policy_artifacts.then_some("slugcxl_hj_policy.json"),
     };
     serde_json::to_string_pretty(&runtime).expect("serialize runtime")
 }
@@ -146,7 +152,7 @@ mod tests {
     #[test]
     fn snapshot_runtime_json() {
         let cfg = CxlEndpointConfig::slugcxl_4x4();
-        let j = emit(&cfg);
+        let j = emit(&cfg, false);
         insta::assert_snapshot!(j);
     }
 }

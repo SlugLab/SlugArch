@@ -51,7 +51,14 @@ fn library_emits_hj_artifacts_without_process_exit() {
         "slugcxl_4x4_hj_top.sv",
         "slugcxl_hj_fit_top.sv",
         "slugcxl_hj_overhead.json",
+        "slugcxl_hj_policy.hex",
+        "slugcxl_hj_policy.json",
     ] {
         assert!(dir.path().join(name).is_file(), "missing {name}");
     }
+
+    let runtime =
+        std::fs::read_to_string(dir.path().join("slugcxl_endpoint_runtime.json")).unwrap();
+    assert!(runtime.contains("\"policy_hex\": \"slugcxl_hj_policy.hex\""));
+    assert!(runtime.contains("\"policy_json\": \"slugcxl_hj_policy.json\""));
 }
