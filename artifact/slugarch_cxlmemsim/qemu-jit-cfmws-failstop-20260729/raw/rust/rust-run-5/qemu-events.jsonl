@@ -1,0 +1,2 @@
+{"event":"handshake","client_id":1,"server_instance_id":"a0a1a2a3a4a5a6a7a8a9aaabacadaeaf","capacity_bytes":268435456,"configured_latency_ns":400,"protocol_version":1}
+{"event":"path_counters","phase_id":"phase:reject","direct_cfmws":0,"bar4_overlay":0,"local_shadow":0,"local_cache":0,"bulk_overlay":0,"coherent_pool":0}

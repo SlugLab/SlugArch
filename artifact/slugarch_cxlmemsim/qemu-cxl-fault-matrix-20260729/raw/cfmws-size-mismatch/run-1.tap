@@ -1,0 +1,23 @@
+TAP version 14
+# random seed: R02Se885d86daa42f904d5d24b53e39eed72
+# Start of x86_64 tests
+# Start of pci tests
+# Start of cxl tests
+# starting QEMU: exec /root/Concordia/SlugArch/.worktrees/build-qemu/qemu-system-x86_64 -qtest unix:/tmp/qtest-39367.sock -qtest-log /dev/null -chardev socket,path=/tmp/qtest-39367.qmp,id=char0 -mon chardev=char0,mode=control -display none -audio none -machine q35,cxl=on -m 128M -device pxb-cxl,id=cxl.0,bus=pcie.0,bus_nr=52 -M cxl-fmw.0.targets.0=cxl.0,cxl-fmw.0.size=512M -device cxl-rp,id=rp0,bus=cxl.0,chassis=0,slot=0  -accel qtest
+CXL Type2: Coherency protocol initialized
+CXL BAR Coherency: Initialized (capacity=4096)
+CXL P2P DMA: Engine initialized
+CXL BAR Coherency: Added BAR2 region [0x0 - 0x7ffffff] GPU:1 CPU:1 Coherent:1
+CXL BAR Coherency: Added BAR4 region [0x0 - 0xfffffff] GPU:1 CPU:1 Coherent:1
+CXL Type2: Coherent pool initialized: base=0xc000000 size=64 MB (observable I/O proxy at priority 2)
+CXL Type2: GPU command interface enabled at BAR2 offset 0
+CXL Type2: Data buffer size: 1024 KB (optimized for large transfers)
+CXL Type2: GPU mode = 0 (NONE=0, VFIO=1, HETGPU=2, AUTO=3)
+CXL Type2: GPU passthrough not configured (simulation mode)
+CXL Type2: Device realized - Cache: 128 MB, DevMem: 256 MB
+CXL Type2: Device reset
+ok 1 /x86_64/pci/cxl/type2_cfmws_reject_512m
+# End of cxl tests
+# End of pci tests
+# End of x86_64 tests
+1..1

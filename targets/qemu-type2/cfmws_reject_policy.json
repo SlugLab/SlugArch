@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "name": "qemu-cfmws-fail-stop-reject",
+  "allowed_classes": [
+    "cxl_mem_read",
+    "cxl_mem_write",
+    "cxl_mem_data",
+    "completion"
+  ],
+  "ranges": [
+    {
+      "base": 83886080,
+      "length": 33554432
+    }
+  ],
+  "sample_stride": 1,
+  "record_mode": "validation",
+  "metadata_budget": 256,
+  "epoch_policy": "phase",
+  "rules": [
+    {
+      "op": "capture",
+      "mode": "validation"
+    },
+    {
+      "op": "reject",
+      "code": 14
+    },
+    {
+      "op": "epoch_from_phase"
+    },
+    {
+      "op": "halt"
+    }
+  ]
+}

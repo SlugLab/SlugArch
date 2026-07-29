@@ -1,0 +1,2239 @@
+{
+  "backends": [
+    "rust",
+    "fpga-verilator"
+  ],
+  "cells": {
+    "10000": {
+      "backends": {
+        "fpga-verilator": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 10023,
+              "median": 10010,
+              "min": 10003,
+              "values": [
+                10010,
+                10003,
+                10004,
+                10023,
+                10010
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 23,
+              "median": 10,
+              "min": 3,
+              "values": [
+                10,
+                3,
+                4,
+                23,
+                10
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 1315715,
+              "median": 982029,
+              "min": 886675,
+              "values": [
+                886675,
+                1312880,
+                905922,
+                982029,
+                1315715
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 10029,
+              "median": 10013,
+              "min": 10000,
+              "values": [
+                10011,
+                10013,
+                10029,
+                10025,
+                10000
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 29,
+              "median": 13,
+              "min": 0,
+              "values": [
+                11,
+                13,
+                29,
+                25,
+                0
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 430076,
+              "median": 136527,
+              "min": 115450,
+              "values": [
+                115450,
+                430076,
+                136527,
+                134851,
+                421653
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "b071decb09f304c077f9751ec58d506374cf4e3cf51db341917d950deb149e2e",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "d6341e5b54833457671871f6795b940fda326796a2246eed89c943320bc0dca1",
+              "read_applied_delay_ns": 10010,
+              "read_delay_overshoot_ns": 10,
+              "read_host_event_pair_span_ns": 886675,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10011,
+              "write_delay_overshoot_ns": 11,
+              "write_host_event_pair_span_ns": 115450
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "9ed6aba809ecc3a89f756aa7b76903076b728a8b78feaba41c982fb5d03626e6",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "d8befb2d514826a7e2b25c69a931ec3617d7980012a6adeb2b82c439547673e8",
+              "read_applied_delay_ns": 10003,
+              "read_delay_overshoot_ns": 3,
+              "read_host_event_pair_span_ns": 1312880,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10013,
+              "write_delay_overshoot_ns": 13,
+              "write_host_event_pair_span_ns": 430076
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "5b478428db1558789f5fbe2466d500740326670e4e0e844957fc0c2f06a6b530",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "4a44f52313be3719f21bace42545a18d9ad2ebaa764b618adf5fd3edebcc23e4",
+              "read_applied_delay_ns": 10004,
+              "read_delay_overshoot_ns": 4,
+              "read_host_event_pair_span_ns": 905922,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10029,
+              "write_delay_overshoot_ns": 29,
+              "write_host_event_pair_span_ns": 136527
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "66486dca90199272f2828fab241393500d7e1c3e988e7ec1d4e723cf60750e71",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "aa3877301be3c44d2082e86b954023ebce9fb33a04fff82821ac9fc8ad21bb03",
+              "read_applied_delay_ns": 10023,
+              "read_delay_overshoot_ns": 23,
+              "read_host_event_pair_span_ns": 982029,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10025,
+              "write_delay_overshoot_ns": 25,
+              "write_host_event_pair_span_ns": 134851
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "97540e7a8f9926c231a5e9792f5328c8f56c400924fde3c8290c46f0522c2508",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "d280d011dd328e9e447807b6607db3f5ef3ac4f42de725241a6a57f5ba2220b2",
+              "read_applied_delay_ns": 10010,
+              "read_delay_overshoot_ns": 10,
+              "read_host_event_pair_span_ns": 1315715,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10000,
+              "write_delay_overshoot_ns": 0,
+              "write_host_event_pair_span_ns": 421653
+            }
+          ],
+          "source_root": "fpga-verilator"
+        },
+        "rust": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 10031,
+              "median": 10027,
+              "min": 10003,
+              "values": [
+                10031,
+                10007,
+                10031,
+                10027,
+                10003
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 31,
+              "median": 27,
+              "min": 3,
+              "values": [
+                31,
+                7,
+                31,
+                27,
+                3
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 989234,
+              "median": 954057,
+              "min": 566405,
+              "values": [
+                934243,
+                566405,
+                964022,
+                989234,
+                954057
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 10032,
+              "median": 10011,
+              "min": 10003,
+              "values": [
+                10003,
+                10020,
+                10007,
+                10011,
+                10032
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 32,
+              "median": 11,
+              "min": 3,
+              "values": [
+                3,
+                20,
+                7,
+                11,
+                32
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 725475,
+              "median": 547830,
+              "min": 87604,
+              "values": [
+                549851,
+                87604,
+                725475,
+                547830,
+                530296
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "f6ca115102f3c153e70224e25d53d93bc2b09f63b149f5e23805e2936daa9a49",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "1f98a9fae9fbf9128eada5f58085d321725079f7642c5c69de04d0c0629e1e60",
+              "read_applied_delay_ns": 10031,
+              "read_delay_overshoot_ns": 31,
+              "read_host_event_pair_span_ns": 934243,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10003,
+              "write_delay_overshoot_ns": 3,
+              "write_host_event_pair_span_ns": 549851
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "837c651e68841df0bedf1df5d8505532a473c14a92a7067e6bfe193a13d913bb",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "a8ce68937d99e38309b25ea7ffee2479f0507bccd6492b9f0da445f0af51e746",
+              "read_applied_delay_ns": 10007,
+              "read_delay_overshoot_ns": 7,
+              "read_host_event_pair_span_ns": 566405,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10020,
+              "write_delay_overshoot_ns": 20,
+              "write_host_event_pair_span_ns": 87604
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "7bdf8a55407d3ebdde536b81bf76d27ef21d12cc7516cdeb5c904bccda4e1e98",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "cb9c0591ae6afba4678495f1a52877230cfad7d25199bf8cff086d35bdf748b9",
+              "read_applied_delay_ns": 10031,
+              "read_delay_overshoot_ns": 31,
+              "read_host_event_pair_span_ns": 964022,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10007,
+              "write_delay_overshoot_ns": 7,
+              "write_host_event_pair_span_ns": 725475
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "8bad6ae443dc332ebbe031ad0b51e1905e63f293ad27bef190c341f80eb6ecd8",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "183c9f2b7bc13f4fc15da48bff8a77d32e43b24d4f3812671693f149b2ac5b33",
+              "read_applied_delay_ns": 10027,
+              "read_delay_overshoot_ns": 27,
+              "read_host_event_pair_span_ns": 989234,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10011,
+              "write_delay_overshoot_ns": 11,
+              "write_host_event_pair_span_ns": 547830
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "497a6bb64d7fc54216f86643413250411f3aaa85ba211ac36240b48fb36bf1f4",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "97ee25e833d4f6de41e2ce6d33a06249a722640d5c8eeaee3fab505f9ab7eeb0",
+              "read_applied_delay_ns": 10003,
+              "read_delay_overshoot_ns": 3,
+              "read_host_event_pair_span_ns": 954057,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 10032,
+              "write_delay_overshoot_ns": 32,
+              "write_host_event_pair_span_ns": 530296
+            }
+          ],
+          "source_root": "rust"
+        }
+      },
+      "measurement_scope": {
+        "backend": "Rust software and FPGA-Verilator RTL simulation; no physical FPGA timing",
+        "host_event_pair_span": "host monotonic interval between canonical request and completion records",
+        "modeled_latency": "CXLMemSim-requested and QEMU-applied delay; not CXL-link latency"
+      },
+      "modeled_latency_ns": 10000,
+      "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+      "schema": "slugarch.qemu-jit-cfmws-five.v1",
+      "semantic_signature_sha256": "3f8ba2e1831fa9d31c8a1a34b8985d385318868cb3432eb5ef555a6644be4cd1",
+      "status": "pass",
+      "validation": {
+        "bypass_path_completions": 0,
+        "canonical_events": 40,
+        "direct_cfmws_completions": 20,
+        "drops": 0,
+        "final_metadata_bytes": 320,
+        "final_records": 40,
+        "fresh_processes": 10,
+        "rejects": 0,
+        "request_completion_joins": 20,
+        "semantic_signatures": 1
+      }
+    },
+    "2000": {
+      "backends": {
+        "fpga-verilator": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 2027,
+              "median": 2027,
+              "min": 2000,
+              "values": [
+                2027,
+                2000,
+                2009,
+                2027,
+                2027
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 27,
+              "median": 27,
+              "min": 0,
+              "values": [
+                27,
+                0,
+                9,
+                27,
+                27
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 1384763,
+              "median": 935554,
+              "min": 66900,
+              "values": [
+                66900,
+                1327811,
+                1384763,
+                935554,
+                933534
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 2030,
+              "median": 2015,
+              "min": 2001,
+              "values": [
+                2030,
+                2001,
+                2004,
+                2015,
+                2018
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 30,
+              "median": 15,
+              "min": 1,
+              "values": [
+                30,
+                1,
+                4,
+                15,
+                18
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 429448,
+              "median": 116791,
+              "min": 34573,
+              "values": [
+                34573,
+                399699,
+                429448,
+                114328,
+                116791
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "fa869889ca51527573ced0f5ec41d2734db4160fc615dec7a2696ddfd9191175",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "d2d87501f21aafc231ba876289efd41a61c9f22348181290727cefbe5a0dc6cf",
+              "read_applied_delay_ns": 2027,
+              "read_delay_overshoot_ns": 27,
+              "read_host_event_pair_span_ns": 66900,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2030,
+              "write_delay_overshoot_ns": 30,
+              "write_host_event_pair_span_ns": 34573
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "6b6b06b2872b68c56e469860d914861deec119927dc85c3c7e683e56670b75b7",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "826be9bcc389c80c963c987c893d526f4a8c601192f3ba9aec224882f356eb55",
+              "read_applied_delay_ns": 2000,
+              "read_delay_overshoot_ns": 0,
+              "read_host_event_pair_span_ns": 1327811,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2001,
+              "write_delay_overshoot_ns": 1,
+              "write_host_event_pair_span_ns": 399699
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "1e032751b4d029291385cca8ef76339255085f8797feaf93ded3e7574a3645e6",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "8d22f5d6c6e29783df079f38716b6337c12399ca5184185b702f0a5fd1444b4c",
+              "read_applied_delay_ns": 2009,
+              "read_delay_overshoot_ns": 9,
+              "read_host_event_pair_span_ns": 1384763,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2004,
+              "write_delay_overshoot_ns": 4,
+              "write_host_event_pair_span_ns": 429448
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "6df2b816eb8de6990fe75a0ffaadd1c6b7a0ed485d2df4ee880785bef83145f9",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "25807922cb0b8f4f8c14438147890cd86227564be0901a06ff7eec60d02b65d5",
+              "read_applied_delay_ns": 2027,
+              "read_delay_overshoot_ns": 27,
+              "read_host_event_pair_span_ns": 935554,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2015,
+              "write_delay_overshoot_ns": 15,
+              "write_host_event_pair_span_ns": 114328
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "b9e16b94d1230ca8e60281d8c5f89e7d6bbc7e87196e3b076939e237db54c74d",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "0a2120f5c8b0f83aefc528bf8510524473f5d772cfb5fc29e4e4f976548df61f",
+              "read_applied_delay_ns": 2027,
+              "read_delay_overshoot_ns": 27,
+              "read_host_event_pair_span_ns": 933534,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2018,
+              "write_delay_overshoot_ns": 18,
+              "write_host_event_pair_span_ns": 116791
+            }
+          ],
+          "source_root": "fpga-verilator"
+        },
+        "rust": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 2031,
+              "median": 2001,
+              "min": 2000,
+              "values": [
+                2001,
+                2009,
+                2000,
+                2000,
+                2031
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 31,
+              "median": 1,
+              "min": 0,
+              "values": [
+                1,
+                9,
+                0,
+                0,
+                31
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 1153809,
+              "median": 63870,
+              "min": 46841,
+              "values": [
+                1123682,
+                1153809,
+                51984,
+                63870,
+                46841
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 2045,
+              "median": 2029,
+              "min": 2001,
+              "values": [
+                2001,
+                2029,
+                2045,
+                2013,
+                2035
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 45,
+              "median": 29,
+              "min": 1,
+              "values": [
+                1,
+                29,
+                45,
+                13,
+                35
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 778012,
+              "median": 34245,
+              "min": 26864,
+              "values": [
+                778012,
+                773093,
+                34245,
+                26864,
+                30343
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "df994fed609a42c93a884b1d372a9d399e2fd7955a8101f455218b13719e13f9",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "1c01ae5fca44f42b7e9de0db72152cc464981b41ee0c9ecbe8b8c299a0cb7d3f",
+              "read_applied_delay_ns": 2001,
+              "read_delay_overshoot_ns": 1,
+              "read_host_event_pair_span_ns": 1123682,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2001,
+              "write_delay_overshoot_ns": 1,
+              "write_host_event_pair_span_ns": 778012
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "5cc886582c482b6e64b97f18d654fd55114ff6738db1d624224e409117605e07",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "c452b1277ea93692583fb57af2e4593a770b2e4f60ed68360cf53c08af952120",
+              "read_applied_delay_ns": 2009,
+              "read_delay_overshoot_ns": 9,
+              "read_host_event_pair_span_ns": 1153809,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2029,
+              "write_delay_overshoot_ns": 29,
+              "write_host_event_pair_span_ns": 773093
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "c9240bb056976249ac71bd1a4b7f9ad39f379c8b8b4cdbef56948068a18c5020",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "929f7f8920ec9e3b2f33d850ea8dfd6c003ad92cddb8500003fdf7625b03e903",
+              "read_applied_delay_ns": 2000,
+              "read_delay_overshoot_ns": 0,
+              "read_host_event_pair_span_ns": 51984,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2045,
+              "write_delay_overshoot_ns": 45,
+              "write_host_event_pair_span_ns": 34245
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "1790d40be0b6ee240deaf1035ec2c30fdeb6c0735a5d6d31ca764dc3c6e31bcf",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "4e4416a4f5c3e433faed94ad250fc4e3113af5d2b9fda4d59ce1017372373152",
+              "read_applied_delay_ns": 2000,
+              "read_delay_overshoot_ns": 0,
+              "read_host_event_pair_span_ns": 63870,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2013,
+              "write_delay_overshoot_ns": 13,
+              "write_host_event_pair_span_ns": 26864
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "9ab55e9fcbbda065782527de43d0de38185d25aad90d3869cf1a686a85be7ab9",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "b88e7b02bbb4b8c57c16bd20db1433f99410056e6f0293c2883184e3ee5091d5",
+              "read_applied_delay_ns": 2031,
+              "read_delay_overshoot_ns": 31,
+              "read_host_event_pair_span_ns": 46841,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2035,
+              "write_delay_overshoot_ns": 35,
+              "write_host_event_pair_span_ns": 30343
+            }
+          ],
+          "source_root": "rust"
+        }
+      },
+      "measurement_scope": {
+        "backend": "Rust software and FPGA-Verilator RTL simulation; no physical FPGA timing",
+        "host_event_pair_span": "host monotonic interval between canonical request and completion records",
+        "modeled_latency": "CXLMemSim-requested and QEMU-applied delay; not CXL-link latency"
+      },
+      "modeled_latency_ns": 2000,
+      "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+      "schema": "slugarch.qemu-jit-cfmws-five.v1",
+      "semantic_signature_sha256": "3f8ba2e1831fa9d31c8a1a34b8985d385318868cb3432eb5ef555a6644be4cd1",
+      "status": "pass",
+      "validation": {
+        "bypass_path_completions": 0,
+        "canonical_events": 40,
+        "direct_cfmws_completions": 20,
+        "drops": 0,
+        "final_metadata_bytes": 320,
+        "final_records": 40,
+        "fresh_processes": 10,
+        "rejects": 0,
+        "request_completion_joins": 20,
+        "semantic_signatures": 1
+      }
+    },
+    "400": {
+      "backends": {
+        "fpga-verilator": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 1741,
+              "median": 1163,
+              "min": 407,
+              "values": [
+                407,
+                1163,
+                1737,
+                848,
+                1741
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 1341,
+              "median": 763,
+              "min": 7,
+              "values": [
+                7,
+                763,
+                1337,
+                448,
+                1341
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 1862412,
+              "median": 1250351,
+              "min": 931684,
+              "values": [
+                931684,
+                1262799,
+                1862412,
+                1250351,
+                1212563
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 474,
+              "median": 410,
+              "min": 400,
+              "values": [
+                474,
+                409,
+                400,
+                410,
+                414
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 74,
+              "median": 10,
+              "min": 0,
+              "values": [
+                74,
+                9,
+                0,
+                10,
+                14
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 647117,
+              "median": 355815,
+              "min": 240722,
+              "values": [
+                240722,
+                335041,
+                647117,
+                365769,
+                355815
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "86c5a29ef33382b99637c90e887648f04c74fd92ea1b03f6e41b1435fe3ff698",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "4fd4d190d5e882c4c11e9821415acc1088be64717bc7c94d50e1877f4f1dcb1a",
+              "read_applied_delay_ns": 407,
+              "read_delay_overshoot_ns": 7,
+              "read_host_event_pair_span_ns": 931684,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 474,
+              "write_delay_overshoot_ns": 74,
+              "write_host_event_pair_span_ns": 240722
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "c4a7daaeb830688010909bd3cb86811c01821dc6a9c9db2d283b8154fdfaee67",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "4345564766369d907d676f41a417327b911e76fa15da9e4e93fb3c6407fb5e3c",
+              "read_applied_delay_ns": 1163,
+              "read_delay_overshoot_ns": 763,
+              "read_host_event_pair_span_ns": 1262799,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 409,
+              "write_delay_overshoot_ns": 9,
+              "write_host_event_pair_span_ns": 335041
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "08a3b2fe9fd3bdc12f9bed9e4117cc8d4cf9477c161fc98a9c90ca74a5ab5adf",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "150fa502615b0c60180bc0ea67964f40897992e028188b3439e92beeab281dc2",
+              "read_applied_delay_ns": 1737,
+              "read_delay_overshoot_ns": 1337,
+              "read_host_event_pair_span_ns": 1862412,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 400,
+              "write_delay_overshoot_ns": 0,
+              "write_host_event_pair_span_ns": 647117
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "e591c90a8bdc5c44a31ae22987ee4d4182bf55a31de2e839fb934e69ca8da1f4",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "b4544a9fe8b981da555bfe40544a450a1935d8030107d56dd3f31be9cbd114a0",
+              "read_applied_delay_ns": 848,
+              "read_delay_overshoot_ns": 448,
+              "read_host_event_pair_span_ns": 1250351,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 410,
+              "write_delay_overshoot_ns": 10,
+              "write_host_event_pair_span_ns": 365769
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "f268242c6fdb95583a3d0f081da1e841bf518e5ffcc2a48fe97611dd19218061",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "de2ea309714a613bf6ee8052ca65b8fd1c6890817763bb5097b95b8fe59f0f1a",
+              "read_applied_delay_ns": 1741,
+              "read_delay_overshoot_ns": 1341,
+              "read_host_event_pair_span_ns": 1212563,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 414,
+              "write_delay_overshoot_ns": 14,
+              "write_host_event_pair_span_ns": 355815
+            }
+          ],
+          "source_root": "fpga-verilator"
+        },
+        "rust": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 1001,
+              "median": 869,
+              "min": 415,
+              "values": [
+                415,
+                426,
+                1001,
+                925,
+                869
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 601,
+              "median": 469,
+              "min": 15,
+              "values": [
+                15,
+                26,
+                601,
+                525,
+                469
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 1173095,
+              "median": 1169579,
+              "min": 1117328,
+              "values": [
+                1169579,
+                1170071,
+                1157693,
+                1173095,
+                1117328
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 2264,
+              "median": 787,
+              "min": 401,
+              "values": [
+                787,
+                401,
+                1545,
+                422,
+                2264
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 1864,
+              "median": 387,
+              "min": 1,
+              "values": [
+                387,
+                1,
+                1145,
+                22,
+                1864
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 824072,
+              "median": 790298,
+              "min": 737742,
+              "values": [
+                790298,
+                824072,
+                787829,
+                737742,
+                800638
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "f9cb52a2546962e9a08fcff6615cb4bd4f26e0e138dcce9fc1e51234025185c9",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "30a618540f9b9e13f4b8bd78c4ef3ef692cae125a43a205ca9cbde60f1ae6739",
+              "read_applied_delay_ns": 415,
+              "read_delay_overshoot_ns": 15,
+              "read_host_event_pair_span_ns": 1169579,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 787,
+              "write_delay_overshoot_ns": 387,
+              "write_host_event_pair_span_ns": 790298
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "6ef8926c2e9aca07ed5d5e47c49712f104143fbeb7694d444918d60554d03541",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "ac29824ee3820cb2778b0e5ce80d09af7efee17710c56f14be78388fd0f272a5",
+              "read_applied_delay_ns": 426,
+              "read_delay_overshoot_ns": 26,
+              "read_host_event_pair_span_ns": 1170071,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 401,
+              "write_delay_overshoot_ns": 1,
+              "write_host_event_pair_span_ns": 824072
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "a19e424c4658f128ea34dbfa11a4d8137977b7a3d8d0835563b2e09618f6a766",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "19433399b42435032bcb16cca04c1af839a29372376d8c2374c1134261f5b3b8",
+              "read_applied_delay_ns": 1001,
+              "read_delay_overshoot_ns": 601,
+              "read_host_event_pair_span_ns": 1157693,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 1545,
+              "write_delay_overshoot_ns": 1145,
+              "write_host_event_pair_span_ns": 787829
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "eab9cc4b8b181f894bd32aaace7305e07047145d8ba2a71d7e689cfccd8cfaa4",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "4c75e0284552e34ef961f66b09af4f6262da40f9078cb3259c331d053b0a90e6",
+              "read_applied_delay_ns": 925,
+              "read_delay_overshoot_ns": 525,
+              "read_host_event_pair_span_ns": 1173095,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 422,
+              "write_delay_overshoot_ns": 22,
+              "write_host_event_pair_span_ns": 737742
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "e6433b9a76d0d627fd29028d3baefae0278ecc3f1b3140a652efefcc83118650",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "da09bece5d71edf9b741604a03385b6f8f1bbf846966e0753c36d8891c29062b",
+              "read_applied_delay_ns": 869,
+              "read_delay_overshoot_ns": 469,
+              "read_host_event_pair_span_ns": 1117328,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 2264,
+              "write_delay_overshoot_ns": 1864,
+              "write_host_event_pair_span_ns": 800638
+            }
+          ],
+          "source_root": "rust"
+        }
+      },
+      "measurement_scope": {
+        "backend": "Rust software and FPGA-Verilator RTL simulation; no physical FPGA timing",
+        "host_event_pair_span": "host monotonic interval between canonical request and completion records",
+        "modeled_latency": "CXLMemSim-requested and QEMU-applied delay; not CXL-link latency"
+      },
+      "modeled_latency_ns": 400,
+      "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+      "schema": "slugarch.qemu-jit-cfmws-five.v1",
+      "semantic_signature_sha256": "3f8ba2e1831fa9d31c8a1a34b8985d385318868cb3432eb5ef555a6644be4cd1",
+      "status": "pass",
+      "validation": {
+        "bypass_path_completions": 0,
+        "canonical_events": 40,
+        "direct_cfmws_completions": 20,
+        "drops": 0,
+        "final_metadata_bytes": 320,
+        "final_records": 40,
+        "fresh_processes": 10,
+        "rejects": 0,
+        "request_completion_joins": 20,
+        "semantic_signatures": 1
+      }
+    },
+    "80": {
+      "backends": {
+        "fpga-verilator": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 1408,
+              "median": 561,
+              "min": 104,
+              "values": [
+                1408,
+                561,
+                1102,
+                104,
+                182
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 1328,
+              "median": 481,
+              "min": 24,
+              "values": [
+                1328,
+                481,
+                1022,
+                24,
+                102
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 1210084,
+              "median": 1185515,
+              "min": 1088958,
+              "values": [
+                1210084,
+                1205101,
+                1185515,
+                1088958,
+                1160477
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 1788,
+              "median": 97,
+              "min": 80,
+              "values": [
+                649,
+                97,
+                92,
+                80,
+                1788
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 1708,
+              "median": 17,
+              "min": 0,
+              "values": [
+                569,
+                17,
+                12,
+                0,
+                1708
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 364873,
+              "median": 352209,
+              "min": 336959,
+              "values": [
+                352209,
+                336959,
+                348524,
+                354015,
+                364873
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "abd8c58afeaeac58c3515d499b628497352aed83788fec1a5ee898af48d940dc",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "b855772a0fb49b8d230450c71f92da943405d4d8537805b2b6594351f7f01a3f",
+              "read_applied_delay_ns": 1408,
+              "read_delay_overshoot_ns": 1328,
+              "read_host_event_pair_span_ns": 1210084,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 649,
+              "write_delay_overshoot_ns": 569,
+              "write_host_event_pair_span_ns": 352209
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "99f1e7407fd5d004bd6cc7f0a01fab6dc311412ec9c3666d5201908d4c37db77",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "0443c57b262ed7c86b99aabce16f0c33fbdf61316f6f363c172b1d0e031f918e",
+              "read_applied_delay_ns": 561,
+              "read_delay_overshoot_ns": 481,
+              "read_host_event_pair_span_ns": 1205101,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 97,
+              "write_delay_overshoot_ns": 17,
+              "write_host_event_pair_span_ns": 336959
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "a3ab214108a25d8731f2c16ae0cf402cda2026b74366d0735cc7a72415d0fb5e",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "31025fcbdeb7a68a4ebc858e5219559a51097a39b7432423af045f422e9345d0",
+              "read_applied_delay_ns": 1102,
+              "read_delay_overshoot_ns": 1022,
+              "read_host_event_pair_span_ns": 1185515,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 92,
+              "write_delay_overshoot_ns": 12,
+              "write_host_event_pair_span_ns": 348524
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "eb1d01d46c53b3c64bbb8e6914b292b4ae7248c8f2cfb70065ebef80b5b3204b",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "6b7501e930fec6a043555848171626907a1f301b15f9668737a61f51b079f758",
+              "read_applied_delay_ns": 104,
+              "read_delay_overshoot_ns": 24,
+              "read_host_event_pair_span_ns": 1088958,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 80,
+              "write_delay_overshoot_ns": 0,
+              "write_host_event_pair_span_ns": 354015
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "9cd44ab3f215318b3b60bd42e01eeae5090308116a31a044e27a3485a77fe968",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "d65b1611200598a422604e2e02268bc352b453aa5d09d928b4eb026daea027a1",
+              "read_applied_delay_ns": 182,
+              "read_delay_overshoot_ns": 102,
+              "read_host_event_pair_span_ns": 1160477,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 1788,
+              "write_delay_overshoot_ns": 1708,
+              "write_host_event_pair_span_ns": 364873
+            }
+          ],
+          "source_root": "fpga-verilator"
+        },
+        "rust": {
+          "metrics": {
+            "read_applied_delay_ns": {
+              "max": 1055,
+              "median": 157,
+              "min": 96,
+              "values": [
+                131,
+                157,
+                96,
+                222,
+                1055
+              ]
+            },
+            "read_delay_overshoot_ns": {
+              "max": 975,
+              "median": 77,
+              "min": 16,
+              "values": [
+                51,
+                77,
+                16,
+                142,
+                975
+              ]
+            },
+            "read_host_event_pair_span_ns": {
+              "max": 1179394,
+              "median": 1158432,
+              "min": 52711,
+              "values": [
+                52711,
+                1138553,
+                1158432,
+                1166658,
+                1179394
+              ]
+            },
+            "write_applied_delay_ns": {
+              "max": 164,
+              "median": 107,
+              "min": 85,
+              "values": [
+                136,
+                164,
+                107,
+                98,
+                85
+              ]
+            },
+            "write_delay_overshoot_ns": {
+              "max": 84,
+              "median": 27,
+              "min": 5,
+              "values": [
+                56,
+                84,
+                27,
+                18,
+                5
+              ]
+            },
+            "write_host_event_pair_span_ns": {
+              "max": 785100,
+              "median": 755571,
+              "min": 41513,
+              "values": [
+                41513,
+                743194,
+                775115,
+                755571,
+                785100
+              ]
+            }
+          },
+          "repeats": 5,
+          "runs": [
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "b5165acc886c076360d0e08053e63c33813e3b15055c74be785fc8053813bfc7",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "d9cf852716a5f644b7a89fcea250f2a21d17e71edb68f022740ff61475a683e2",
+              "read_applied_delay_ns": 131,
+              "read_delay_overshoot_ns": 51,
+              "read_host_event_pair_span_ns": 52711,
+              "repetition": 1,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 136,
+              "write_delay_overshoot_ns": 56,
+              "write_host_event_pair_span_ns": 41513
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "a21466325943ae0f1b702bdc2c4a8dd803dade6e31ed900c8bdb4e58427126b9",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "ec972a6c01ff3d09ded3e3327a930701377fbbebce65101f4a387a3481491e0d",
+              "read_applied_delay_ns": 157,
+              "read_delay_overshoot_ns": 77,
+              "read_host_event_pair_span_ns": 1138553,
+              "repetition": 2,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 164,
+              "write_delay_overshoot_ns": 84,
+              "write_host_event_pair_span_ns": 743194
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "5b985253720f2d36910da6786e3e8328ae432a2e8b3c5b955abc0aada53bc6f7",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "45a4cb18e4aa14904472f539271287eaab6464ee675c28af7d6615b41aa42458",
+              "read_applied_delay_ns": 96,
+              "read_delay_overshoot_ns": 16,
+              "read_host_event_pair_span_ns": 1158432,
+              "repetition": 3,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 107,
+              "write_delay_overshoot_ns": 27,
+              "write_host_event_pair_span_ns": 775115
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "0718fc277bdc42f7a23b1129ee4b7541604cccc98810130ad089d7885dc535bf",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "4da7de5716f766ecc08e3d3426c05bcc8b2fdbcb977d7f10728dbaa5dd724cca",
+              "read_applied_delay_ns": 222,
+              "read_delay_overshoot_ns": 142,
+              "read_host_event_pair_span_ns": 1166658,
+              "repetition": 4,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 98,
+              "write_delay_overshoot_ns": 18,
+              "write_host_event_pair_span_ns": 755571
+            },
+            {
+              "canonical_events": 4,
+              "direct_cfmws_completions": 2,
+              "final_drop_count": 0,
+              "final_metadata_bytes": 32,
+              "final_record_count": 4,
+              "final_reject_count": 0,
+              "jit_events_sha256": "965fa4c846e820a25120512cf37cd1843f936aba49ad096fff13379818231c86",
+              "phase_id": 2215048676827443796,
+              "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+              "qemu_events_sha256": "776003a36149658028f91d5e3b333004571d28cf35df3721756808e9b7ff861e",
+              "read_applied_delay_ns": 1055,
+              "read_delay_overshoot_ns": 975,
+              "read_host_event_pair_span_ns": 1179394,
+              "repetition": 5,
+              "request_completion_joins": 2,
+              "write_applied_delay_ns": 85,
+              "write_delay_overshoot_ns": 5,
+              "write_host_event_pair_span_ns": 785100
+            }
+          ],
+          "source_root": "rust"
+        }
+      },
+      "measurement_scope": {
+        "backend": "Rust software and FPGA-Verilator RTL simulation; no physical FPGA timing",
+        "host_event_pair_span": "host monotonic interval between canonical request and completion records",
+        "modeled_latency": "CXLMemSim-requested and QEMU-applied delay; not CXL-link latency"
+      },
+      "modeled_latency_ns": 80,
+      "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+      "schema": "slugarch.qemu-jit-cfmws-five.v1",
+      "semantic_signature_sha256": "3f8ba2e1831fa9d31c8a1a34b8985d385318868cb3432eb5ef555a6644be4cd1",
+      "status": "pass",
+      "validation": {
+        "bypass_path_completions": 0,
+        "canonical_events": 40,
+        "direct_cfmws_completions": 20,
+        "drops": 0,
+        "final_metadata_bytes": 320,
+        "final_records": 40,
+        "fresh_processes": 10,
+        "rejects": 0,
+        "request_completion_joins": 20,
+        "semantic_signatures": 1
+      }
+    }
+  },
+  "expected_repeats": 5,
+  "latencies_ns": [
+    80,
+    400,
+    2000,
+    10000
+  ],
+  "measurement_scope": {
+    "backend": "Rust software and FPGA-Verilator RTL simulation; no physical FPGA timing",
+    "modeled_latency": "CXLMemSim-requested and QEMU-applied delay; not CXL-link latency",
+    "process": "one filtered qtest invocation starts one fresh QEMU process",
+    "service": "in-process fake CXLMemSim service; not a production external service"
+  },
+  "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+  "replay_semantic_signature_sha256": "3f8ba2e1831fa9d31c8a1a34b8985d385318868cb3432eb5ef555a6644be4cd1",
+  "schema": "slugarch.qemu-jit-cfmws-latency-sweep.v1",
+  "series": {
+    "fpga-verilator": {
+      "read_applied_delay_ns": [
+        {
+          "max": 1408,
+          "median": 561,
+          "min": 104,
+          "modeled_latency_ns": 80,
+          "values": [
+            1408,
+            561,
+            1102,
+            104,
+            182
+          ]
+        },
+        {
+          "max": 1741,
+          "median": 1163,
+          "min": 407,
+          "modeled_latency_ns": 400,
+          "values": [
+            407,
+            1163,
+            1737,
+            848,
+            1741
+          ]
+        },
+        {
+          "max": 2027,
+          "median": 2027,
+          "min": 2000,
+          "modeled_latency_ns": 2000,
+          "values": [
+            2027,
+            2000,
+            2009,
+            2027,
+            2027
+          ]
+        },
+        {
+          "max": 10023,
+          "median": 10010,
+          "min": 10003,
+          "modeled_latency_ns": 10000,
+          "values": [
+            10010,
+            10003,
+            10004,
+            10023,
+            10010
+          ]
+        }
+      ],
+      "read_delay_overshoot_ns": [
+        {
+          "max": 1328,
+          "median": 481,
+          "min": 24,
+          "modeled_latency_ns": 80,
+          "values": [
+            1328,
+            481,
+            1022,
+            24,
+            102
+          ]
+        },
+        {
+          "max": 1341,
+          "median": 763,
+          "min": 7,
+          "modeled_latency_ns": 400,
+          "values": [
+            7,
+            763,
+            1337,
+            448,
+            1341
+          ]
+        },
+        {
+          "max": 27,
+          "median": 27,
+          "min": 0,
+          "modeled_latency_ns": 2000,
+          "values": [
+            27,
+            0,
+            9,
+            27,
+            27
+          ]
+        },
+        {
+          "max": 23,
+          "median": 10,
+          "min": 3,
+          "modeled_latency_ns": 10000,
+          "values": [
+            10,
+            3,
+            4,
+            23,
+            10
+          ]
+        }
+      ],
+      "read_host_event_pair_span_ns": [
+        {
+          "max": 1210084,
+          "median": 1185515,
+          "min": 1088958,
+          "modeled_latency_ns": 80,
+          "values": [
+            1210084,
+            1205101,
+            1185515,
+            1088958,
+            1160477
+          ]
+        },
+        {
+          "max": 1862412,
+          "median": 1250351,
+          "min": 931684,
+          "modeled_latency_ns": 400,
+          "values": [
+            931684,
+            1262799,
+            1862412,
+            1250351,
+            1212563
+          ]
+        },
+        {
+          "max": 1384763,
+          "median": 935554,
+          "min": 66900,
+          "modeled_latency_ns": 2000,
+          "values": [
+            66900,
+            1327811,
+            1384763,
+            935554,
+            933534
+          ]
+        },
+        {
+          "max": 1315715,
+          "median": 982029,
+          "min": 886675,
+          "modeled_latency_ns": 10000,
+          "values": [
+            886675,
+            1312880,
+            905922,
+            982029,
+            1315715
+          ]
+        }
+      ],
+      "write_applied_delay_ns": [
+        {
+          "max": 1788,
+          "median": 97,
+          "min": 80,
+          "modeled_latency_ns": 80,
+          "values": [
+            649,
+            97,
+            92,
+            80,
+            1788
+          ]
+        },
+        {
+          "max": 474,
+          "median": 410,
+          "min": 400,
+          "modeled_latency_ns": 400,
+          "values": [
+            474,
+            409,
+            400,
+            410,
+            414
+          ]
+        },
+        {
+          "max": 2030,
+          "median": 2015,
+          "min": 2001,
+          "modeled_latency_ns": 2000,
+          "values": [
+            2030,
+            2001,
+            2004,
+            2015,
+            2018
+          ]
+        },
+        {
+          "max": 10029,
+          "median": 10013,
+          "min": 10000,
+          "modeled_latency_ns": 10000,
+          "values": [
+            10011,
+            10013,
+            10029,
+            10025,
+            10000
+          ]
+        }
+      ],
+      "write_delay_overshoot_ns": [
+        {
+          "max": 1708,
+          "median": 17,
+          "min": 0,
+          "modeled_latency_ns": 80,
+          "values": [
+            569,
+            17,
+            12,
+            0,
+            1708
+          ]
+        },
+        {
+          "max": 74,
+          "median": 10,
+          "min": 0,
+          "modeled_latency_ns": 400,
+          "values": [
+            74,
+            9,
+            0,
+            10,
+            14
+          ]
+        },
+        {
+          "max": 30,
+          "median": 15,
+          "min": 1,
+          "modeled_latency_ns": 2000,
+          "values": [
+            30,
+            1,
+            4,
+            15,
+            18
+          ]
+        },
+        {
+          "max": 29,
+          "median": 13,
+          "min": 0,
+          "modeled_latency_ns": 10000,
+          "values": [
+            11,
+            13,
+            29,
+            25,
+            0
+          ]
+        }
+      ],
+      "write_host_event_pair_span_ns": [
+        {
+          "max": 364873,
+          "median": 352209,
+          "min": 336959,
+          "modeled_latency_ns": 80,
+          "values": [
+            352209,
+            336959,
+            348524,
+            354015,
+            364873
+          ]
+        },
+        {
+          "max": 647117,
+          "median": 355815,
+          "min": 240722,
+          "modeled_latency_ns": 400,
+          "values": [
+            240722,
+            335041,
+            647117,
+            365769,
+            355815
+          ]
+        },
+        {
+          "max": 429448,
+          "median": 116791,
+          "min": 34573,
+          "modeled_latency_ns": 2000,
+          "values": [
+            34573,
+            399699,
+            429448,
+            114328,
+            116791
+          ]
+        },
+        {
+          "max": 430076,
+          "median": 136527,
+          "min": 115450,
+          "modeled_latency_ns": 10000,
+          "values": [
+            115450,
+            430076,
+            136527,
+            134851,
+            421653
+          ]
+        }
+      ]
+    },
+    "rust": {
+      "read_applied_delay_ns": [
+        {
+          "max": 1055,
+          "median": 157,
+          "min": 96,
+          "modeled_latency_ns": 80,
+          "values": [
+            131,
+            157,
+            96,
+            222,
+            1055
+          ]
+        },
+        {
+          "max": 1001,
+          "median": 869,
+          "min": 415,
+          "modeled_latency_ns": 400,
+          "values": [
+            415,
+            426,
+            1001,
+            925,
+            869
+          ]
+        },
+        {
+          "max": 2031,
+          "median": 2001,
+          "min": 2000,
+          "modeled_latency_ns": 2000,
+          "values": [
+            2001,
+            2009,
+            2000,
+            2000,
+            2031
+          ]
+        },
+        {
+          "max": 10031,
+          "median": 10027,
+          "min": 10003,
+          "modeled_latency_ns": 10000,
+          "values": [
+            10031,
+            10007,
+            10031,
+            10027,
+            10003
+          ]
+        }
+      ],
+      "read_delay_overshoot_ns": [
+        {
+          "max": 975,
+          "median": 77,
+          "min": 16,
+          "modeled_latency_ns": 80,
+          "values": [
+            51,
+            77,
+            16,
+            142,
+            975
+          ]
+        },
+        {
+          "max": 601,
+          "median": 469,
+          "min": 15,
+          "modeled_latency_ns": 400,
+          "values": [
+            15,
+            26,
+            601,
+            525,
+            469
+          ]
+        },
+        {
+          "max": 31,
+          "median": 1,
+          "min": 0,
+          "modeled_latency_ns": 2000,
+          "values": [
+            1,
+            9,
+            0,
+            0,
+            31
+          ]
+        },
+        {
+          "max": 31,
+          "median": 27,
+          "min": 3,
+          "modeled_latency_ns": 10000,
+          "values": [
+            31,
+            7,
+            31,
+            27,
+            3
+          ]
+        }
+      ],
+      "read_host_event_pair_span_ns": [
+        {
+          "max": 1179394,
+          "median": 1158432,
+          "min": 52711,
+          "modeled_latency_ns": 80,
+          "values": [
+            52711,
+            1138553,
+            1158432,
+            1166658,
+            1179394
+          ]
+        },
+        {
+          "max": 1173095,
+          "median": 1169579,
+          "min": 1117328,
+          "modeled_latency_ns": 400,
+          "values": [
+            1169579,
+            1170071,
+            1157693,
+            1173095,
+            1117328
+          ]
+        },
+        {
+          "max": 1153809,
+          "median": 63870,
+          "min": 46841,
+          "modeled_latency_ns": 2000,
+          "values": [
+            1123682,
+            1153809,
+            51984,
+            63870,
+            46841
+          ]
+        },
+        {
+          "max": 989234,
+          "median": 954057,
+          "min": 566405,
+          "modeled_latency_ns": 10000,
+          "values": [
+            934243,
+            566405,
+            964022,
+            989234,
+            954057
+          ]
+        }
+      ],
+      "write_applied_delay_ns": [
+        {
+          "max": 164,
+          "median": 107,
+          "min": 85,
+          "modeled_latency_ns": 80,
+          "values": [
+            136,
+            164,
+            107,
+            98,
+            85
+          ]
+        },
+        {
+          "max": 2264,
+          "median": 787,
+          "min": 401,
+          "modeled_latency_ns": 400,
+          "values": [
+            787,
+            401,
+            1545,
+            422,
+            2264
+          ]
+        },
+        {
+          "max": 2045,
+          "median": 2029,
+          "min": 2001,
+          "modeled_latency_ns": 2000,
+          "values": [
+            2001,
+            2029,
+            2045,
+            2013,
+            2035
+          ]
+        },
+        {
+          "max": 10032,
+          "median": 10011,
+          "min": 10003,
+          "modeled_latency_ns": 10000,
+          "values": [
+            10003,
+            10020,
+            10007,
+            10011,
+            10032
+          ]
+        }
+      ],
+      "write_delay_overshoot_ns": [
+        {
+          "max": 84,
+          "median": 27,
+          "min": 5,
+          "modeled_latency_ns": 80,
+          "values": [
+            56,
+            84,
+            27,
+            18,
+            5
+          ]
+        },
+        {
+          "max": 1864,
+          "median": 387,
+          "min": 1,
+          "modeled_latency_ns": 400,
+          "values": [
+            387,
+            1,
+            1145,
+            22,
+            1864
+          ]
+        },
+        {
+          "max": 45,
+          "median": 29,
+          "min": 1,
+          "modeled_latency_ns": 2000,
+          "values": [
+            1,
+            29,
+            45,
+            13,
+            35
+          ]
+        },
+        {
+          "max": 32,
+          "median": 11,
+          "min": 3,
+          "modeled_latency_ns": 10000,
+          "values": [
+            3,
+            20,
+            7,
+            11,
+            32
+          ]
+        }
+      ],
+      "write_host_event_pair_span_ns": [
+        {
+          "max": 785100,
+          "median": 755571,
+          "min": 41513,
+          "modeled_latency_ns": 80,
+          "values": [
+            41513,
+            743194,
+            775115,
+            755571,
+            785100
+          ]
+        },
+        {
+          "max": 824072,
+          "median": 790298,
+          "min": 737742,
+          "modeled_latency_ns": 400,
+          "values": [
+            790298,
+            824072,
+            787829,
+            737742,
+            800638
+          ]
+        },
+        {
+          "max": 778012,
+          "median": 34245,
+          "min": 26864,
+          "modeled_latency_ns": 2000,
+          "values": [
+            778012,
+            773093,
+            34245,
+            26864,
+            30343
+          ]
+        },
+        {
+          "max": 725475,
+          "median": 547830,
+          "min": 87604,
+          "modeled_latency_ns": 10000,
+          "values": [
+            549851,
+            87604,
+            725475,
+            547830,
+            530296
+          ]
+        }
+      ]
+    }
+  },
+  "source_root": "raw",
+  "status": "pass",
+  "validation": {
+    "backend_latency_cells": 8,
+    "bypass_path_completions": 0,
+    "canonical_events": 160,
+    "direct_cfmws_completions": 80,
+    "drops": 0,
+    "final_metadata_bytes": 1280,
+    "final_records": 160,
+    "fresh_processes": 40,
+    "latency_cells": 4,
+    "monotonic_applied_delay_medians": true,
+    "rejects": 0,
+    "request_completion_joins": 80,
+    "semantic_signatures": 1
+  }
+}

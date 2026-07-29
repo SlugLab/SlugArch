@@ -1,0 +1,354 @@
+{
+  "finished_at_utc": "2026-07-29T06:29:27.486587+00:00",
+  "inputs": {
+    "cxl_test_sha256": "d465facfee64db368f16118755601bc2845bf679dcb439724ebb7a73b49f2912",
+    "cxl_test_source_sha256": "b232257614dda05a72443700144c6e90c2cca4d8e3ad7dd41af096fc8195a885",
+    "fpga_verilator_library_sha256": "5d457fda0e65831bb5432d8f72d3ce8fbe85cd71a65e14e7e03d1898a217475f",
+    "policy_sha256": "65bf11a3c3f42e0e7247ba23890a1842084b33f84fda90e144015d3b8a1cf7ca",
+    "qemu_system_x86_64_sha256": "5e807325d64b7aa36f0727a1cd0835d1bc7f974147bd7b7fc1626c59db031a0b",
+    "rust_library_sha256": "a54ed58b2e1caa12b1d42214290788176aa97ff103905405e9958cde8952e7d7"
+  },
+  "latencies_ns": [
+    80,
+    400,
+    2000,
+    10000
+  ],
+  "output_root": "/tmp/slugarch-qemu-jit-cfmws-sweep-final3-20260729",
+  "provenance": {
+    "python_version": "3.13.9",
+    "qemu_cxl_test_source_sha256": "b232257614dda05a72443700144c6e90c2cca4d8e3ad7dd41af096fc8195a885",
+    "runner_sha256": "b4f299280cfd1fbddc48bb79186e9c68799c353a65135ea952b4d5ed640b045a",
+    "summarizer_sha256": "0e69a197576dca610e1900196a38f6ab10dd88c2a209a1a36b8825996864d131"
+  },
+  "qemu_build": "/root/Concordia/SlugArch/.worktrees/build-qemu",
+  "qemu_source": "/root/Concordia/SlugArch/.worktrees/qemu-small-tiles",
+  "repeats": 5,
+  "runs": [
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 1,
+      "tap_sha256": "67b29973d99963ff5b6c71dd1a5fc3fb0e9e115b724c6c3a6e065d31b33831a0",
+      "wall_seconds": 0.2500960050001595
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 2,
+      "tap_sha256": "5a8517fcb01c7c6a5a502fe1aefba9cc2094ceb1deeaf471e0b598c71946e6e5",
+      "wall_seconds": 0.6352497269999731
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 3,
+      "tap_sha256": "ad483ea7803ada085a9f949ea81803f7fed4cabe8dbdd9f30102a74a6e77f8c9",
+      "wall_seconds": 0.6508577869999499
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 4,
+      "tap_sha256": "144ec7c7eb75d9ea4c52b9c08be1da16ca0715a1c30bf78b3bb2877dee2110eb",
+      "wall_seconds": 0.6850086409999676
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 5,
+      "tap_sha256": "da3b12c0e97534408203b341ce6b6dec503b54b5c0d53052a79b2d50ef3beb80",
+      "wall_seconds": 0.6863894070002061
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 1,
+      "tap_sha256": "25cc6903e90890017fcf2797740ab963eba9982626ab900a5d84241a12eaf979",
+      "wall_seconds": 0.957327159000215
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 2,
+      "tap_sha256": "042c2ae4481cbac2b0327d3a3d1e262c77fedcd5bcab35abd8fcea66de16cfa6",
+      "wall_seconds": 0.9327126349999162
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 3,
+      "tap_sha256": "069b2d12eb454c86bcdc61d5b44eb4e3d9599a050237b99b0e8a702676d8b5c4",
+      "wall_seconds": 0.9097765070000605
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 4,
+      "tap_sha256": "64d293b35ab2043623ba5f7cb25e2d3fd1f82176d51e189a8fa85062247772b6",
+      "wall_seconds": 0.9208677000001444
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 80,
+      "repetition": 5,
+      "tap_sha256": "53f8fc39c5be5b7bc3973d809dcdf269f8fac090c28870ac8713f1a91c385956",
+      "wall_seconds": 0.920652495000013
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 1,
+      "tap_sha256": "894801fae01a74d05947993bcfb6edde4ab112678828844f137d82ae9a0642b0",
+      "wall_seconds": 0.6899536539999644
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 2,
+      "tap_sha256": "f596151568708bbf72d63048c4d55174192fed3d79d428bb29db831ed08060b6",
+      "wall_seconds": 0.6874095230000421
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 3,
+      "tap_sha256": "df90ebf6122687b0766f02171a9fe25cf5eb522a3e2d1488d3f0c91754f22a62",
+      "wall_seconds": 0.6873583470000995
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 4,
+      "tap_sha256": "4fdeaa47e5299c7508ff75b542e87f8c51d294c18b10f3eaccb5a87db5056f57",
+      "wall_seconds": 0.6866661779999959
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 5,
+      "tap_sha256": "51d0cee02dbaba96ca816efa118095572dc0ca3b7dba23eec79f77801f47e359",
+      "wall_seconds": 0.6870225349998691
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 1,
+      "tap_sha256": "1847c6c10c25eb56d4271853f971003e23857143e88e5d9207732454ad92841b",
+      "wall_seconds": 0.8986004719999983
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 2,
+      "tap_sha256": "e8d13e740225f15a5621bfe19c01bdf4bfd07f0f2ec59e5ae1c2921982ff445b",
+      "wall_seconds": 0.9192742730001555
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 3,
+      "tap_sha256": "7b578eca7abdf475d824864e08c4fe0a7a1959c101f9804ee4b7af750bfd3910",
+      "wall_seconds": 0.9037234900001749
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 4,
+      "tap_sha256": "c1369becd5bbfa528944394ea93aafd65142e3439cc806fbe4e22b0c9d5609b8",
+      "wall_seconds": 0.8894557799999347
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 400,
+      "repetition": 5,
+      "tap_sha256": "68185c64cfb4c04f0444c5f89e124a735f1afe17a149228d27276c64334bc10f",
+      "wall_seconds": 0.9081376859999182
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 1,
+      "tap_sha256": "7220b4867c8a54851295196e1c811e504b660def16f5d45191fd5d1e15abe3f4",
+      "wall_seconds": 0.6843310459998975
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 2,
+      "tap_sha256": "96a9b643aebd87d4b6e8c5c2150ea1a021c3b0402eacdb7b9a5e5f538a68498c",
+      "wall_seconds": 0.6953748790001555
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 3,
+      "tap_sha256": "d02c1e5fd2678f96ee09e20708b50e1f41edd487e81a3de7a1003a9cb87085cf",
+      "wall_seconds": 0.2789331819999461
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 4,
+      "tap_sha256": "5c8b5a0274eab0c58c985399987ae71a1ff6ed554d83b3a86351f70dcf0ac570",
+      "wall_seconds": 0.2708336559999225
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 5,
+      "tap_sha256": "151edba88074b98335ba6bf05b08307fdfcb33abd91383774701cb5c7f8bc233",
+      "wall_seconds": 0.25461082599986185
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 1,
+      "tap_sha256": "39fc66bed8951e2797a4aa842500aedead3dbe1b60892a90ec3a3bc71e08d595",
+      "wall_seconds": 0.2694709900001726
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 2,
+      "tap_sha256": "f5d4653791eb492f818b21a2fa805383b4b00f4228bbb6f0f6a4414f49903ac1",
+      "wall_seconds": 0.5749530109997067
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 3,
+      "tap_sha256": "4997a4a764d12a39e93cbf96fca64cb5275de52090ed24beeb16a6bc43882caf",
+      "wall_seconds": 0.6322400500002914
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 4,
+      "tap_sha256": "49905764e767b57b16552f1103ca2d92706a9f9b990b1d6da6b06aeff2b98174",
+      "wall_seconds": 0.6495956999997361
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 2000,
+      "repetition": 5,
+      "tap_sha256": "5912376582769d00bed5f857cd01dbe35056293669219a257a68d7f9037bf803",
+      "wall_seconds": 0.6513835939999808
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 1,
+      "tap_sha256": "3335d754d87a95ae9b286207f70d9c662315e2e77e33ff244159aa08f65bc298",
+      "wall_seconds": 0.5584952789999988
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 2,
+      "tap_sha256": "f4ba74ae9dc790df90fac68f74def89ea12cd4a40c6c95d2a34c0703ac51ff49",
+      "wall_seconds": 0.5590808510000898
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 3,
+      "tap_sha256": "1002ecc99d3be05bb1f0d2b142313dea6f7babcd8fd94d366cc3d25314ca31c9",
+      "wall_seconds": 0.5574848770002063
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 4,
+      "tap_sha256": "631bb96dad6c0c8fa813f4ef2b66354cbbd96b1bbf7f8aa273b7941882211123",
+      "wall_seconds": 0.5634938279999915
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 5,
+      "tap_sha256": "03668a73a73be2027060c3939e08585fd93afd104ce43464eef665c9f75e599c",
+      "wall_seconds": 0.5655721389998689
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 1,
+      "tap_sha256": "b8149f5e637cc18f07e31074231604980afb4174e8a14d4ba6b18b5e0cae281b",
+      "wall_seconds": 0.6711017369998444
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 2,
+      "tap_sha256": "56a82a4ce573c8c0bdc1e382997d4209f45b51fec3abb154e0d82a846c04ef76",
+      "wall_seconds": 0.6584964859998763
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 3,
+      "tap_sha256": "847078cdcfe81da45836baa5b059adffb2bd5854421b9ff168f3879a5f08570c",
+      "wall_seconds": 0.6607030309996844
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 4,
+      "tap_sha256": "cad72d0c71b420405eeb2cf1ca0e3d6573f60651fb2df99684436b777287e5a5",
+      "wall_seconds": 0.6577833549999923
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "modeled_latency_ns": 10000,
+      "repetition": 5,
+      "tap_sha256": "a61431098f2dfca65ab0e94e738507f6f802c57603d47f9d58a5c239fd60a7ce",
+      "wall_seconds": 0.6512528769999335
+    }
+  ],
+  "schema": "slugarch.qemu-jit-cfmws-sweep-run.v1",
+  "started_at_utc": "2026-07-29T06:29:00.763710+00:00",
+  "status": "pass",
+  "summary_sha256": "e59b59b5f04a923184436696666493a195f395591672bcef279b69ed3f7b9438",
+  "test_path": "/x86_64/pci/cxl/type2_jext_cfmws_records"
+}

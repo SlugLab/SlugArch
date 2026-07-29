@@ -1,0 +1,121 @@
+{
+  "backends": {
+    "fpga-verilator": {
+      "repeats": 5,
+      "runs": [
+        {
+          "jit_events_sha256": "fc962164106dbd37d35cc4e1527361e3f0c08dead84ff5c7d5c554bd4744d4e7",
+          "outcome_sha256": "9004fcb2e71ff35234cef2b737621d1c8922a0abd444a90212611ca6652d5f1f",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 1,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "2ccddb6c16219f86c189ea319d14bd4514ae77c94db0bef9b7e9079c65960abf",
+          "outcome_sha256": "9004fcb2e71ff35234cef2b737621d1c8922a0abd444a90212611ca6652d5f1f",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 2,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "4c469b6c88613b5a18dd460d3e4011508c44293add805f29718aa85ca4814166",
+          "outcome_sha256": "9004fcb2e71ff35234cef2b737621d1c8922a0abd444a90212611ca6652d5f1f",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 3,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "bc60255c0b41a4f20b716120ce149fb6fe228aab05cfa20347d9e1ed65dd7411",
+          "outcome_sha256": "9004fcb2e71ff35234cef2b737621d1c8922a0abd444a90212611ca6652d5f1f",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 4,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "09020b27e12ca4711cc5f3a8efcd764ed1237501643c8c1979862f17100e4f0f",
+          "outcome_sha256": "9004fcb2e71ff35234cef2b737621d1c8922a0abd444a90212611ca6652d5f1f",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 5,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        }
+      ],
+      "source_root": "fpga-verilator"
+    },
+    "rust": {
+      "repeats": 5,
+      "runs": [
+        {
+          "jit_events_sha256": "378537016d24bd825eb0a828763a3dbe30024a4c0a0d57e572f50bed1c4f227e",
+          "outcome_sha256": "ab4925dc2de01c0a25264d6b3cb633b9429bd5471e32199f3bf57bf2c400d976",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 1,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "8b3edb42e4fa180e86017283f001a7c2af4b25b5b3a9f5c846df7f99923ec3a1",
+          "outcome_sha256": "ab4925dc2de01c0a25264d6b3cb633b9429bd5471e32199f3bf57bf2c400d976",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 2,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "2fe1abf939f8d4aa53ac2a812249c31b22043a7d275518224d203c39b2890759",
+          "outcome_sha256": "ab4925dc2de01c0a25264d6b3cb633b9429bd5471e32199f3bf57bf2c400d976",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 3,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "6a3ef7acafd2e1a5f9db863bbb7835b7e4ec120994fdbcb643789458f68e35f3",
+          "outcome_sha256": "ab4925dc2de01c0a25264d6b3cb633b9429bd5471e32199f3bf57bf2c400d976",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 4,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        },
+        {
+          "jit_events_sha256": "e5e94ee47b2798222c16f91d9808ced3a43914d12eaf2d1c7e16a8a46ba0fafd",
+          "outcome_sha256": "ab4925dc2de01c0a25264d6b3cb633b9429bd5471e32199f3bf57bf2c400d976",
+          "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+          "qemu_events_sha256": "ae4ad5b4c491e68a387be459d0259f6a36c971ca30305882868146d256afd584",
+          "repetition": 5,
+          "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead"
+        }
+      ],
+      "source_root": "rust"
+    }
+  },
+  "evidence_scope": "QEMU qtest with an in-process fake CXLMemSim service, using the Rust software and FPGA-Verilator RTL-simulation backends; no physical FPGA or production external-service evidence",
+  "fault": {
+    "expected_error": 14,
+    "expected_external_commit": false,
+    "injection_point": "before CXLMemSim request transmission",
+    "name": "verified-policy-strict-reject"
+  },
+  "policy_digest": "3c376522dadff526cfaa5e947f3f6d9e8a74167db1d19479ff0f745b44710b1f",
+  "schema": "slugarch.qemu-jit-cfmws-failstop-five.v1",
+  "semantic_signature_sha256": "f5456697191cebca1d1f39119e86d07de6c0f932c54db77e136b26bbbade1ead",
+  "status": "pass",
+  "validation": {
+    "bypass_path_completions": 0,
+    "direct_cfmws_completions": 0,
+    "drops": 0,
+    "external_commits": 0,
+    "fresh_processes": 10,
+    "records": 0,
+    "rejected_requests": 10,
+    "semantic_signatures": 1,
+    "server_memory_requests": 0,
+    "server_read_requests": 0,
+    "server_sequence": 0,
+    "server_write_requests": 0
+  }
+}

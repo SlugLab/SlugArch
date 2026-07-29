@@ -1,0 +1,98 @@
+{
+  "finished_at_utc": "2026-07-29T06:28:25.071690+00:00",
+  "inputs": {
+    "cxl_test_sha256": "d465facfee64db368f16118755601bc2845bf679dcb439724ebb7a73b49f2912",
+    "cxl_test_source_sha256": "b232257614dda05a72443700144c6e90c2cca4d8e3ad7dd41af096fc8195a885",
+    "fpga_verilator_library_sha256": "5d457fda0e65831bb5432d8f72d3ce8fbe85cd71a65e14e7e03d1898a217475f",
+    "policy_sha256": "029802a2c2674036e4d3348c157259fe9f3fdb998d49d632a81c1faa819dcb5d",
+    "qemu_system_x86_64_sha256": "5e807325d64b7aa36f0727a1cd0835d1bc7f974147bd7b7fc1626c59db031a0b",
+    "rust_library_sha256": "a54ed58b2e1caa12b1d42214290788176aa97ff103905405e9958cde8952e7d7"
+  },
+  "output_root": "/tmp/slugarch-qemu-jit-cfmws-failstop-final3-20260729",
+  "provenance": {
+    "python_version": "3.13.9",
+    "qemu_cxl_test_source_sha256": "b232257614dda05a72443700144c6e90c2cca4d8e3ad7dd41af096fc8195a885",
+    "runner_sha256": "f5806040e68722bb1758bbea3e119037cbcdbec170b55b5b95275b408d8d58e0",
+    "summarizer_sha256": "29fb139f0d00cccdecd850a8145e8115544db23e411ae65a0e192bac70ae8a87"
+  },
+  "qemu_build": "/root/Concordia/SlugArch/.worktrees/build-qemu",
+  "qemu_source": "/root/Concordia/SlugArch/.worktrees/qemu-small-tiles",
+  "repeats": 5,
+  "runs": [
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "repetition": 1,
+      "tap_sha256": "6dee255a893864282867ed15996da1f8fb4fa1c5544962c783937108a525229c",
+      "wall_seconds": 0.19009592300017175
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "repetition": 2,
+      "tap_sha256": "cbae2ba014693d471ba7f152526cfe8d1b56cc8d8767a8cd44f0c85713d16ebf",
+      "wall_seconds": 0.2094926940003461
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "repetition": 3,
+      "tap_sha256": "f80eb5ff25d2b051ab094c32490ae2050254df6cbb21df060a534a58f15115ba",
+      "wall_seconds": 0.19997950800006947
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "repetition": 4,
+      "tap_sha256": "6a064ea2140f30f2974382947b6347ae9138c1ac0bf76bdec3339a167c234513",
+      "wall_seconds": 0.2014564490000339
+    },
+    {
+      "backend": "rust",
+      "exit_code": 0,
+      "repetition": 5,
+      "tap_sha256": "93c799bbe84480105abd51ee6a15855fa15e8573669c3b56d77b508c34520b70",
+      "wall_seconds": 0.2115776820000974
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "repetition": 1,
+      "tap_sha256": "983b4cf999605b7cea9a0435d3b19bf00adc4edd59453feae8fc8e5877a09879",
+      "wall_seconds": 0.2253011399998286
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "repetition": 2,
+      "tap_sha256": "4737e90da1fc9b06c7c7fe85b828e69792ca439e24f612b933655a0bab115ef4",
+      "wall_seconds": 0.2699234719998458
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "repetition": 3,
+      "tap_sha256": "99677cf62e2b9c85597569d489f4bc76cad83cf4ab9ade3f8613e04f91b8cdfc",
+      "wall_seconds": 0.2570316169999387
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "repetition": 4,
+      "tap_sha256": "ed88f88eb4f7b996b431ebc83fc0fb9c7fa472d79b27eb65a73203cbe9cae0a2",
+      "wall_seconds": 0.21492998400026408
+    },
+    {
+      "backend": "fpga-verilator",
+      "exit_code": 0,
+      "repetition": 5,
+      "tap_sha256": "2e20d07e46c59693b70dc17eb6fb819358149fecd7b1eb5cf2b0d0b31d9aeec3",
+      "wall_seconds": 0.20166807099985817
+    }
+  ],
+  "schema": "slugarch.qemu-jit-cfmws-failstop-run.v1",
+  "started_at_utc": "2026-07-29T06:28:22.881293+00:00",
+  "status": "pass",
+  "summary_sha256": "8ea468bfbdb66536406be57a77cb2ea00888ad4789cab30d7aa9645e969c5775",
+  "test_path": "/x86_64/pci/cxl/type2_jext_cfmws_external_reject"
+}

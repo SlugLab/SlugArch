@@ -1,0 +1,21 @@
+{
+  "finished_at_utc": "2026-07-29T06:02:12.258683+00:00",
+  "inputs": {
+    "cxl_test_sha256": "d465facfee64db368f16118755601bc2845bf679dcb439724ebb7a73b49f2912",
+    "cxl_test_source_sha256": "b232257614dda05a72443700144c6e90c2cca4d8e3ad7dd41af096fc8195a885",
+    "qemu_system_x86_64_sha256": "5e807325d64b7aa36f0727a1cd0835d1bc7f974147bd7b7fc1626c59db031a0b"
+  },
+  "output_root": "/tmp/slugarch-qemu-cxl-fault-matrix-final-20260729",
+  "provenance": {
+    "python_version": "3.13.9",
+    "qemu_cxl_test_source_sha256": "b232257614dda05a72443700144c6e90c2cca4d8e3ad7dd41af096fc8195a885",
+    "runner_sha256": "65000209f295f4a76d74dbd351a9cc015ff5622fafe6f47fd0c3ec448c37bdd4",
+    "summarizer_sha256": "65000209f295f4a76d74dbd351a9cc015ff5622fafe6f47fd0c3ec448c37bdd4"
+  },
+  "qemu_build": "/root/Concordia/SlugArch/.worktrees/build-qemu",
+  "qemu_source": "/root/Concordia/SlugArch/.worktrees/qemu-small-tiles",
+  "schema": "slugarch.qemu-cxl-fault-matrix-run.v1",
+  "started_at_utc": "2026-07-29T06:02:00.860538+00:00",
+  "status": "pass",
+  "summary_sha256": "a4f0ba26756bc3d111a44600112eba10925882a5f87aeea4cd4e246fb75ea512"
+}

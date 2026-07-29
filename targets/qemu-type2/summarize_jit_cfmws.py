@@ -257,7 +257,8 @@ def _validate_counter(entry: dict, expected_count: int, context: str) -> None:
     )
 
 
-def _validate_qemu_entries(entries: list[dict], context: str) -> dict:
+def _validate_qemu_entries(
+        entries: list[dict], context: str, modeled_latency_ns: int) -> dict:
     _require(len(entries) == 6, f"{context}: expected 6 QEMU log entries")
     handshake = entries[0]
     counters = [entries[1], entries[3], entries[5]]
@@ -268,7 +269,7 @@ def _validate_qemu_entries(entries: list[dict], context: str) -> dict:
             "event": "handshake",
             "client_id": 1,
             "capacity_bytes": 256 * 1024 * 1024,
-            "configured_latency_ns": MODELED_LATENCY_NS,
+            "configured_latency_ns": modeled_latency_ns,
             "protocol_version": 1,
         },
         f"{context}: handshake",
@@ -306,8 +307,8 @@ def _validate_qemu_entries(entries: list[dict], context: str) -> dict:
                 "dpa": DPA,
                 "length": TRANSFER_BYTES,
                 "status": 0,
-                "returned_modeled_latency_ns": MODELED_LATENCY_NS,
-                "requested_delay_ns": MODELED_LATENCY_NS,
+                "returned_modeled_latency_ns": modeled_latency_ns,
+                "requested_delay_ns": modeled_latency_ns,
                 "path": "direct_cfmws",
                 "phase_id": "phase:cfmws",
                 **expected,
@@ -317,11 +318,11 @@ def _validate_qemu_entries(entries: list[dict], context: str) -> dict:
         applied = completion.get("applied_delay_ns")
         overshoot = completion.get("delay_overshoot_ns")
         _require(
-            isinstance(applied, int) and applied >= MODELED_LATENCY_NS,
+            isinstance(applied, int) and applied >= modeled_latency_ns,
             f"{context}: {operation} applied delay is below the model",
         )
         _require(
-            overshoot == applied - MODELED_LATENCY_NS,
+            overshoot == applied - modeled_latency_ns,
             f"{context}: {operation} delay overshoot is inconsistent",
         )
         _require(
@@ -348,8 +349,11 @@ def _semantic_signature(jit: dict, qemu: dict) -> str:
             key: value
             for key, value in completion.items()
             if key not in {
+                "returned_modeled_latency_ns",
+                "requested_delay_ns",
                 "applied_delay_ns",
                 "delay_overshoot_ns",
+                "delay_undershot",
             }
         }
         for completion in qemu["completions"]
@@ -365,9 +369,13 @@ def _semantic_signature(jit: dict, qemu: dict) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def summarize(backends: dict[str, pathlib.Path], expected_repeats: int = 5) -> dict:
+def summarize(
+        backends: dict[str, pathlib.Path],
+        expected_repeats: int = 5,
+        expected_latency_ns: int = MODELED_LATENCY_NS) -> dict:
     _require(backends, "at least one backend is required")
     _require(expected_repeats > 0, "expected repeats must be positive")
+    _require(expected_latency_ns > 0, "modeled latency must be positive")
     backend_summaries = {}
     policy_digests = set()
     semantic_signatures = set()
@@ -402,7 +410,9 @@ def summarize(backends: dict[str, pathlib.Path], expected_repeats: int = 5) -> d
             qemu_entries = _load_jsonl(qemu_path)
             context = f"{backend} repetition {repetition}"
             jit = _validate_jit_entries(jit_entries, context)
-            qemu = _validate_qemu_entries(qemu_entries, context)
+            qemu = _validate_qemu_entries(
+                qemu_entries, context, expected_latency_ns
+            )
             events = jit["events"]
             joins = jit["joins"]
             completions = qemu["completions"]
@@ -447,7 +457,7 @@ def summarize(backends: dict[str, pathlib.Path], expected_repeats: int = 5) -> d
             "write_delay_overshoot_ns",
         ]
         backend_summaries[backend] = {
-            "source_root": str(root),
+            "source_root": root.name,
             "repeats": expected_repeats,
             "runs": runs,
             "metrics": {
@@ -467,6 +477,7 @@ def summarize(backends: dict[str, pathlib.Path], expected_repeats: int = 5) -> d
     return {
         "schema": "slugarch.qemu-jit-cfmws-five.v1",
         "status": "pass",
+        "modeled_latency_ns": expected_latency_ns,
         "policy_digest": next(iter(policy_digests)),
         "semantic_signature_sha256": next(iter(semantic_signatures)),
         "measurement_scope": {
@@ -517,6 +528,11 @@ def main(argv: list[str] | None = None) -> int:
         metavar="NAME=PATH",
     )
     parser.add_argument("--expected-repeats", type=int, default=5)
+    parser.add_argument(
+        "--modeled-latency-ns",
+        type=int,
+        default=MODELED_LATENCY_NS,
+    )
     parser.add_argument("--output", required=True, type=pathlib.Path)
     args = parser.parse_args(argv)
     backends = dict(args.backend)
@@ -524,7 +540,11 @@ def main(argv: list[str] | None = None) -> int:
         len(backends) == len(args.backend),
         "duplicate backend argument",
     )
-    summary = summarize(backends, args.expected_repeats)
+    summary = summarize(
+        backends,
+        args.expected_repeats,
+        args.modeled_latency_ns,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(summary, indent=2, sort_keys=True) + "\n",

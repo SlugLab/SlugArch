@@ -1,0 +1,463 @@
+{
+  "cases": [
+    {
+      "asserted_invariant": "device realization is rejected with a capacity error",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "HELLO/ACK capacity field",
+      "name": "ack-capacity-mismatch",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "781fb5fa4fcff8488fae3208d9d7dd61c452dd719a15227d10c4c607459499b7",
+          "wall_seconds": 0.2540375250000011
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "9fb490869b13ac7bd828c0ca91a02de1e4881a66c4b84be0f0eea9758396c0e2",
+          "wall_seconds": 0.2456351459999837
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "9be07494077b418deab9fe2e796f385039bac630fd14ebc2e8ee6db1931b9e9f",
+          "wall_seconds": 0.24122709700003497
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "18abf25166368bc0119202e8cade1b652dc27d6553b212ab7dd78515389fb261",
+          "wall_seconds": 0.24095221099997843
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "fc9e0756d54c454219b88e6179aa170dfef9a05bd17c459553d617e2b6962b7f",
+          "wall_seconds": 0.2435584629999994
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_sync_bad_capacity"
+    },
+    {
+      "asserted_invariant": "device realization is rejected with a latency error",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "HELLO/ACK modeled latency > 1 ms",
+      "name": "ack-latency-out-of-range",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "ce105b045f74bbd76ac90ab46717617fc926db3c75fba6cbd36d5f54bb9410af",
+          "wall_seconds": 0.23692099699997016
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "8befde95b83d0f6528b0b50605ba2e751400fef0e18de480c755795174c9e45a",
+          "wall_seconds": 0.24369380199999569
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "04fdf43e28098f352df7dee0b3f907335d66414e456b59896203b25653302728",
+          "wall_seconds": 0.2416692020000255
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "bda685f13fd270020a9b72bf6d7b6449020ed9ccef25bfed9db3cdc7654ed091",
+          "wall_seconds": 0.24115136400001802
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "6e6359a7c86f9699481f413c6590c9be22e298186d8f742f3f203465b45a479f",
+          "wall_seconds": 0.24063366699999733
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_sync_bad_latency"
+    },
+    {
+      "asserted_invariant": "device realization is rejected with a request-ID error",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "HELLO/ACK request ID",
+      "name": "ack-request-id-mismatch",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "4fd3e75c7f69e35be0e5082007fe6a6ed610b84056255711f71c90c48b307622",
+          "wall_seconds": 0.24206686100001207
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "c3a89bedd0bbfec18eaaf1a6e460b0bcb35ee839e8046c9957e49b2f05b38780",
+          "wall_seconds": 0.24071940699997185
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "fd547175b077f6e3552b40e6da326606ac1592aece80153702c5d26a3fff7ec4",
+          "wall_seconds": 0.24487447999996448
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "f5316f0400040b4930ccce786d774e4141eb9d742f475f80d956b7940f379f38",
+          "wall_seconds": 0.23931664599996338
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "5ab9953aaf5a45574bd97499bcb1222e4fcad9bb7e56885ae437a0417a4dc5cf",
+          "wall_seconds": 0.2399312730000247
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_sync_bad_request_id"
+    },
+    {
+      "asserted_invariant": "device realization is rejected with a CRC32C error",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "HELLO/ACK CRC32C",
+      "name": "ack-crc32c-corruption",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "627717c081f1acc0840d59185f6a9327d7c505debdf10ff0206fec82392c2301",
+          "wall_seconds": 0.2379911829999628
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "1c74efbb0f664800df334ab056c4ba58147bbbac6b8f6837046e049f1e333ab0",
+          "wall_seconds": 0.22896412000000055
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "e184188203536f8ca2dfa9ebf981b594a5797f28e77365fc55909475cc1d44f7",
+          "wall_seconds": 0.2403928499999779
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "8d87be22d8a8475180bcaa421bcd13d0584b93341d7376c15b81bcaff67d6685",
+          "wall_seconds": 0.23933700399999225
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "70dad6859e0408b86cf58f133f34c39b7e24d6ea80821f1f88a446fac7513338",
+          "wall_seconds": 0.23561432899998636
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_sync_bad_crc"
+    },
+    {
+      "asserted_invariant": "zero CXLMemSim requests and zero direct completions",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "unsupported two-target CFMWS",
+      "name": "cfmws-two-targets",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "e13113cf211bddbf749d303611847837ed09ef496a436e495098a0afaf460ffd",
+          "wall_seconds": 0.2326622749999956
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "b9141f78a6f5abf1dd60ba21d603ea5fd9f954061e4dcacb7baaeae6f3cdc2b7",
+          "wall_seconds": 0.23526936900003648
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "793fddfa7bf861fbda6e9d7e5a8e90b80c0a241815bd2741a1b31b217a23d90e",
+          "wall_seconds": 0.22925768499999322
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "353f28340338fbd465eb9b77fcd67221ae925877dee50a3a16b748dd42cce7f8",
+          "wall_seconds": 0.22938060299998142
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "198c374ae9751271d91412c4e5ade13dce5ce612cf00e4ecd5a342026f116567",
+          "wall_seconds": 0.23498412999998664
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_cfmws_reject_two_targets"
+    },
+    {
+      "asserted_invariant": "zero CXLMemSim requests and zero direct completions",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "512 MiB CFMWS for a 256 MiB endpoint",
+      "name": "cfmws-size-mismatch",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "67a4125dd4e90f7c2bda6b49a19d0f64083d8902b7b616a04b6414951d29db7a",
+          "wall_seconds": 0.23625013899999203
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "f366c1e988c90924a75f198359939873a471904e3eb4f251ad117e3077f02593",
+          "wall_seconds": 0.23316477999998142
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "0883e3c9eb9fbb74afe9fa6c8b927e6b61bcda5d32a7742fc8061cdde710ebf3",
+          "wall_seconds": 0.23591486599997324
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "15b0d1c3f6596212de8e9eff78cc74c4aca981e574d6d4650fcc4330c6e25bd9",
+          "wall_seconds": 0.23407863299996734
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "a4d8bb9c3e3d3a0c757bed076bc55c31e8619155af1a33f53cf893e401864088",
+          "wall_seconds": 0.23227903999998034
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_cfmws_reject_512m"
+    },
+    {
+      "asserted_invariant": "zero CXLMemSim requests and zero direct completions",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "unsupported switch-routed CFMWS",
+      "name": "cfmws-switch-route",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "3f8d096b65bda1ec685f0bc9cadcea180592d68b306eb934c401094ce7c7b5f5",
+          "wall_seconds": 0.2439808379999704
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "4a07cde4122eb6af06766db2839a511c6fff6ecb03d6867dae4d5564cff08180",
+          "wall_seconds": 0.23757594599999265
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "9a1d4109947f6f1e8d53a7133446aed5dae6e2da3625f2382f636bdb254ef84a",
+          "wall_seconds": 0.24179340900002444
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "d62dbb2067762ab8f497b6df6a5fa07c1bbb8f8c6c5c25552160bb2b9c7e5c3c",
+          "wall_seconds": 0.2388468259999854
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "888d86cdb3d7ae35fb5ea53364da4ad575594e72add13990be3d2f9f8ff2a50e",
+          "wall_seconds": 0.24098324199997023
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_cfmws_reject_switch"
+    },
+    {
+      "asserted_invariant": "JIT error 14, zero server requests, and zero completions",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "strict JIT reject before request transmission",
+      "name": "jit-request-reject",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "cc3265137e01e1254126634e7cec4afb641bdf0345a95de283bce65eab61fb7e",
+          "wall_seconds": 0.20646453500000916
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "3a1bac221bb9a810208991cd1a33c24d3465ee98d42effa1a4955f6d959f749c",
+          "wall_seconds": 0.20167364400003862
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "928f8153deac0e21a12e7e0b72663bf581f488602e1ffe6d355a0e5cf71a77d3",
+          "wall_seconds": 0.20047749299999396
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "2ea17f7409fd8f649120a49a2a5dbfa5b360ad23a157b2e3e8f83dfbe5e0e97a",
+          "wall_seconds": 0.2046579190000557
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "9f3f6b5b1a984153a53f5adf6cee411753fc3386336e353bf033b3a894d8a1e8",
+          "wall_seconds": 0.19719376700004432
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_jext_cfmws_reject"
+    },
+    {
+      "asserted_invariant": "JIT error 15, one drop, zero server requests, and zero completions",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "strict record drop before request transmission",
+      "name": "jit-request-drop",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "3baab566cf7102bef10ef9d36198336c8ddf9a6aa359b8329572937bd37d2dfe",
+          "wall_seconds": 0.20145844399996804
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "b375023b844a7c610d6c1bb289e4038339590539da9f949aadd4664e6ad09705",
+          "wall_seconds": 0.19896206800001437
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "af5041f9968b71909824d7b36cbed20f4462b24f9837445370b1b4ec76016e86",
+          "wall_seconds": 0.19716476599990074
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "2df2bc3911b99e1cc870c46d5b958e773d8d00f6156ba9808789c2bdf90f9793",
+          "wall_seconds": 0.2007902819999572
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "7bc1d3fcf8a72304034a758c3145245f1b9247c59a1799da6987fbd2579e1d94",
+          "wall_seconds": 0.1966479000000163
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_jext_cfmws_drop"
+    },
+    {
+      "asserted_invariant": "external commit is joined to error 15; zero host completions",
+      "assertion_failures": 0,
+      "fresh_processes": 5,
+      "injection": "strict completion-record drop after server write",
+      "name": "jit-post-commit-drop",
+      "runs": [
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 1,
+          "tap_sha256": "374a7ce4ac5b154a04ddd2c19c52390263e0f42877a293eac20eef1b264e25c1",
+          "wall_seconds": 0.19963295700006256
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 2,
+          "tap_sha256": "2691b22e3b744236ff03dfba0a1d1e9df224557f472c34f3f9fa9b10e819d420",
+          "wall_seconds": 0.20118116999992708
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 3,
+          "tap_sha256": "8488371320a4819f1ab24522771a27c8a58080978b7ed44833fa6a73d8f80614",
+          "wall_seconds": 0.20117545499999778
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 4,
+          "tap_sha256": "f7a7a6ae93398850e4c2f7947c1aed30747b6f1f8d8a4e9ef937322294d4deef",
+          "wall_seconds": 0.1994605259999389
+        },
+        {
+          "assertion_passed": true,
+          "exit_code": 0,
+          "repetition": 5,
+          "tap_sha256": "24d5d7db10d92f857563436641f45c1718909dcbadd4ee9c7b89f6f562b050d7",
+          "wall_seconds": 0.19810458400002062
+        }
+      ],
+      "test_path": "/x86_64/pci/cxl/type2_jext_cfmws_post_commit_drop"
+    }
+  ],
+  "evidence_scope": "QEMU qtest behavioral assertions; not physical CXL or FPGA timing",
+  "repeats_per_case": 5,
+  "schema": "slugarch.qemu-cxl-fault-matrix.v1",
+  "status": "pass",
+  "validation": {
+    "assertion_failures": 0,
+    "fault_cases": 10,
+    "fresh_test_processes": 50
+  }
+}
