@@ -3,6 +3,8 @@
 *.swp
 .vscode/
 .idea/
+__pycache__/
+*.py[cod]
 /docs/scratch/
 .worktrees/
 .superpowers/

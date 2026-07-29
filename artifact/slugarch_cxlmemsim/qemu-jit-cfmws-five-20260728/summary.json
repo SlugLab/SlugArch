@@ -1,0 +1,385 @@
+{
+  "backends": {
+    "fpga-verilator": {
+      "metrics": {
+        "read_applied_delay_ns": {
+          "max": 419,
+          "median": 410,
+          "min": 409,
+          "values": [
+            409,
+            419,
+            418,
+            410,
+            409
+          ]
+        },
+        "read_delay_overshoot_ns": {
+          "max": 19,
+          "median": 10,
+          "min": 9,
+          "values": [
+            9,
+            19,
+            18,
+            10,
+            9
+          ]
+        },
+        "read_host_event_pair_span_ns": {
+          "max": 443821,
+          "median": 351928,
+          "min": 263376,
+          "values": [
+            351928,
+            443821,
+            302068,
+            386288,
+            263376
+          ]
+        },
+        "write_applied_delay_ns": {
+          "max": 760,
+          "median": 419,
+          "min": 411,
+          "values": [
+            760,
+            411,
+            412,
+            419,
+            419
+          ]
+        },
+        "write_delay_overshoot_ns": {
+          "max": 360,
+          "median": 19,
+          "min": 11,
+          "values": [
+            360,
+            11,
+            12,
+            19,
+            19
+          ]
+        },
+        "write_host_event_pair_span_ns": {
+          "max": 420306,
+          "median": 332756,
+          "min": 317453,
+          "values": [
+            359603,
+            420306,
+            332756,
+            317453,
+            324289
+          ]
+        }
+      },
+      "repeats": 5,
+      "runs": [
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "74ce7062eb5db7cf9569f462122d0ee1c9722e358fd44a8c8cba3cd67eb082b3",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "717fdfa989a0341b706e24534529eaed35a41b283c9a23e2083028bdedd6c9a2",
+          "read_applied_delay_ns": 409,
+          "read_delay_overshoot_ns": 9,
+          "read_host_event_pair_span_ns": 351928,
+          "repetition": 1,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 760,
+          "write_delay_overshoot_ns": 360,
+          "write_host_event_pair_span_ns": 359603
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "ff2d0d117091767ddfc325c51e7da59894551b0caf31d663b4a252929fbce011",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "87a38c2fb2cec701a9790574d37bae5fc9635dc3db7b61c0a212ce6fad1d899a",
+          "read_applied_delay_ns": 419,
+          "read_delay_overshoot_ns": 19,
+          "read_host_event_pair_span_ns": 443821,
+          "repetition": 2,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 411,
+          "write_delay_overshoot_ns": 11,
+          "write_host_event_pair_span_ns": 420306
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "bf57122d8c15c7f735221ffecd0f1c6d977df25155e2f2901c2865648f3a347d",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "aa96d06ab09cfc13f391ccd7f649c1ff3e0a9369b68708ac64f775fa900db4b4",
+          "read_applied_delay_ns": 418,
+          "read_delay_overshoot_ns": 18,
+          "read_host_event_pair_span_ns": 302068,
+          "repetition": 3,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 412,
+          "write_delay_overshoot_ns": 12,
+          "write_host_event_pair_span_ns": 332756
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "746587fefbe8574783a16c8688c579f64c7266c346357e457c9b6c133210911f",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "80a218578d35c943fb2c84f00b8cfa3d97acbeb1eca88062de394d45453398e9",
+          "read_applied_delay_ns": 410,
+          "read_delay_overshoot_ns": 10,
+          "read_host_event_pair_span_ns": 386288,
+          "repetition": 4,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 419,
+          "write_delay_overshoot_ns": 19,
+          "write_host_event_pair_span_ns": 317453
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "a4718f7a74f3d08f48bb78fa7866db934003b055f711e3b2a9c0841bdf1bdd8b",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "a3a174c64c9aaaa34445ca2925d306b787a1e6b0bc3b0519d01cc1cbe7cf59f2",
+          "read_applied_delay_ns": 409,
+          "read_delay_overshoot_ns": 9,
+          "read_host_event_pair_span_ns": 263376,
+          "repetition": 5,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 419,
+          "write_delay_overshoot_ns": 19,
+          "write_host_event_pair_span_ns": 324289
+        }
+      ],
+      "source_root": "/root/Concordia/SlugArch/.worktrees/slugarch-small-tiles/artifact/slugarch_cxlmemsim/qemu-jit-cfmws-five-20260728/raw/fpga-verilator"
+    },
+    "rust": {
+      "metrics": {
+        "read_applied_delay_ns": {
+          "max": 425,
+          "median": 419,
+          "min": 414,
+          "values": [
+            425,
+            414,
+            422,
+            419,
+            418
+          ]
+        },
+        "read_delay_overshoot_ns": {
+          "max": 25,
+          "median": 19,
+          "min": 14,
+          "values": [
+            25,
+            14,
+            22,
+            19,
+            18
+          ]
+        },
+        "read_host_event_pair_span_ns": {
+          "max": 452347,
+          "median": 350312,
+          "min": 321365,
+          "values": [
+            452347,
+            321365,
+            350312,
+            325209,
+            358146
+          ]
+        },
+        "write_applied_delay_ns": {
+          "max": 426,
+          "median": 415,
+          "min": 411,
+          "values": [
+            426,
+            422,
+            415,
+            411,
+            413
+          ]
+        },
+        "write_delay_overshoot_ns": {
+          "max": 26,
+          "median": 15,
+          "min": 11,
+          "values": [
+            26,
+            22,
+            15,
+            11,
+            13
+          ]
+        },
+        "write_host_event_pair_span_ns": {
+          "max": 419112,
+          "median": 280052,
+          "min": 264176,
+          "values": [
+            419112,
+            280052,
+            296271,
+            265011,
+            264176
+          ]
+        }
+      },
+      "repeats": 5,
+      "runs": [
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "06bb5368a2a5c2ea1971c713efef97627f5dda8719e1c0921ec5919b6eb572aa",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "9efa74d57c2564ce4aba2161a37c786ad223375a7c7054cc47581e5a6cfdf2e1",
+          "read_applied_delay_ns": 425,
+          "read_delay_overshoot_ns": 25,
+          "read_host_event_pair_span_ns": 452347,
+          "repetition": 1,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 426,
+          "write_delay_overshoot_ns": 26,
+          "write_host_event_pair_span_ns": 419112
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "5935d60afc08b22cebaf0975941cb7a6839b261ce88f61ccf78ef1c296bf5f4a",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "fde0e3eda7667a5eef1114335cf543f593beea03c2a755816c3479a76b204465",
+          "read_applied_delay_ns": 414,
+          "read_delay_overshoot_ns": 14,
+          "read_host_event_pair_span_ns": 321365,
+          "repetition": 2,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 422,
+          "write_delay_overshoot_ns": 22,
+          "write_host_event_pair_span_ns": 280052
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "5222ba15968a93a1425aff90d8252d2cde63b9da21818c6832fe7b239315b918",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "091d3c47b6ad47d1e9bb9bdb2c2c059d86b4e5b599ce38aa82ea2917ccca37a6",
+          "read_applied_delay_ns": 422,
+          "read_delay_overshoot_ns": 22,
+          "read_host_event_pair_span_ns": 350312,
+          "repetition": 3,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 415,
+          "write_delay_overshoot_ns": 15,
+          "write_host_event_pair_span_ns": 296271
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "953258d293756c5d8646f77891efccfa4047e7e3353b8608a30d44f868dd7301",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "87a38c2fb2cec701a9790574d37bae5fc9635dc3db7b61c0a212ce6fad1d899a",
+          "read_applied_delay_ns": 419,
+          "read_delay_overshoot_ns": 19,
+          "read_host_event_pair_span_ns": 325209,
+          "repetition": 4,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 411,
+          "write_delay_overshoot_ns": 11,
+          "write_host_event_pair_span_ns": 265011
+        },
+        {
+          "canonical_events": 4,
+          "direct_cfmws_completions": 2,
+          "final_drop_count": 0,
+          "final_metadata_bytes": 32,
+          "final_record_count": 4,
+          "final_reject_count": 0,
+          "jit_events_sha256": "d9690a9caab5597456107b33146ec3c82c11f785f66482fe43168a8b8c1ee1f5",
+          "phase_id": 2215048676827443796,
+          "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+          "qemu_events_sha256": "bee433a1a10ba9ff3342f367386a761ce868bd7e4d0f40ebc89135e0a7362535",
+          "read_applied_delay_ns": 418,
+          "read_delay_overshoot_ns": 18,
+          "read_host_event_pair_span_ns": 358146,
+          "repetition": 5,
+          "request_completion_joins": 2,
+          "write_applied_delay_ns": 413,
+          "write_delay_overshoot_ns": 13,
+          "write_host_event_pair_span_ns": 264176
+        }
+      ],
+      "source_root": "/root/Concordia/SlugArch/.worktrees/slugarch-small-tiles/artifact/slugarch_cxlmemsim/qemu-jit-cfmws-five-20260728/raw/rust"
+    }
+  },
+  "measurement_scope": {
+    "backend": "Rust software and FPGA-Verilator RTL simulation; no physical FPGA timing",
+    "host_event_pair_span": "host monotonic interval between canonical request and completion records",
+    "modeled_latency": "CXLMemSim-requested and QEMU-applied delay; not CXL-link latency"
+  },
+  "policy_digest": "bc91e1b53305764adbaf714367cf2bf91206fbefade323b3b507307970ff81d4",
+  "schema": "slugarch.qemu-jit-cfmws-five.v1",
+  "semantic_signature_sha256": "96311459acfb20820875dfe971ee449a9f674a52a562784ef75f5ac1b2635d58",
+  "status": "pass",
+  "validation": {
+    "bypass_path_completions": 0,
+    "canonical_events": 40,
+    "direct_cfmws_completions": 20,
+    "drops": 0,
+    "final_metadata_bytes": 320,
+    "final_records": 40,
+    "fresh_processes": 10,
+    "rejects": 0,
+    "request_completion_joins": 20,
+    "semantic_signatures": 1
+  }
+}
