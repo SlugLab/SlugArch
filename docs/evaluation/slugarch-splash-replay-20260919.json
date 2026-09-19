@@ -1,0 +1,1171 @@
+{
+  "campaign_manifest_sha256": "2299dd649d5c080bec654970692f08e15ba1975d7340a4f9b01235bfcaf6dd7a",
+  "exact_payload_checks": 22240,
+  "fresh_processes": 40,
+  "qemu_sha256": "3f1d1ad9c10645de5dc2afcd9eddb9022ee376db365719fb0a78fc488eca0951",
+  "results": [
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "38fa95f14b6b4271c7d66ae420198e96a18cd130e0b65209fa157e1a56c34f0f",
+          "phase": "fixed_total",
+          "wall_ns": 52203862
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "a3e0602f5bc3c07811e82c99eeabc3b6d0ba79ce32925df53a9853ea12f44553",
+          "phase": "fixed_per_device",
+          "wall_ns": 10257400
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "1c20dfdc000b0795f30d12340eaefa756c70818a0559d6a1d0bbe3cfad195aad",
+          "phase": "host_relay",
+          "wall_ns": 4750040
+        }
+      ],
+      "pid": 147532,
+      "replay_run_id": "fda1c06a-b7f3-45c6-91ea-7bc24e80ce38",
+      "source_run": "run-003",
+      "source_run_id": "bce71308-439e-4511-9800-889894d4f51c",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "d9269719c5e758c835dd6436cd7544b27b64e0949824a4b720e60e7d4038e5fd",
+          "phase": "fixed_total",
+          "wall_ns": 55093316
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "cfb9a321cb857be8db5bde1b31c039626aa2376c0eb8e0f56d5e919c6d46376c",
+          "phase": "fixed_per_device",
+          "wall_ns": 35765847
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "730c7d8cf93a3627c68a662fa607c308effa77cb3879f7f81624034ba84839b7",
+          "phase": "host_relay",
+          "wall_ns": 8248834
+        }
+      ],
+      "pid": 147535,
+      "replay_run_id": "2cba2ce1-5fb3-4885-968f-0946d17f63da",
+      "source_run": "run-005",
+      "source_run_id": "d7649d54-73b8-4efb-871f-f4bc7bf85007",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "768be538ca608290c70a1ca1a3779ba112b63622fd0e0f6622bc92dc4d317bf4",
+          "phase": "fixed_total",
+          "wall_ns": 113335110
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "633626c14f229ba17c2135c8fdbc28219277191fdfbf58fe1e8be524d764aa3d",
+          "phase": "fixed_per_device",
+          "wall_ns": 23171310
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "b439112818f8a3a7f401054bb7b69ca98acd3728e44484de5b394b2097a092ee",
+          "phase": "host_relay",
+          "wall_ns": 5743005
+        }
+      ],
+      "pid": 147538,
+      "replay_run_id": "de10f9ba-2208-4edb-8c9a-ff4ec0e1b4a5",
+      "source_run": "run-007",
+      "source_run_id": "c1aeeb34-cb75-4fa4-96b6-8d63279242fc",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "024630d952908daa575809e9e79905daa4090f5fda5745721f4d11cda7ef305f",
+          "phase": "fixed_total",
+          "wall_ns": 105524580
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "f09402bf7cff792fefa9e9c48ca653dc25c1d9ab45c6932b854de37724e796d8",
+          "phase": "fixed_per_device",
+          "wall_ns": 184360928
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "e1d1284a8bf63fe0e675a4c025f176f357f270a3d444764110fb35e54716279a",
+          "phase": "host_relay",
+          "wall_ns": 46871266
+        }
+      ],
+      "pid": 147541,
+      "replay_run_id": "aa35a670-2cdd-4b09-893d-b981ecb05909",
+      "source_run": "run-010",
+      "source_run_id": "51732f84-7397-4a6a-9fc1-09d00aabf328",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "464879044d86c323d9afca26557b2df1a264efedd85d61aa3867fc03ef5f32be",
+          "phase": "fixed_total",
+          "wall_ns": 112323454
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "cdc4095bcbe90c65860abed715a9367bf7ba6c8c9b5aa555f7577aa174b30bcb",
+          "phase": "fixed_per_device",
+          "wall_ns": 47361521
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "55ee59890399ce302e2113a7b052d131d6873a791ef95d530155ecbd84df8860",
+          "phase": "host_relay",
+          "wall_ns": 11666873
+        }
+      ],
+      "pid": 147545,
+      "replay_run_id": "1ec9d636-ca06-4837-9092-4ee1de90c30d",
+      "source_run": "run-012",
+      "source_run_id": "26047026-e612-458b-8f54-5a817a9cb3d4",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "024630d952908daa575809e9e79905daa4090f5fda5745721f4d11cda7ef305f",
+          "phase": "fixed_total",
+          "wall_ns": 106575749
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "f09402bf7cff792fefa9e9c48ca653dc25c1d9ab45c6932b854de37724e796d8",
+          "phase": "fixed_per_device",
+          "wall_ns": 184727216
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "e1d1284a8bf63fe0e675a4c025f176f357f270a3d444764110fb35e54716279a",
+          "phase": "host_relay",
+          "wall_ns": 47194882
+        }
+      ],
+      "pid": 147548,
+      "replay_run_id": "ed8fb579-ffa2-4ee4-9423-f2217b7a410b",
+      "source_run": "run-020",
+      "source_run_id": "57ef0db8-d78b-4f46-9c0a-6ac211276f80",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "51f822a842f719dc9718c4eed77bac4d401f60b563e018646c74436fe222dd4d",
+          "phase": "fixed_total",
+          "wall_ns": 106081013
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "e3eb58d320271eb65aa01c40e65df4567c875fdb33a04ec8ca0040dfe415743d",
+          "phase": "fixed_per_device",
+          "wall_ns": 92514975
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "ebfeb88c1a5cf0d4b0875dbbcd7c59ea51806ed9eeb27e57b4fdf4394df02d36",
+          "phase": "host_relay",
+          "wall_ns": 22886170
+        }
+      ],
+      "pid": 147551,
+      "replay_run_id": "72aa53e3-fd3b-471e-bb19-45c351d0cbdb",
+      "source_run": "run-022",
+      "source_run_id": "45364c33-7b51-4522-a4c6-8ba7cebe6b0f",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "024630d952908daa575809e9e79905daa4090f5fda5745721f4d11cda7ef305f",
+          "phase": "fixed_total",
+          "wall_ns": 104361509
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "f09402bf7cff792fefa9e9c48ca653dc25c1d9ab45c6932b854de37724e796d8",
+          "phase": "fixed_per_device",
+          "wall_ns": 182311012
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "e1d1284a8bf63fe0e675a4c025f176f357f270a3d444764110fb35e54716279a",
+          "phase": "host_relay",
+          "wall_ns": 46853340
+        }
+      ],
+      "pid": 147554,
+      "replay_run_id": "1728de08-7d7c-4364-9d8a-654cf541af7e",
+      "source_run": "run-024",
+      "source_run_id": "655772b4-a76f-435f-9500-856d8f7259d9",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "768be538ca608290c70a1ca1a3779ba112b63622fd0e0f6622bc92dc4d317bf4",
+          "phase": "fixed_total",
+          "wall_ns": 114483810
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "633626c14f229ba17c2135c8fdbc28219277191fdfbf58fe1e8be524d764aa3d",
+          "phase": "fixed_per_device",
+          "wall_ns": 23162066
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "b439112818f8a3a7f401054bb7b69ca98acd3728e44484de5b394b2097a092ee",
+          "phase": "host_relay",
+          "wall_ns": 5750154
+        }
+      ],
+      "pid": 147557,
+      "replay_run_id": "514b45aa-18ee-4826-850e-69915b96d248",
+      "source_run": "run-025",
+      "source_run_id": "18e1eab7-2c73-43df-a8ec-817b8caab823",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "464879044d86c323d9afca26557b2df1a264efedd85d61aa3867fc03ef5f32be",
+          "phase": "fixed_total",
+          "wall_ns": 111817107
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "cdc4095bcbe90c65860abed715a9367bf7ba6c8c9b5aa555f7577aa174b30bcb",
+          "phase": "fixed_per_device",
+          "wall_ns": 46716862
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "55ee59890399ce302e2113a7b052d131d6873a791ef95d530155ecbd84df8860",
+          "phase": "host_relay",
+          "wall_ns": 11746306
+        }
+      ],
+      "pid": 147560,
+      "replay_run_id": "23d4fe83-dc23-4dc0-a106-771829e7eb8d",
+      "source_run": "run-028",
+      "source_run_id": "34e951f7-5561-4559-a7d4-fcb9723b09f0",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "464879044d86c323d9afca26557b2df1a264efedd85d61aa3867fc03ef5f32be",
+          "phase": "fixed_total",
+          "wall_ns": 112612333
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "cdc4095bcbe90c65860abed715a9367bf7ba6c8c9b5aa555f7577aa174b30bcb",
+          "phase": "fixed_per_device",
+          "wall_ns": 47246955
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "55ee59890399ce302e2113a7b052d131d6873a791ef95d530155ecbd84df8860",
+          "phase": "host_relay",
+          "wall_ns": 11710686
+        }
+      ],
+      "pid": 147563,
+      "replay_run_id": "3dd79e1e-3af8-4f3b-a4e0-0ab3e41f5570",
+      "source_run": "run-032",
+      "source_run_id": "6e9c2559-e635-445a-9ca7-16054ce8ceba",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "5c62783e0acfc5732ec6e35cc6cef7f3ff9834ecbc34c445cabc384c19079664",
+          "phase": "fixed_total",
+          "wall_ns": 56445906
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "35208af8876aef8781c47941544a21ece4d11bddb98d26722d78b5c38ad60f84",
+          "phase": "fixed_per_device",
+          "wall_ns": 19555159
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "106f61228de1660041fa8c9e33b8bcee7a21a13eaea107cec8f3705868f9a13c",
+          "phase": "host_relay",
+          "wall_ns": 4400298
+        }
+      ],
+      "pid": 147566,
+      "replay_run_id": "83bca7b5-27f7-4fbd-863b-1ccf2c3aef4f",
+      "source_run": "run-033",
+      "source_run_id": "6084890f-a608-446e-912f-af0cb163883d",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "51f822a842f719dc9718c4eed77bac4d401f60b563e018646c74436fe222dd4d",
+          "phase": "fixed_total",
+          "wall_ns": 107930642
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "e3eb58d320271eb65aa01c40e65df4567c875fdb33a04ec8ca0040dfe415743d",
+          "phase": "fixed_per_device",
+          "wall_ns": 93139704
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "ebfeb88c1a5cf0d4b0875dbbcd7c59ea51806ed9eeb27e57b4fdf4394df02d36",
+          "phase": "host_relay",
+          "wall_ns": 22973108
+        }
+      ],
+      "pid": 147569,
+      "replay_run_id": "0cbcc1f1-e37e-4b24-9e31-7c5b5586bcd5",
+      "source_run": "run-037",
+      "source_run_id": "e896dac5-e886-438d-86a3-a36ec6415539",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "464879044d86c323d9afca26557b2df1a264efedd85d61aa3867fc03ef5f32be",
+          "phase": "fixed_total",
+          "wall_ns": 110483222
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "cdc4095bcbe90c65860abed715a9367bf7ba6c8c9b5aa555f7577aa174b30bcb",
+          "phase": "fixed_per_device",
+          "wall_ns": 49917806
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "55ee59890399ce302e2113a7b052d131d6873a791ef95d530155ecbd84df8860",
+          "phase": "host_relay",
+          "wall_ns": 12560435
+        }
+      ],
+      "pid": 147574,
+      "replay_run_id": "6a9ca410-350e-4dba-b0b7-2063231a4cd7",
+      "source_run": "run-039",
+      "source_run_id": "02c0a16b-b8e6-418e-9d4f-5390daac2b06",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "d9269719c5e758c835dd6436cd7544b27b64e0949824a4b720e60e7d4038e5fd",
+          "phase": "fixed_total",
+          "wall_ns": 53890646
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "cfb9a321cb857be8db5bde1b31c039626aa2376c0eb8e0f56d5e919c6d46376c",
+          "phase": "fixed_per_device",
+          "wall_ns": 34712966
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "730c7d8cf93a3627c68a662fa607c308effa77cb3879f7f81624034ba84839b7",
+          "phase": "host_relay",
+          "wall_ns": 7912658
+        }
+      ],
+      "pid": 147579,
+      "replay_run_id": "20863675-34c9-4e38-b587-f9d4ab22f31c",
+      "source_run": "run-040",
+      "source_run_id": "3f55e149-e89c-4aa5-88d5-d4163bf8215f",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "768be538ca608290c70a1ca1a3779ba112b63622fd0e0f6622bc92dc4d317bf4",
+          "phase": "fixed_total",
+          "wall_ns": 113846670
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "633626c14f229ba17c2135c8fdbc28219277191fdfbf58fe1e8be524d764aa3d",
+          "phase": "fixed_per_device",
+          "wall_ns": 23122827
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "b439112818f8a3a7f401054bb7b69ca98acd3728e44484de5b394b2097a092ee",
+          "phase": "host_relay",
+          "wall_ns": 5782116
+        }
+      ],
+      "pid": 147582,
+      "replay_run_id": "2ab833c6-a503-453f-91da-045ece4b3f4b",
+      "source_run": "run-048",
+      "source_run_id": "af08c7af-1a4f-419f-a9a8-e78c6bd0b395",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "054d0f4a3a54968cf0eac6b0a492bbb8393a0712ac99949fd49eba8b22da6cf0",
+          "phase": "fixed_total",
+          "wall_ns": 52802893
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "51bcf74e38e7efd67ec62cdc509a23fd519234e5ea9a77a374b31df646b2fb8a",
+          "phase": "fixed_per_device",
+          "wall_ns": 63994511
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "94fb886028ea3b58eca444013f25f80394d02cb0c9e3920ecff30c585a0e4bf3",
+          "phase": "host_relay",
+          "wall_ns": 15749593
+        }
+      ],
+      "pid": 147585,
+      "replay_run_id": "dbeb95df-5ab5-42d1-89c7-83e90750f355",
+      "source_run": "run-050",
+      "source_run_id": "75ab01d0-60b7-4bb7-a4f5-39bff0621b5a",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "38fa95f14b6b4271c7d66ae420198e96a18cd130e0b65209fa157e1a56c34f0f",
+          "phase": "fixed_total",
+          "wall_ns": 52373007
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "a3e0602f5bc3c07811e82c99eeabc3b6d0ba79ce32925df53a9853ea12f44553",
+          "phase": "fixed_per_device",
+          "wall_ns": 9882733
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "1c20dfdc000b0795f30d12340eaefa756c70818a0559d6a1d0bbe3cfad195aad",
+          "phase": "host_relay",
+          "wall_ns": 4602563
+        }
+      ],
+      "pid": 147589,
+      "replay_run_id": "c954c598-ed4c-48df-b13e-3f07aed5f754",
+      "source_run": "run-057",
+      "source_run_id": "8ef4ba22-a25f-4fe8-9101-33c17c047f0f",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "024630d952908daa575809e9e79905daa4090f5fda5745721f4d11cda7ef305f",
+          "phase": "fixed_total",
+          "wall_ns": 106036467
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "f09402bf7cff792fefa9e9c48ca653dc25c1d9ab45c6932b854de37724e796d8",
+          "phase": "fixed_per_device",
+          "wall_ns": 184968284
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "e1d1284a8bf63fe0e675a4c025f176f357f270a3d444764110fb35e54716279a",
+          "phase": "host_relay",
+          "wall_ns": 46589266
+        }
+      ],
+      "pid": 147592,
+      "replay_run_id": "4f10dec6-0459-4b4e-b969-ecf15efb8f33",
+      "source_run": "run-058",
+      "source_run_id": "c3d59e05-baae-4586-8b30-41aad8993189",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "464879044d86c323d9afca26557b2df1a264efedd85d61aa3867fc03ef5f32be",
+          "phase": "fixed_total",
+          "wall_ns": 113697056
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "cdc4095bcbe90c65860abed715a9367bf7ba6c8c9b5aa555f7577aa174b30bcb",
+          "phase": "fixed_per_device",
+          "wall_ns": 46503340
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "55ee59890399ce302e2113a7b052d131d6873a791ef95d530155ecbd84df8860",
+          "phase": "host_relay",
+          "wall_ns": 11481272
+        }
+      ],
+      "pid": 147595,
+      "replay_run_id": "08db74e6-89b5-4507-a47e-681521bd1451",
+      "source_run": "run-062",
+      "source_run_id": "3632d248-8276-4e98-8af7-9b78032307b1",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "054d0f4a3a54968cf0eac6b0a492bbb8393a0712ac99949fd49eba8b22da6cf0",
+          "phase": "fixed_total",
+          "wall_ns": 53887916
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "51bcf74e38e7efd67ec62cdc509a23fd519234e5ea9a77a374b31df646b2fb8a",
+          "phase": "fixed_per_device",
+          "wall_ns": 64543126
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "94fb886028ea3b58eca444013f25f80394d02cb0c9e3920ecff30c585a0e4bf3",
+          "phase": "host_relay",
+          "wall_ns": 15812906
+        }
+      ],
+      "pid": 147618,
+      "replay_run_id": "95089d2e-108b-4286-9d4a-d821fb5e5237",
+      "source_run": "run-064",
+      "source_run_id": "a734e72c-d116-4e85-96e1-df3160aa97ec",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "d9269719c5e758c835dd6436cd7544b27b64e0949824a4b720e60e7d4038e5fd",
+          "phase": "fixed_total",
+          "wall_ns": 54494691
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "cfb9a321cb857be8db5bde1b31c039626aa2376c0eb8e0f56d5e919c6d46376c",
+          "phase": "fixed_per_device",
+          "wall_ns": 35347952
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "730c7d8cf93a3627c68a662fa607c308effa77cb3879f7f81624034ba84839b7",
+          "phase": "host_relay",
+          "wall_ns": 8016165
+        }
+      ],
+      "pid": 147621,
+      "replay_run_id": "89c67acd-4bc5-4458-bbfd-29f0c51b728f",
+      "source_run": "run-065",
+      "source_run_id": "d664daa6-ddbd-4ad8-bd90-c235255fd8a6",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "51f822a842f719dc9718c4eed77bac4d401f60b563e018646c74436fe222dd4d",
+          "phase": "fixed_total",
+          "wall_ns": 107727903
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "e3eb58d320271eb65aa01c40e65df4567c875fdb33a04ec8ca0040dfe415743d",
+          "phase": "fixed_per_device",
+          "wall_ns": 93192565
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "ebfeb88c1a5cf0d4b0875dbbcd7c59ea51806ed9eeb27e57b4fdf4394df02d36",
+          "phase": "host_relay",
+          "wall_ns": 23488642
+        }
+      ],
+      "pid": 147624,
+      "replay_run_id": "aea4f1ef-c230-4601-aa61-b721e83610d7",
+      "source_run": "run-068",
+      "source_run_id": "c7678262-2022-4401-8f49-d2bd45cee793",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "768be538ca608290c70a1ca1a3779ba112b63622fd0e0f6622bc92dc4d317bf4",
+          "phase": "fixed_total",
+          "wall_ns": 117294345
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "633626c14f229ba17c2135c8fdbc28219277191fdfbf58fe1e8be524d764aa3d",
+          "phase": "fixed_per_device",
+          "wall_ns": 23692056
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "b439112818f8a3a7f401054bb7b69ca98acd3728e44484de5b394b2097a092ee",
+          "phase": "host_relay",
+          "wall_ns": 5930767
+        }
+      ],
+      "pid": 147629,
+      "replay_run_id": "4f08679c-5d55-4d3e-9639-674556b698f6",
+      "source_run": "run-072",
+      "source_run_id": "edaf775f-2450-463e-a5fa-246abb074ce1",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "38fa95f14b6b4271c7d66ae420198e96a18cd130e0b65209fa157e1a56c34f0f",
+          "phase": "fixed_total",
+          "wall_ns": 52438137
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "a3e0602f5bc3c07811e82c99eeabc3b6d0ba79ce32925df53a9853ea12f44553",
+          "phase": "fixed_per_device",
+          "wall_ns": 10193430
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "1c20dfdc000b0795f30d12340eaefa756c70818a0559d6a1d0bbe3cfad195aad",
+          "phase": "host_relay",
+          "wall_ns": 4420918
+        }
+      ],
+      "pid": 147632,
+      "replay_run_id": "6c7ab2f2-6704-41ba-a1e0-b48fb4673a3a",
+      "source_run": "run-075",
+      "source_run_id": "41fc75d4-362e-4e1e-88cf-7171dcb923d6",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "024630d952908daa575809e9e79905daa4090f5fda5745721f4d11cda7ef305f",
+          "phase": "fixed_total",
+          "wall_ns": 107589310
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "f09402bf7cff792fefa9e9c48ca653dc25c1d9ab45c6932b854de37724e796d8",
+          "phase": "fixed_per_device",
+          "wall_ns": 184422919
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "e1d1284a8bf63fe0e675a4c025f176f357f270a3d444764110fb35e54716279a",
+          "phase": "host_relay",
+          "wall_ns": 46542293
+        }
+      ],
+      "pid": 147635,
+      "replay_run_id": "8473908d-f386-4a2f-b72d-9f509668af8d",
+      "source_run": "run-077",
+      "source_run_id": "0e70c85c-d668-434d-ad4f-93bce3e8bfe7",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "5c62783e0acfc5732ec6e35cc6cef7f3ff9834ecbc34c445cabc384c19079664",
+          "phase": "fixed_total",
+          "wall_ns": 54494859
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "35208af8876aef8781c47941544a21ece4d11bddb98d26722d78b5c38ad60f84",
+          "phase": "fixed_per_device",
+          "wall_ns": 18999435
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "106f61228de1660041fa8c9e33b8bcee7a21a13eaea107cec8f3705868f9a13c",
+          "phase": "host_relay",
+          "wall_ns": 4395367
+        }
+      ],
+      "pid": 147639,
+      "replay_run_id": "92cd83b3-9356-44f4-a82d-0f531cc20d20",
+      "source_run": "run-079",
+      "source_run_id": "3dd1936c-7caf-4598-9bbf-3ddccc55e4b2",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "d9269719c5e758c835dd6436cd7544b27b64e0949824a4b720e60e7d4038e5fd",
+          "phase": "fixed_total",
+          "wall_ns": 54332053
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "cfb9a321cb857be8db5bde1b31c039626aa2376c0eb8e0f56d5e919c6d46376c",
+          "phase": "fixed_per_device",
+          "wall_ns": 35308838
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "730c7d8cf93a3627c68a662fa607c308effa77cb3879f7f81624034ba84839b7",
+          "phase": "host_relay",
+          "wall_ns": 8063646
+        }
+      ],
+      "pid": 147642,
+      "replay_run_id": "2df86d38-eca1-42f8-830b-fe01cac56f49",
+      "source_run": "run-083",
+      "source_run_id": "a42153a9-ed63-4706-9174-6a999a1e62ca",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "768be538ca608290c70a1ca1a3779ba112b63622fd0e0f6622bc92dc4d317bf4",
+          "phase": "fixed_total",
+          "wall_ns": 113238109
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "633626c14f229ba17c2135c8fdbc28219277191fdfbf58fe1e8be524d764aa3d",
+          "phase": "fixed_per_device",
+          "wall_ns": 23199760
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "b439112818f8a3a7f401054bb7b69ca98acd3728e44484de5b394b2097a092ee",
+          "phase": "host_relay",
+          "wall_ns": 5828542
+        }
+      ],
+      "pid": 147645,
+      "replay_run_id": "3127f023-09c5-4bfd-8329-9f11bf83b6b8",
+      "source_run": "run-087",
+      "source_run_id": "fad57816-869e-4385-8b61-8aa210d4dda4",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "51f822a842f719dc9718c4eed77bac4d401f60b563e018646c74436fe222dd4d",
+          "phase": "fixed_total",
+          "wall_ns": 107752131
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "e3eb58d320271eb65aa01c40e65df4567c875fdb33a04ec8ca0040dfe415743d",
+          "phase": "fixed_per_device",
+          "wall_ns": 92402239
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "ebfeb88c1a5cf0d4b0875dbbcd7c59ea51806ed9eeb27e57b4fdf4394df02d36",
+          "phase": "host_relay",
+          "wall_ns": 22801677
+        }
+      ],
+      "pid": 147649,
+      "replay_run_id": "8d5e4ef1-c99a-4973-bf60-3215251fedd8",
+      "source_run": "run-091",
+      "source_run_id": "5ca6fe5b-b129-4dd2-89da-f5726538df60",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "51f822a842f719dc9718c4eed77bac4d401f60b563e018646c74436fe222dd4d",
+          "phase": "fixed_total",
+          "wall_ns": 107204357
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "e3eb58d320271eb65aa01c40e65df4567c875fdb33a04ec8ca0040dfe415743d",
+          "phase": "fixed_per_device",
+          "wall_ns": 91946337
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "ebfeb88c1a5cf0d4b0875dbbcd7c59ea51806ed9eeb27e57b4fdf4394df02d36",
+          "phase": "host_relay",
+          "wall_ns": 22880041
+        }
+      ],
+      "pid": 147654,
+      "replay_run_id": "b5bde75c-383b-41bf-ab1f-f4f8c9a8153b",
+      "source_run": "run-096",
+      "source_run_id": "eb4070ca-743b-4ce4-9a95-a7839332bac7",
+      "status": "pass",
+      "transfer_bytes": 4096
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "5c62783e0acfc5732ec6e35cc6cef7f3ff9834ecbc34c445cabc384c19079664",
+          "phase": "fixed_total",
+          "wall_ns": 56412931
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "35208af8876aef8781c47941544a21ece4d11bddb98d26722d78b5c38ad60f84",
+          "phase": "fixed_per_device",
+          "wall_ns": 19355263
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "106f61228de1660041fa8c9e33b8bcee7a21a13eaea107cec8f3705868f9a13c",
+          "phase": "host_relay",
+          "wall_ns": 4408237
+        }
+      ],
+      "pid": 147657,
+      "replay_run_id": "d746061b-c6e2-4d21-917c-9a44e0a48b45",
+      "source_run": "run-098",
+      "source_run_id": "20e952de-069e-42f5-a600-496094666eda",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "38fa95f14b6b4271c7d66ae420198e96a18cd130e0b65209fa157e1a56c34f0f",
+          "phase": "fixed_total",
+          "wall_ns": 51455860
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "a3e0602f5bc3c07811e82c99eeabc3b6d0ba79ce32925df53a9853ea12f44553",
+          "phase": "fixed_per_device",
+          "wall_ns": 10101454
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "1c20dfdc000b0795f30d12340eaefa756c70818a0559d6a1d0bbe3cfad195aad",
+          "phase": "host_relay",
+          "wall_ns": 4497761
+        }
+      ],
+      "pid": 147660,
+      "replay_run_id": "a0dbac2e-7dd5-47aa-85c3-aa5d4a485c84",
+      "source_run": "run-101",
+      "source_run_id": "8a78c337-376c-4a61-b20e-597a841d8e39",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 4,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "d9269719c5e758c835dd6436cd7544b27b64e0949824a4b720e60e7d4038e5fd",
+          "phase": "fixed_total",
+          "wall_ns": 54480955
+        },
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "cfb9a321cb857be8db5bde1b31c039626aa2376c0eb8e0f56d5e919c6d46376c",
+          "phase": "fixed_per_device",
+          "wall_ns": 34725371
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "730c7d8cf93a3627c68a662fa607c308effa77cb3879f7f81624034ba84839b7",
+          "phase": "host_relay",
+          "wall_ns": 7838979
+        }
+      ],
+      "pid": 147663,
+      "replay_run_id": "d16e54d7-0c70-47ef-a442-0b91d6eb8531",
+      "source_run": "run-106",
+      "source_run_id": "47487f05-52f0-44d1-ae81-52d48a3cbbe9",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "5c62783e0acfc5732ec6e35cc6cef7f3ff9834ecbc34c445cabc384c19079664",
+          "phase": "fixed_total",
+          "wall_ns": 55975318
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "35208af8876aef8781c47941544a21ece4d11bddb98d26722d78b5c38ad60f84",
+          "phase": "fixed_per_device",
+          "wall_ns": 19222826
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "106f61228de1660041fa8c9e33b8bcee7a21a13eaea107cec8f3705868f9a13c",
+          "phase": "host_relay",
+          "wall_ns": 4378206
+        }
+      ],
+      "pid": 147666,
+      "replay_run_id": "3f67a5c4-4f14-48a7-beed-3b2f1ee22ef9",
+      "source_run": "run-109",
+      "source_run_id": "b9b445bf-5967-4259-8cd6-8c1bdcf67f85",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "054d0f4a3a54968cf0eac6b0a492bbb8393a0712ac99949fd49eba8b22da6cf0",
+          "phase": "fixed_total",
+          "wall_ns": 52181921
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "51bcf74e38e7efd67ec62cdc509a23fd519234e5ea9a77a374b31df646b2fb8a",
+          "phase": "fixed_per_device",
+          "wall_ns": 64578306
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "94fb886028ea3b58eca444013f25f80394d02cb0c9e3920ecff30c585a0e4bf3",
+          "phase": "host_relay",
+          "wall_ns": 15743801
+        }
+      ],
+      "pid": 147669,
+      "replay_run_id": "891f22dc-6ed9-4020-9b2f-a8b04cd429df",
+      "source_run": "run-111",
+      "source_run_id": "c184ba82-3724-4d75-a913-7243fbc0cf8a",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "054d0f4a3a54968cf0eac6b0a492bbb8393a0712ac99949fd49eba8b22da6cf0",
+          "phase": "fixed_total",
+          "wall_ns": 53520084
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "51bcf74e38e7efd67ec62cdc509a23fd519234e5ea9a77a374b31df646b2fb8a",
+          "phase": "fixed_per_device",
+          "wall_ns": 65615685
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "94fb886028ea3b58eca444013f25f80394d02cb0c9e3920ecff30c585a0e4bf3",
+          "phase": "host_relay",
+          "wall_ns": 16130290
+        }
+      ],
+      "pid": 147672,
+      "replay_run_id": "c5409458-ae64-4990-96ea-65b2ce3eb359",
+      "source_run": "run-114",
+      "source_run_id": "4ea32b5e-598f-40f2-b88a-797f3b972b40",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 2,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "5c62783e0acfc5732ec6e35cc6cef7f3ff9834ecbc34c445cabc384c19079664",
+          "phase": "fixed_total",
+          "wall_ns": 54439251
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "35208af8876aef8781c47941544a21ece4d11bddb98d26722d78b5c38ad60f84",
+          "phase": "fixed_per_device",
+          "wall_ns": 18900313
+        },
+        {
+          "exact_payload_checks": 32,
+          "output_sha256": "106f61228de1660041fa8c9e33b8bcee7a21a13eaea107cec8f3705868f9a13c",
+          "phase": "host_relay",
+          "wall_ns": 4287039
+        }
+      ],
+      "pid": 147676,
+      "replay_run_id": "92812277-9815-4b06-a753-1e39b4c2ad29",
+      "source_run": "run-116",
+      "source_run_id": "5a713415-32f6-4ae4-9182-75f423754ccf",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 8,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "054d0f4a3a54968cf0eac6b0a492bbb8393a0712ac99949fd49eba8b22da6cf0",
+          "phase": "fixed_total",
+          "wall_ns": 53042528
+        },
+        {
+          "exact_payload_checks": 512,
+          "output_sha256": "51bcf74e38e7efd67ec62cdc509a23fd519234e5ea9a77a374b31df646b2fb8a",
+          "phase": "fixed_per_device",
+          "wall_ns": 63767543
+        },
+        {
+          "exact_payload_checks": 128,
+          "output_sha256": "94fb886028ea3b58eca444013f25f80394d02cb0c9e3920ecff30c585a0e4bf3",
+          "phase": "host_relay",
+          "wall_ns": 15279927
+        }
+      ],
+      "pid": 147681,
+      "replay_run_id": "2c916323-1131-4c09-82c2-fc4d8f14cdb7",
+      "source_run": "run-117",
+      "source_run_id": "326fb5ca-4ec8-4fe4-8e37-b8b3d74d3a4a",
+      "status": "pass",
+      "transfer_bytes": 64
+    },
+    {
+      "devices": 1,
+      "phases": [
+        {
+          "exact_payload_checks": 256,
+          "output_sha256": "38fa95f14b6b4271c7d66ae420198e96a18cd130e0b65209fa157e1a56c34f0f",
+          "phase": "fixed_total",
+          "wall_ns": 53964635
+        },
+        {
+          "exact_payload_checks": 64,
+          "output_sha256": "a3e0602f5bc3c07811e82c99eeabc3b6d0ba79ce32925df53a9853ea12f44553",
+          "phase": "fixed_per_device",
+          "wall_ns": 12585739
+        },
+        {
+          "exact_payload_checks": 16,
+          "output_sha256": "1c20dfdc000b0795f30d12340eaefa756c70818a0559d6a1d0bbe3cfad195aad",
+          "phase": "host_relay",
+          "wall_ns": 2460931
+        }
+      ],
+      "pid": 147685,
+      "replay_run_id": "abcf07ae-4226-4c86-86da-ae9116a258c8",
+      "source_run": "run-118",
+      "source_run_id": "205c1bbb-33a2-46dd-8e97-f245b38834aa",
+      "status": "pass",
+      "transfer_bytes": 64
+    }
+  ],
+  "schema": "slugarch.splash-functional-replay.v1",
+  "scope": "Fresh-process host-driven full-trace re-execution through BAR2/BAR4; no endpoint JIT",
+  "status": "pass"
+}

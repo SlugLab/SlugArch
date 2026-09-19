@@ -15,3 +15,9 @@
 qdb
 dni
 output_files
+
+# Large, machine-specific simulator campaigns; publish compact summaries instead.
+/artifact/slugarch_splash/
+# Existing Overleaf checkout is a separate repository.
+/64fa450c44d0cdf46c7c3a7d/
+**/__pycache__/

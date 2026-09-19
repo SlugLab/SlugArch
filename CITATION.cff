@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use SlugArch or its experiment artifacts, please cite the repository and the commit you used."
+title: "SlugArch: Replayable Execution for Composable CXL Accelerators"
+type: software
+authors:
+  - name: SlugLab
+repository-code: "https://github.com/SlugLab/SlugArch"
+url: "https://github.com/SlugLab/SlugArch"
+license:
+  - MIT
+  - Apache-2.0
+keywords:
+  - CXL
+  - deterministic replay
+  - accelerator simulation
+  - QEMU
+  - Zettai

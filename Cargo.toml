@@ -22,8 +22,7 @@ members = [
 edition = "2021"
 rust-version = "1.75"
 license = "MIT OR Apache-2.0"
-# `repository` intentionally omitted until SlugArch has a public home; add it
-# when the repo is first pushed to a remote.
+repository = "https://github.com/SlugLab/SlugArch"
 
 [workspace.dependencies]
 anyhow = "1"

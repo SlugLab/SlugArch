@@ -1,0 +1,23 @@
+name: Experiment checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Replay trace validation
+        run: python -m unittest discover -s targets/splash-type2 -p 'test_*.py' -v
+      - name: Epoch certificate validation
+        run: python -m unittest discover -s targets/splash-bsp -p 'test_*.py' -v
+      - name: Endpoint scheduling and Zettai topology
+        run: python -m unittest discover -s targets/splash-endpoint -p 'test_*.py' -v
